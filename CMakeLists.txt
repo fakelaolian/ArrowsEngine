@@ -8,7 +8,7 @@ INCLUDE_DIRECTORIES(${PROJECT_NAME} SYSTEM Include ThirdParty ThirdParty/glfw3/i
 
 LINK_DIRECTORIES(ThirdParty/glfw3/lib-mingw-w64)
 ADD_EXECUTABLE(${PROJECT_NAME}
-        main.cpp
+        Engine/Main/main.cpp
         ThirdParty/glad/src/glad.c
         Engine/Tools/AnciCreator.cpp
         Engine/Application/EngineApplication.cpp
