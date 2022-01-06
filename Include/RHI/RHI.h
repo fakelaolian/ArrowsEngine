@@ -2,5 +2,3 @@
 #pragma once
 
 #include <AnciCore.h>
-
-ANCIAPI void RHIViewport();

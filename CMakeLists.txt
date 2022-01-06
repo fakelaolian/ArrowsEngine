@@ -12,6 +12,7 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         ThirdParty/glad/src/glad.c
         Engine/Tools/AnciCreator.cpp
         Engine/Application/EngineApplication.cpp
+        # --* Platform/OpenGL *-- #
         Engine/Platform/OpenGL/OpenGLWindow.cpp
 )
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} glfw3)

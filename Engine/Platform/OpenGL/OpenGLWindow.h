@@ -2,6 +2,8 @@
 #pragma once
 
 #include <AnciWindow.h>
+
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 class OpenGLWindow : public AnciWindow {
