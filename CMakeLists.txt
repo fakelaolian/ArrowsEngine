@@ -14,5 +14,6 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         Engine/Application/EngineApplication.cpp
         # --* Platform/OpenGL *-- #
         Engine/Platform/OpenGL/OpenGLWindow.cpp
+        Engine/Platform/OpenGL/Anci_RHI_ImplOpenGL.cpp
 )
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} glfw3)

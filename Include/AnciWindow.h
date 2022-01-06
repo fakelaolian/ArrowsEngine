@@ -4,10 +4,6 @@
 #include <AnciCore.h>
 #include <utility>
 
-#ifndef ANCI_WINDOW_HANDLE
-#  define ANCI_WINDOW_HANDLE void *
-#endif
-
 class AnciWindow {
 public:
         AnciWindow(String title, ancivec2 dimension)          : _title(std::move(title)), _dimension(dimension) {};

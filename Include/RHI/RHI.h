@@ -2,3 +2,12 @@
 #pragma once
 
 #include <AnciCore.h>
+
+typedef void (*ANCI_RHI_VIEWPORT)(anciu32 x, anciu32 y, anciu32 w, anciu32 h);
+ANCIAPI ANCI_RHI_VIEWPORT ANCIRHIVIEWPORT;
+#define RHIViewport ANCIRHIVIEWPORT
+typedef void (*ANCI_RHI_SWAP_BUFFERS)(ANCI_WINDOW_HANDLE h);
+ANCIAPI ANCI_RHI_SWAP_BUFFERS ANCIRHISWAPBUFFERS;
+#define RHISwapBuffers ANCIRHISWAPBUFFERS
+
+ANCIAPI void AnciLoadRHI();

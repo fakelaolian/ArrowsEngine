@@ -5,6 +5,10 @@
 #  define ANCIAPI extern
 #endif
 
+#ifndef ANCI_WINDOW_HANDLE
+#  define ANCI_WINDOW_HANDLE void *
+#endif
+
 #include <memory>
 #include <glm/glm.hpp>
 

@@ -23,5 +23,4 @@ OpenGLWindow::OpenGLWindow(const String &title, ancivec2 dimension) : AnciWindow
         }
 
         glfwMakeContextCurrent(_window_handle);
-
 }
