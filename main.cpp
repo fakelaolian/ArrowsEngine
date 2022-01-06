@@ -4,6 +4,5 @@ int main()
 {
         EngineApplication application {AnciEnumGraphicsApi::OpenGL};
         application.StartEngine();
-
         return 0;
 }

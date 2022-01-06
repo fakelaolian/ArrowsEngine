@@ -9,9 +9,7 @@
  */
 class EngineApplication {
 public:
-        EngineApplication(AnciEnumGraphicsApi api);
-        ~EngineApplication();
-
+        explicit                EngineApplication(AnciEnumGraphicsApi api);
         void                    StartEngine();
 
 private:

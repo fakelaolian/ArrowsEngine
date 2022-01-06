@@ -11,7 +11,7 @@
 class AnciWindow {
 public:
         AnciWindow(String title, ancivec2 dimension)          : _title(std::move(title)), _dimension(dimension) {};
-        ~AnciWindow()                                         {};
+        virtual ~AnciWindow()                                 {};
         virtual ANCI_WINDOW_HANDLE      GetHandle   ()        = 0;
         virtual bool                    ShouldClose ()        = 0;
         virtual void                    PollEvents  ()        = 0;
