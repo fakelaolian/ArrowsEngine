@@ -1,4 +1,4 @@
-/* AUTHOR: BlazeStark, DATE: 2022/1/6 */
+/* AUTHOR: 2BKBD, DATE: 2022/1/6 */
 #include "OpenGLWindow.h"
 
 OpenGLWindow::OpenGLWindow(const String &title, ancivec2 dimension) : AnciWindow(title, dimension)

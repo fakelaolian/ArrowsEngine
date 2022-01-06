@@ -1,4 +1,4 @@
-/* AUTHOR: BlazeStark, DATE: 2022/1/6 */
+/* AUTHOR: 2BKBD, DATE: 2022/1/6 */
 #include <ATools/AnciCreator.h>
 
 #include "Platform/OpenGL/OpenGLWindow.h"
