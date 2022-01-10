@@ -4,16 +4,20 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-ANCI_RHI_VIEWPORT       ANCIRHIVIEWPORT             = nullptr;
-ANCI_RHI_SWAP_BUFFERS   ANCIRHISWAPBUFFERS          = nullptr;
-ANCI_RHI_GEN_IDXBUFFER  ANCIRHIGENIDXBUFFER         = nullptr;
-ANCI_RHI_GEN_VTXBUFFER  ANCIRHIGENVTXBUFFER         = nullptr;
-ANCI_RHI_DESTROY_VTX_BUFFER ANCIRHIDESTROYVTXBUFFER = nullptr;
-ANCI_RHI_DESTROY_IDX_BUFFER ANCIRHIDESTROYIDXBUFFER = nullptr;
-ANCI_RHI_BIND_VTX       ANCIRHIBINDVTX              = nullptr;
-ANCI_RHI_DRAW_VTX       ANCIRHIDRAWVTX              = nullptr;
-ANCI_RHI_DRAW_IDX       ANCIRHIDRAWIDX              = nullptr;
-ANCI_RHI_CREATE_SHADER  ANCIRHICreateShader         = nullptr;
+ANCI_RHI_VIEWPORT                       ANCIRHIVIEWPORT             = nullptr;
+ANCI_RHI_SWAP_BUFFERS                   ANCIRHISWAPBUFFERS          = nullptr;
+ANCI_RHI_GEN_IDXBUFFER                  ANCIRHIGENIDXBUFFER         = nullptr;
+ANCI_RHI_GEN_VTXBUFFER                  ANCIRHIGENVTXBUFFER         = nullptr;
+ANCI_RHI_DESTROY_VTX_BUFFER             ANCIRHIDESTROYVTXBUFFER     = nullptr;
+ANCI_RHI_DESTROY_IDX_BUFFER             ANCIRHIDESTROYIDXBUFFER     = nullptr;
+ANCI_RHI_BIND_VTX                       ANCIRHIBINDVTX              = nullptr;
+ANCI_RHI_DRAW_VTX                       ANCIRHIDRAWVTX              = nullptr;
+ANCI_RHI_DRAW_IDX                       ANCIRHIDRAWIDX              = nullptr;
+ANCI_RHI_CREATE_SHADER                  ANCIRHICreateShader         = nullptr;
+ANCI_RHI_CREATE_SHADER_PROGRAM          ANCIRHICREATESHADERPROGRAM  = nullptr;
+ANCI_RHI_DELETE_SHADER                  ANCIRHIDELETESHADER         = nullptr;
+ANCI_RHI_BIND_SHADER_PROGRAM            ANCIRHIBINDSHADERPROGRAM    = nullptr;
+ANCI_RHI_CLEAR                          ANCIRHICLEAR                = nullptr;
 
 /** OpenGL的Vertex Buffer实现 */
 struct RHIVtxBuffer_ImplOpenGL {
@@ -39,6 +43,13 @@ struct RHIShader_ImplOpenGL {
 #define IShader RHIShader_ImplOpenGL *
 #define CONV_SHADER(ptr) ((RHIShader_ImplOpenGL *) (ptr))
 
+/** OpenGL的Shader Program实现 */
+struct OpenGL_ShaderProgram {
+        anciu32 program;
+};
+#define IShaderProgram OpenGL_ShaderProgram *
+#define CONV_SHADER_PROGRAM(ptr) ((OpenGL_ShaderProgram *) (ptr))
+
 void OpenGL_GLViewport    (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
 {
         glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h);
@@ -58,10 +69,14 @@ RHIVtxBuffer OpenGL_GenVtxBuffer(float *vertices, anciu32 count)
         unsigned int vbo;
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, count, vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, count * sizeof(float), vertices, GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, count * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
+
+        /* 解除绑定 */
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
 
         return new RHIVtxBuffer_ImplOpenGL{vao, vbo, count};
 }
@@ -96,10 +111,8 @@ void OpenGL_BindVtxBuffer(RHIVtxBuffer vtxBuffer)
      glBindVertexArray(CONV_VTX(vtxBuffer)->vao);
 }
 
-void OpenGL_DrawVtx(RHIVtxBuffer vtxBuffer)
+void OpenGL_DrawVtx()
 {
-        IVtxBuffer buffer = CONV_VTX(vtxBuffer);
-        glBindVertexArray(buffer->vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
@@ -129,6 +142,47 @@ RHIShader OpenGL_CreateShader(const char* source, RHIEnumCreateShaderMode mode)
         return new RHIShader_ImplOpenGL{shader};
 }
 
+void OpenGL_DeleteShader(RHIShader shader)
+{
+        glDeleteShader(CONV_SHADER(shader)->shader);
+}
+
+RHIShaderProgram OpenGL_CreateShaderProgram(RHIShader vtx, RHIShader frag)
+{
+        anciu32 shaderProgram;
+        int     success;
+        char    infoLog[512];
+
+        shaderProgram = glCreateProgram();
+        glAttachShader(shaderProgram, CONV_SHADER(vtx)->shader);
+        glAttachShader(shaderProgram, CONV_SHADER(frag)->shader);
+        glLinkProgram(shaderProgram);
+
+        /* 检查shader是否链接成功 */
+        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+        if (!success) {
+                glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+                throw std::runtime_error(infoLog);
+        }
+
+        /* 删除shader */
+        OpenGL_DeleteShader(vtx);
+        OpenGL_DeleteShader(frag);
+
+        return new OpenGL_ShaderProgram{shaderProgram};
+}
+
+void OpenGL_BindShaderProgram(RHIShaderProgram program)
+{
+        glUseProgram(CONV_SHADER_PROGRAM(program)->program);
+}
+
+void OpenGL_Clear(ancivec4 color)
+{
+        glClearColor(color.x, color.y, color.z, color.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void RHIApiLoad()
 {
         ANCIRHIVIEWPORT         = OpenGL_GLViewport;
@@ -140,4 +194,7 @@ void RHIApiLoad()
         ANCIRHIBINDVTX          = OpenGL_BindVtxBuffer;
         ANCIRHIDRAWVTX          = OpenGL_DrawVtx;
         ANCIRHICreateShader     = OpenGL_CreateShader;
+        ANCIRHICREATESHADERPROGRAM = OpenGL_CreateShaderProgram;
+        ANCIRHIBINDSHADERPROGRAM = OpenGL_BindShaderProgram;
+        ANCIRHICLEAR            = OpenGL_Clear;
 }

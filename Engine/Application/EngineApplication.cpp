@@ -18,10 +18,9 @@ EngineApplication::EngineApplication(AnciEnumGraphicsApi api)
 void EngineApplication::StartEngine()
 {
         float vertices[] = {
-                0.5f,  0.5f, 0.0f,  // top right
-                0.5f, -0.5f, 0.0f,  // bottom right
-                -0.5f, -0.5f, 0.0f,  // bottom left
-                -0.5f,  0.5f, 0.0f   // top left
+                -0.5f, -0.5f, 0.0f, // left
+                0.5f, -0.5f, 0.0f, // right
+                0.0f,  0.5f, 0.0f  // top
         };
 
         anciu32 indices[] = {
@@ -45,15 +44,19 @@ void EngineApplication::StartEngine()
 
         RHIShader vtxShader = RHICreateShader(vertexShaderSource, RHI_VERTEX_SHADER);
         RHIShader fragShader = RHICreateShader(fragmentShaderSource, RHI_FRAGMENT_SHADER);
-        RHIVtxBuffer vtxBuffer = RHIGenVtxBuffer(vertices, sizeof(vertices));
-        RHIIdxBuffer idxBuffer = RHIGenIdxBuffer(indices, sizeof(indices));
+        RHIShaderProgram shaderProgram = RHICreateShaderProgram(vtxShader, fragShader);
+
+        RHIVtxBuffer vtxBuffer = RHIGenVtxBuffer(vertices, sizeof(vertices) / sizeof(float));
+        RHIIdxBuffer idxBuffer = RHIGenIdxBuffer(indices, sizeof(indices) / sizeof(anciu32));
 
         while (!_window->ShouldClose()) {
-                _window->PollEvents();
+                RHIClear(ancivec4(0.2f));
 
-                // RHIBindVtxBuffer(vtxBuffer);
-                // RHIDrawVtx(vtxBuffer);
+                RHIBindShaderProgram(shaderProgram);
+                RHIBindVtxBuffer(vtxBuffer);
+                RHIDrawVtx();
 
                 RHISwapBuffers(_window->GetHandle());
+                _window->PollEvents();
         }
 }
