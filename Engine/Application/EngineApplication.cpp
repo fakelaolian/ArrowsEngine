@@ -17,11 +17,11 @@ EngineApplication::EngineApplication(AnciEnumGraphicsApi api)
 
 void EngineApplication::StartEngine()
 {
-        float vertices[] = {
-                0.5f,  0.5f, 0.0f,  // top right
-                0.5f, -0.5f, 0.0f,  // bottom right
-                -0.5f, -0.5f, 0.0f,  // bottom left
-                -0.5f,  0.5f, 0.0f   // top left
+        RHIVtxArray vertices[] = {
+                {{0.5f,  0.5f,  0.0f}, {0.2f, 0.2f, 0.2f}},
+                {{0.5f,  -0.5f, 0.0f}, {0.2f, 0.2f, 0.2f}},
+                {{-0.5f, -0.5f, 0.0f}, {0.2f, 0.2f, 0.2f}},
+                {{-0.5f, 0.5f,  0.0f}, {0.2f, 0.2f, 0.2f}},
         };
 
         anciu32 indices[] = {
@@ -30,8 +30,8 @@ void EngineApplication::StartEngine()
         };
 
         RHIShader shader = RHICreateShader("../Engine/Shaders/simple.alsl");
-        RHIVtxBuffer vtxBuffer = RHIGenVtxBuffer(vertices, sizeof(vertices) / sizeof(float));
-        RHIIdxBuffer idxBuffer = RHIGenIdxBuffer(indices, sizeof(indices) / sizeof(anciu32));
+        RHIVtxBuffer vtxBuffer = RHIGenVtxBuffer(vertices, ARRAY_SIZE(vertices));
+        RHIIdxBuffer idxBuffer = RHIGenIdxBuffer(indices, ARRAY_SIZE(indices));
 
         while (!_window->ShouldClose()) {
                 RHIClearColorBuffer(ancivec4(0.2f));

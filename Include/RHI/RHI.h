@@ -22,6 +22,14 @@ enum RHIEnumPolygonMode {
         RHI_POLYGON_MODE_LINE,
 };
 
+/* 顶点数据布局 */
+struct RHIVtxArray {
+        ancivec3 pos;
+        ancivec3 color;
+        ancivec2 uv;
+        ancivec3 normal;
+};
+
 /* Shader对象，纯虚函数工具 */
 class VRHIShader {
 public:
@@ -53,7 +61,7 @@ ANCIAPI ANCI_RHI_VIEWPORT ANCIRHIVIEWPORT;
 typedef void (*ANCI_RHI_SWAP_BUFFERS)(ANCI_WINDOW_HANDLE h);
 ANCIAPI ANCI_RHI_SWAP_BUFFERS ANCIRHISWAPBUFFERS;
 #define RHISwapBuffers ANCIRHISWAPBUFFERS
-typedef RHIVtxBuffer (*ANCI_RHI_GEN_VTXBUFFER)(float *vertices, anciu32 count);
+typedef RHIVtxBuffer (*ANCI_RHI_GEN_VTXBUFFER)(RHIVtxArray *vertices, anciu32 count);
 ANCIAPI ANCI_RHI_GEN_VTXBUFFER ANCIRHIGENVTXBUFFER;
 #define RHIGenVtxBuffer ANCIRHIGENVTXBUFFER
 typedef RHIIdxBuffer (*ANCI_RHI_GEN_IDXBUFFER)(anciu32 *indices, anciu32 count);

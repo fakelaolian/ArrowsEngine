@@ -10,8 +10,8 @@ ANCI_RHI_VIEWPORT                       ANCIRHIVIEWPORT             = nullptr;
 ANCI_RHI_SWAP_BUFFERS                   ANCIRHISWAPBUFFERS          = nullptr;
 ANCI_RHI_GEN_IDXBUFFER                  ANCIRHIGENIDXBUFFER         = nullptr;
 ANCI_RHI_GEN_VTXBUFFER                  ANCIRHIGENVTXBUFFER         = nullptr;
-ANCI_RHI_DESTROY_VTX_BUFFER             ANCIRHIDELETEVTXBUFFER     = nullptr;
-ANCI_RHI_DESTROY_IDX_BUFFER             ANCIRHIDELETEIDXBUFFER     = nullptr;
+ANCI_RHI_DESTROY_VTX_BUFFER             ANCIRHIDELETEVTXBUFFER      = nullptr;
+ANCI_RHI_DESTROY_IDX_BUFFER             ANCIRHIDELETEIDXBUFFER      = nullptr;
 ANCI_RHI_BIND_VTX                       ANCIRHIBINDVTX              = nullptr;
 ANCI_RHI_DRAW_VTX                       ANCIRHIDRAWVTX              = nullptr;
 ANCI_RHI_DRAW_IDX                       ANCIRHIDRAWIDX              = nullptr;
@@ -47,7 +47,7 @@ void OpenGL_GLSwapBuffers (ANCI_WINDOW_HANDLE h)
         glfwSwapBuffers((GLFWwindow *) h);
 }
 
-RHIVtxBuffer OpenGL_GenVtxBuffer(float *vertices, anciu32 count)
+RHIVtxBuffer OpenGL_GenVtxBuffer(RHIVtxArray *vertices, anciu32 count)
 {
         unsigned int vao;
         glGenVertexArrays(1, &vao);
@@ -56,10 +56,20 @@ RHIVtxBuffer OpenGL_GenVtxBuffer(float *vertices, anciu32 count)
         unsigned int vbo;
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, count * sizeof(float), vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, count * sizeof(RHIVtxArray), vertices, GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        /* 绑定顶点数据对应的布局 */
         glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(RHIVtxArray), (void*)0);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(RHIVtxArray), (void *) offsetof(RHIVtxArray, color));
+
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(RHIVtxArray), (void *) offsetof(RHIVtxArray, uv));
+
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(RHIVtxArray), (void *) offsetof(RHIVtxArray, normal));
 
         /* 解除绑定 */
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -142,8 +152,8 @@ void RHIApiLoad()
         ANCIRHISWAPBUFFERS      = OpenGL_GLSwapBuffers;
         ANCIRHIGENVTXBUFFER     = OpenGL_GenVtxBuffer;
         ANCIRHIGENIDXBUFFER     = OpenGL_GenIdxBuffer;
-        ANCIRHIDELETEVTXBUFFER = OpenGL_DestroyVtxBuffer;
-        ANCIRHIDELETEIDXBUFFER = OpenGL_DestroyIdxBuffer;
+        ANCIRHIDELETEVTXBUFFER  = OpenGL_DestroyVtxBuffer;
+        ANCIRHIDELETEIDXBUFFER  = OpenGL_DestroyIdxBuffer;
         ANCIRHIBINDVTX          = OpenGL_BindVtxBuffer;
         ANCIRHIDRAWVTX          = OpenGL_DrawVtx;
         ANCIRHIDRAWIDX          = OpenGL_DrawIdx;
