@@ -6,6 +6,7 @@
 
 #include "OpenGLShader.h"
 
+ANCI_RHI_GET_TIME                       ANCIRHIGETTIME              = nullptr;
 ANCI_RHI_VIEWPORT                       ANCIRHIVIEWPORT             = nullptr;
 ANCI_RHI_SWAP_BUFFERS                   ANCIRHISWAPBUFFERS          = nullptr;
 ANCI_RHI_GEN_IDXBUFFER                  ANCIRHIGENIDXBUFFER         = nullptr;
@@ -37,15 +38,9 @@ struct RHIIdxBuffer_ImplOpenGL {
 #define IIdxBuffer RHIIdxBuffer_ImplOpenGL *
 #define CONV_IDX(ptr) ((RHIIdxBuffer_ImplOpenGL *) (ptr))
 
-void OpenGL_GLViewport    (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
-{
-        glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h);
-}
-
-void OpenGL_GLSwapBuffers (ANCI_WINDOW_HANDLE h)
-{
-        glfwSwapBuffers((GLFWwindow *) h);
-}
+float GLFW_GetTime        () { return glfwGetTime(); }
+void OpenGL_GLViewport    (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
+void OpenGL_GLSwapBuffers (ANCI_WINDOW_HANDLE h) { glfwSwapBuffers((GLFWwindow *) h); }
 
 RHIVtxBuffer OpenGL_GenVtxBuffer(RHIVtxArray *vertices, anciu32 count)
 {
@@ -148,6 +143,7 @@ void OpenGL_ClearColorBuffer(ancivec4 color)
 
 void RHIApiLoad()
 {
+        ANCIRHIGETTIME          = GLFW_GetTime;
         ANCIRHIVIEWPORT         = OpenGL_GLViewport;
         ANCIRHISWAPBUFFERS      = OpenGL_GLSwapBuffers;
         ANCIRHIGENVTXBUFFER     = OpenGL_GenVtxBuffer;

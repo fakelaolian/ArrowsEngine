@@ -55,6 +55,9 @@ typedef VRHIShader * RHIShader;
  *      ANCIAPI ANCI_RHI_TEST ANCIRHITEST;
  *      #define RHITest ANCIRHITEST
  */
+typedef float (*ANCI_RHI_GET_TIME)(void);
+ANCIAPI ANCI_RHI_GET_TIME ANCIRHIGETTIME;
+#define RHIGetTime ANCIRHIGETTIME
 typedef void (*ANCI_RHI_VIEWPORT)(anciu32 x, anciu32 y, anciu32 w, anciu32 h);
 ANCIAPI ANCI_RHI_VIEWPORT ANCIRHIVIEWPORT;
 #define RHIViewport ANCIRHIVIEWPORT

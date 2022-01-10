@@ -7,16 +7,21 @@
     layout (location = 2) in vec3 aUv;
     layout (location = 3) in vec3 aNorml;
 
+    layout (location = 0) out vec3 outColor;
+
     void main()
     {
+        outColor = aColor;
         gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
     }
 #end
 
 #frag
+    layout (location = 0) in vec3 outColor;
     out vec4 FragColor;
+
     void main()
     {
-        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+        FragColor = vec4(outColor, 1.0f);
     }
 #end

@@ -18,10 +18,10 @@ EngineApplication::EngineApplication(AnciEnumGraphicsApi api)
 void EngineApplication::StartEngine()
 {
         RHIVtxArray vertices[] = {
-                {{0.5f,  0.5f,  0.0f}, {0.2f, 0.2f, 0.2f}},
-                {{0.5f,  -0.5f, 0.0f}, {0.2f, 0.2f, 0.2f}},
-                {{-0.5f, -0.5f, 0.0f}, {0.2f, 0.2f, 0.2f}},
-                {{-0.5f, 0.5f,  0.0f}, {0.2f, 0.2f, 0.2f}},
+                {{0.5f,  0.5f,  0.0f}, {1.0f, 0.5f, 0.2f}},
+                {{0.5f,  -0.5f, 0.0f}, {1.0f, 0.5f, 0.2f}},
+                {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.5f, 0.2f}},
+                {{-0.5f, 0.5f,  0.0f}, {1.0f, 0.5f, 0.2f}},
         };
 
         anciu32 indices[] = {
