@@ -12,7 +12,7 @@ EngineApplication::EngineApplication(AnciEnumGraphicsApi api)
         _window = AnciCreateWindow("太古引擎", ancivec2(800, 800));
 
         /* 初始化RHI函数 */
-        AnciLoadRHI();
+        RHIApiLoad();
 }
 
 void EngineApplication::StartEngine()
