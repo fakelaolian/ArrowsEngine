@@ -24,8 +24,8 @@ enum AnciEnumGraphicsApi {
         DX12
 };
 
-typedef unsigned            u32;
-typedef unsigned long       u64;
+typedef unsigned int        anciu32;
+typedef unsigned long       anciu64;
 typedef glm::vec2           ancivec2;
 typedef glm::vec3           ancivec3;
 typedef glm::vec4           ancivec4;

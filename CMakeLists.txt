@@ -6,7 +6,7 @@ SET(CMAKE_CXX_STANDARD 23)
 INCLUDE_DIRECTORIES(${PROJECT_NAME} Engine)
 INCLUDE_DIRECTORIES(${PROJECT_NAME} SYSTEM Include ThirdParty ThirdParty/glfw3/include ThirdParty/glad/include)
 
-LINK_DIRECTORIES(ThirdParty/glfw3/lib-mingw-w64)
+LINK_DIRECTORIES(${PROJECT_NAME} ThirdParty/glfw3/lib-mingw-w64)
 ADD_EXECUTABLE(${PROJECT_NAME}
         Engine/Main/main.cpp
         ThirdParty/glad/src/glad.c
@@ -14,6 +14,6 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         Engine/Application/EngineApplication.cpp
         # --* Platform/OpenGL *-- #
         Engine/Platform/OpenGL/OpenGLWindow.cpp
-        Engine/Platform/OpenGL/Anci_RHI_ImplOpenGL.cpp
+        Engine/Platform/OpenGL/RHI_ImplOpenGL.cpp
 )
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} glfw3)

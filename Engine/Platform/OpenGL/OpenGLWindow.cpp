@@ -3,7 +3,9 @@
 
 OpenGLWindow::OpenGLWindow(const String &title, ancivec2 dimension) : AnciWindow(title, dimension)
 {
-        glfwInit();
+        if (!glfwInit())
+                throw std::runtime_error("初始化GLFW失败。");
+
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -16,11 +18,10 @@ OpenGLWindow::OpenGLWindow(const String &title, ancivec2 dimension) : AnciWindow
         }
 
         /* 初始化GLAD */
-        if (gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+        glfwMakeContextCurrent(_window_handle);
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
                 glfwDestroyWindow(_window_handle);
                 glfwTerminate();
                 throw std::runtime_error("加载GLAD失败。");
         }
-
-        glfwMakeContextCurrent(_window_handle);
 }
