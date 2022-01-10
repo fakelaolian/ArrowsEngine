@@ -11,6 +11,10 @@
   typedef void * RHIIdxBuffer;
 #endif
 
+#ifndef RHITexture
+  typedef void * RHITexture;
+#endif
+
 enum RHIEnumCreateShaderMode {
         RHI_VERTEX_SHADER,
         RHI_FRAGMENT_SHADER,
@@ -20,6 +24,11 @@ enum RHIEnumPolygonMode {
         RHI_POLYGON_MODE_FILL,
         RHI_POLYGON_MODE_POINT,
         RHI_POLYGON_MODE_LINE,
+};
+
+enum RHIEnumImageFormat {
+        RHI_IMAGE_FORMAT_RGB,
+        RHI_IMAGE_FORMAT_RGBA,
 };
 
 /* 顶点数据布局 */
@@ -98,6 +107,15 @@ ANCIAPI ANCI_RHI_DELETE_SHADER ANCIRHIDELETESHADER;
 typedef void (*ANCI_RHI_CLEAR_COLOR_BUFFER)(ancivec4 color);
 ANCIAPI ANCI_RHI_CLEAR_COLOR_BUFFER ANCIRHICLEARCOLORBUFFER;
 #define RHIClearColorBuffer ANCIRHICLEARCOLORBUFFER
+typedef RHITexture (*ANCI_RHI_GEN_TEXTURE)(RHIEnumImageFormat format, anciu32 width, anciu32 height, anciuc *pixels);
+ANCIAPI ANCI_RHI_GEN_TEXTURE ANCIRHIGENTEXTURE;
+#define RHIGenTexture ANCIRHIGENTEXTURE
+typedef void (*ANCI_RHI_BIND_TEXTURE)(RHITexture);
+ANCIAPI ANCI_RHI_BIND_TEXTURE ANCIRHIBINDTEXTURE;
+#define RHIBindTexture ANCIRHIBINDTEXTURE
+typedef void (*ANCI_RHI_DELETE_TEXTURE)(RHITexture);
+ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDELETETEXTURE;
+#define RHIDeleteTexture ANCIRHIDELETETEXTURE
 
 /**
  * 加载对应的API函数
