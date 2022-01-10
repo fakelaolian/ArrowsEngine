@@ -11,14 +11,6 @@
   typedef void * RHIIdxBuffer;
 #endif
 
-#ifndef RHIShader
-  typedef void * RHIShader;
-#endif
-
-#ifndef RHIShaderModule
-  typedef void * RHIShaderProgram;
-#endif
-
 enum RHIEnumCreateShaderMode {
         RHI_VERTEX_SHADER,
         RHI_FRAGMENT_SHADER,
@@ -29,6 +21,20 @@ enum RHIEnumPolygonMode {
         RHI_POLYGON_MODE_POINT,
         RHI_POLYGON_MODE_LINE,
 };
+
+/* Shader对象，纯虚函数工具 */
+class VRHIShader {
+public:
+        virtual void Bind     ()                                   = 0;
+        virtual void SetInt   (const char *name, int      value)   = 0;
+        virtual void SetFloat (const char *name, float    value)   = 0;
+        virtual void SetFloat2(const char *name, ancivec2 value)   = 0;
+        virtual void SetFloat3(const char *name, ancivec3 value)   = 0;
+        virtual void SetFloat4(const char *name, ancivec4 value)   = 0;
+        virtual void SetMat3  (const char *name, ancimat3 value)   = 0;
+        virtual void SetMat4  (const char *name, ancimat4 value)   = 0;
+};
+typedef VRHIShader * RHIShader;
 
 /**
  * RHI函数指针，命名规范：
@@ -71,21 +77,16 @@ ANCIAPI ANCI_RHI_DRAW_IDX ANCIRHIDRAWIDX;
 typedef void (*ANCI_RHI_POLYGON_MODE)(RHIEnumPolygonMode);
 ANCIAPI ANCI_RHI_POLYGON_MODE ANCIRHIPOLYGONMODE;
 #define RHIPolygonMode ANCIRHIPOLYGONMODE
-typedef RHIShader (*ANCI_RHI_CREATE_SHADER)(const char* source, RHIEnumCreateShaderMode mode);
-ANCIAPI ANCI_RHI_CREATE_SHADER ANCIRHICreateShader;
-#define RHICreateShader ANCIRHICreateShader
+typedef RHIShader (*ANCI_RHI_CREATE_SHADER)(const char *alslFile);
+ANCIAPI ANCI_RHI_CREATE_SHADER ANCIRHICREATESHADER;
+#define RHICreateShader ANCIRHICREATESHADER
 typedef void (*ANCI_RHI_DELETE_SHADER)(RHIShader);
 ANCIAPI ANCI_RHI_DELETE_SHADER ANCIRHIDELETESHADER;
 #define RHIDeleteShader ANCIRHIDELETESHADER
-typedef RHIShaderProgram (*ANCI_RHI_CREATE_SHADER_PROGRAM)(RHIShader v, RHIShader f);
-ANCIAPI ANCI_RHI_CREATE_SHADER_PROGRAM ANCIRHICREATESHADERPROGRAM;
-#define RHICreateShaderProgram ANCIRHICREATESHADERPROGRAM
-typedef void (*ANCI_RHI_BIND_SHADER_PROGRAM)(RHIShaderProgram);
-ANCIAPI ANCI_RHI_BIND_SHADER_PROGRAM ANCIRHIBINDSHADERPROGRAM;
 #define RHIBindShaderProgram ANCIRHIBINDSHADERPROGRAM
-typedef void (*ANCI_RHI_CLEAR)(ancivec4 color);
-ANCIAPI ANCI_RHI_CLEAR ANCIRHICLEAR;
-#define RHIClear ANCIRHICLEAR
+typedef void (*ANCI_RHI_CLEAR_COLOR_BUFFER)(ancivec4 color);
+ANCIAPI ANCI_RHI_CLEAR_COLOR_BUFFER ANCIRHICLEARCOLORBUFFER;
+#define RHIClearColorBuffer ANCIRHICLEARCOLORBUFFER
 
 /**
  * 加载对应的API函数

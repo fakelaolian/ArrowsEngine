@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "OpenGLShader.h"
+
 ANCI_RHI_VIEWPORT                       ANCIRHIVIEWPORT             = nullptr;
 ANCI_RHI_SWAP_BUFFERS                   ANCIRHISWAPBUFFERS          = nullptr;
 ANCI_RHI_GEN_IDXBUFFER                  ANCIRHIGENIDXBUFFER         = nullptr;
@@ -14,11 +16,9 @@ ANCI_RHI_BIND_VTX                       ANCIRHIBINDVTX              = nullptr;
 ANCI_RHI_DRAW_VTX                       ANCIRHIDRAWVTX              = nullptr;
 ANCI_RHI_DRAW_IDX                       ANCIRHIDRAWIDX              = nullptr;
 ANCI_RHI_POLYGON_MODE                   ANCIRHIPOLYGONMODE          = nullptr;
-ANCI_RHI_CREATE_SHADER                  ANCIRHICreateShader         = nullptr;
-ANCI_RHI_CREATE_SHADER_PROGRAM          ANCIRHICREATESHADERPROGRAM  = nullptr;
+ANCI_RHI_CREATE_SHADER                  ANCIRHICREATESHADER         = nullptr;
 ANCI_RHI_DELETE_SHADER                  ANCIRHIDELETESHADER         = nullptr;
-ANCI_RHI_BIND_SHADER_PROGRAM            ANCIRHIBINDSHADERPROGRAM    = nullptr;
-ANCI_RHI_CLEAR                          ANCIRHICLEAR                = nullptr;
+ANCI_RHI_CLEAR_COLOR_BUFFER             ANCIRHICLEARCOLORBUFFER     = nullptr;
 
 /** OpenGL的Vertex Buffer实现 */
 struct RHIVtxBuffer_ImplOpenGL {
@@ -36,20 +36,6 @@ struct RHIIdxBuffer_ImplOpenGL {
 };
 #define IIdxBuffer RHIIdxBuffer_ImplOpenGL *
 #define CONV_IDX(ptr) ((RHIIdxBuffer_ImplOpenGL *) (ptr))
-
-/** OpenGL的Shader实现 */
-struct RHIShader_ImplOpenGL {
-        anciu32 shader;
-};
-#define IShader RHIShader_ImplOpenGL *
-#define CONV_SHADER(ptr) ((RHIShader_ImplOpenGL *) (ptr))
-
-/** OpenGL的Shader Program实现 */
-struct OpenGL_ShaderProgram {
-        anciu32 program;
-};
-#define IShaderProgram OpenGL_ShaderProgram *
-#define CONV_SHADER_PROGRAM(ptr) ((OpenGL_ShaderProgram *) (ptr))
 
 void OpenGL_GLViewport    (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
 {
@@ -134,68 +120,17 @@ void OpenGL_PolygonMode(RHIEnumPolygonMode mode)
         }
 }
 
-RHIShader OpenGL_CreateShader(const char* source, RHIEnumCreateShaderMode mode)
+RHIShader OpenGL_CreateShader(const char* file)
 {
-        anciu32 shader;
-        GLenum  glMode;
-        int     success;
-        char    infoLog[512];
-
-        if (mode == RHI_VERTEX_SHADER) glMode = GL_VERTEX_SHADER;
-        else                           glMode = GL_FRAGMENT_SHADER;
-
-        shader = glCreateShader(glMode);
-
-        /* 编译shader源码 */
-        glShaderSource(shader, 1, &source, NULL);
-        glCompileShader(shader);
-
-        /* 检测shader是否编译成功 */
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        if (!success) {
-                glGetShaderInfoLog(shader, 512, NULL, infoLog);
-                throw std::runtime_error(infoLog);
-        }
-
-        return new RHIShader_ImplOpenGL{shader};
+        return new OpenGLShader(file);
 }
 
 void OpenGL_DeleteShader(RHIShader shader)
 {
-        glDeleteShader(CONV_SHADER(shader)->shader);
+        delete shader;
 }
 
-RHIShaderProgram OpenGL_CreateShaderProgram(RHIShader vtx, RHIShader frag)
-{
-        anciu32 shaderProgram;
-        int     success;
-        char    infoLog[512];
-
-        shaderProgram = glCreateProgram();
-        glAttachShader(shaderProgram, CONV_SHADER(vtx)->shader);
-        glAttachShader(shaderProgram, CONV_SHADER(frag)->shader);
-        glLinkProgram(shaderProgram);
-
-        /* 检查shader是否链接成功 */
-        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-        if (!success) {
-                glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-                throw std::runtime_error(infoLog);
-        }
-
-        /* 删除shader */
-        OpenGL_DeleteShader(vtx);
-        OpenGL_DeleteShader(frag);
-
-        return new OpenGL_ShaderProgram{shaderProgram};
-}
-
-void OpenGL_BindShaderProgram(RHIShaderProgram program)
-{
-        glUseProgram(CONV_SHADER_PROGRAM(program)->program);
-}
-
-void OpenGL_Clear(ancivec4 color)
+void OpenGL_ClearColorBuffer(ancivec4 color)
 {
         glClearColor(color.x, color.y, color.z, color.w);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -213,8 +148,7 @@ void RHIApiLoad()
         ANCIRHIDRAWVTX          = OpenGL_DrawVtx;
         ANCIRHIDRAWIDX          = OpenGL_DrawIdx;
         ANCIRHIPOLYGONMODE      = OpenGL_PolygonMode;
-        ANCIRHICreateShader     = OpenGL_CreateShader;
-        ANCIRHICREATESHADERPROGRAM = OpenGL_CreateShaderProgram;
-        ANCIRHIBINDSHADERPROGRAM = OpenGL_BindShaderProgram;
-        ANCIRHICLEAR            = OpenGL_Clear;
+        ANCIRHICREATESHADER     = OpenGL_CreateShader;
+        ANCIRHIDELETESHADER     = OpenGL_DeleteShader;
+        ANCIRHICLEARCOLORBUFFER = OpenGL_ClearColorBuffer;
 }

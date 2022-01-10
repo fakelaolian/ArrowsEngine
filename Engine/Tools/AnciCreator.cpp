@@ -8,7 +8,7 @@ extern AnciEnumGraphicsApi g_AnciGraphicsApi;
 anciptr<AnciWindow> AnciCreateWindow(const String& title, ancivec2 dimension)
 {
         switch (g_AnciGraphicsApi) {
-                case OpenGL: return std::make_unique<OpenGLWindow>(title, dimension);
+                case OpenGL: return make_anciptr<OpenGLWindow>(title, dimension);
                 default: throw std::runtime_error("不支持的图形API");
         }
 }

@@ -10,10 +10,15 @@ LINK_DIRECTORIES(${PROJECT_NAME} ThirdParty/glfw3/lib-mingw-w64)
 ADD_EXECUTABLE(${PROJECT_NAME}
         Engine/Main/main.cpp
         ThirdParty/glad/src/glad.c
+        # --* Tools *-- #
         Engine/Tools/AnciCreator.cpp
+        # --* Application *-- #
         Engine/Application/EngineApplication.cpp
+        # --* Alsl *-- #
+        Engine/Alsl/Alsl.cpp
         # --* Platform/OpenGL *-- #
         Engine/Platform/OpenGL/OpenGLWindow.cpp
+        Engine/Platform/OpenGL/OpenGLShader.cpp
         Engine/Platform/OpenGL/RHI_ImplOpenGL.cpp
 )
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} glfw3)
