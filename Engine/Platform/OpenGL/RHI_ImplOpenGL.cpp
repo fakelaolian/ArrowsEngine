@@ -13,6 +13,7 @@ ANCI_RHI_DESTROY_IDX_BUFFER             ANCIRHIDESTROYIDXBUFFER     = nullptr;
 ANCI_RHI_BIND_VTX                       ANCIRHIBINDVTX              = nullptr;
 ANCI_RHI_DRAW_VTX                       ANCIRHIDRAWVTX              = nullptr;
 ANCI_RHI_DRAW_IDX                       ANCIRHIDRAWIDX              = nullptr;
+ANCI_RHI_POLYGON_MODE                   ANCIRHIPOLYGONMODE          = nullptr;
 ANCI_RHI_CREATE_SHADER                  ANCIRHICreateShader         = nullptr;
 ANCI_RHI_CREATE_SHADER_PROGRAM          ANCIRHICREATESHADERPROGRAM  = nullptr;
 ANCI_RHI_DELETE_SHADER                  ANCIRHIDELETESHADER         = nullptr;
@@ -86,7 +87,7 @@ RHIIdxBuffer OpenGL_GenIdxBuffer(anciu32 *indices, anciu32 count)
         unsigned int ebo;
         glGenBuffers(1, &ebo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count, indices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(anciu32), indices, GL_STATIC_DRAW);
 
         return new RHIIdxBuffer_ImplOpenGL{ebo, count};
 }
@@ -114,6 +115,23 @@ void OpenGL_BindVtxBuffer(RHIVtxBuffer vtxBuffer)
 void OpenGL_DrawVtx()
 {
         glDrawArrays(GL_TRIANGLES, 0, 3);
+}
+
+void OpenGL_DrawIdx(RHIIdxBuffer idxBuffer)
+{
+        IIdxBuffer buffer = CONV_IDX(idxBuffer);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->ebo);
+        glDrawElements(GL_TRIANGLES, buffer->count, GL_UNSIGNED_INT, 0);
+}
+
+void OpenGL_PolygonMode(RHIEnumPolygonMode mode)
+{
+        switch (mode) {
+                case RHI_POLYGON_MODE_FILL:  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  break;
+                case RHI_POLYGON_MODE_LINE:  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);  break;
+                case RHI_POLYGON_MODE_POINT: glPolygonMode(GL_FRONT_AND_BACK, GL_POINT); break;
+        }
 }
 
 RHIShader OpenGL_CreateShader(const char* source, RHIEnumCreateShaderMode mode)
@@ -193,6 +211,8 @@ void RHIApiLoad()
         ANCIRHIDESTROYIDXBUFFER = OpenGL_DestroyIdxBuffer;
         ANCIRHIBINDVTX          = OpenGL_BindVtxBuffer;
         ANCIRHIDRAWVTX          = OpenGL_DrawVtx;
+        ANCIRHIDRAWIDX          = OpenGL_DrawIdx;
+        ANCIRHIPOLYGONMODE      = OpenGL_PolygonMode;
         ANCIRHICreateShader     = OpenGL_CreateShader;
         ANCIRHICREATESHADERPROGRAM = OpenGL_CreateShaderProgram;
         ANCIRHIBINDSHADERPROGRAM = OpenGL_BindShaderProgram;

@@ -24,6 +24,12 @@ enum RHIEnumCreateShaderMode {
         RHI_FRAGMENT_SHADER,
 };
 
+enum RHIEnumPolygonMode {
+        RHI_POLYGON_MODE_FILL,
+        RHI_POLYGON_MODE_POINT,
+        RHI_POLYGON_MODE_LINE,
+};
+
 /**
  * RHI函数指针，命名规范：
  *      1. typedef <Result> <ANCI_RHI_*>();
@@ -62,6 +68,9 @@ ANCIAPI ANCI_RHI_DRAW_VTX ANCIRHIDRAWVTX;
 typedef void (*ANCI_RHI_DRAW_IDX)(RHIIdxBuffer);
 ANCIAPI ANCI_RHI_DRAW_IDX ANCIRHIDRAWIDX;
 #define RHIDrawIdx ANCIRHIDRAWIDX
+typedef void (*ANCI_RHI_POLYGON_MODE)(RHIEnumPolygonMode);
+ANCIAPI ANCI_RHI_POLYGON_MODE ANCIRHIPOLYGONMODE;
+#define RHIPolygonMode ANCIRHIPOLYGONMODE
 typedef RHIShader (*ANCI_RHI_CREATE_SHADER)(const char* source, RHIEnumCreateShaderMode mode);
 ANCIAPI ANCI_RHI_CREATE_SHADER ANCIRHICreateShader;
 #define RHICreateShader ANCIRHICreateShader

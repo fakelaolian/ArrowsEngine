@@ -18,9 +18,10 @@ EngineApplication::EngineApplication(AnciEnumGraphicsApi api)
 void EngineApplication::StartEngine()
 {
         float vertices[] = {
-                -0.5f, -0.5f, 0.0f, // left
-                0.5f, -0.5f, 0.0f, // right
-                0.0f,  0.5f, 0.0f  // top
+                0.5f,  0.5f, 0.0f,  // top right
+                0.5f, -0.5f, 0.0f,  // bottom right
+                -0.5f, -0.5f, 0.0f,  // bottom left
+                -0.5f,  0.5f, 0.0f   // top left
         };
 
         anciu32 indices[] = {
@@ -54,7 +55,7 @@ void EngineApplication::StartEngine()
 
                 RHIBindShaderProgram(shaderProgram);
                 RHIBindVtxBuffer(vtxBuffer);
-                RHIDrawVtx();
+                RHIDrawIdx(idxBuffer);
 
                 RHISwapBuffers(_window->GetHandle());
                 _window->PollEvents();
