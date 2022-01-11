@@ -43,7 +43,7 @@ void SetUpImGui(ANCI_WINDOW_HANDLE h)
         ImGui_ImplOpenGL3_Init("#version 410");
 }
 
-void FResizeCallback(anciu32 x, anciu32 y)
+void F_ResizeCallback(anciu32 x, anciu32 y)
 {
         RHIViewport(0, 0, x, y);
 }
@@ -53,7 +53,7 @@ EngineApplication::EngineApplication(AnciEnumGraphicsApi api)
         g_AnciGraphicsApi = api;
         _window = AnciCreateWindow("暗刺引擎", ancivec2(800, 800));
 
-        _window->SetResizeCallback(FResizeCallback);
+        _window->SetResizeCallback(F_ResizeCallback);
 
         /* 初始化RHI函数 */
         RHIAPIFuncLoad();

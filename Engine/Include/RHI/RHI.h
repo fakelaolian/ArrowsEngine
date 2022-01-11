@@ -35,7 +35,7 @@ struct RHIVtxArray {
 };
 
 /* Shader对象，纯虚函数工具 */
-class VRHIShader {
+class V_RHIShader {
 public:
         virtual void Bind     ()                                   = 0;
         virtual void SetInt   (const char *name, int      value)   = 0;
@@ -46,7 +46,7 @@ public:
         virtual void SetMat3  (const char *name, ancimat3 value)   = 0;
         virtual void SetMat4  (const char *name, ancimat4 value)   = 0;
 };
-typedef VRHIShader * RHIShader;
+typedef V_RHIShader * RHIShader;
 
 /**
  * RHI函数指针，命名规范：

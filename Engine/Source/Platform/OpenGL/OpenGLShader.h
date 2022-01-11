@@ -3,7 +3,7 @@
 
 #include <RHI/RHI.h>
 
-class OpenGLShader : public VRHIShader{
+class OpenGLShader : public V_RHIShader{
 public:
         explicit OpenGLShader  (const char* alslFile);
         ~OpenGLShader ();
