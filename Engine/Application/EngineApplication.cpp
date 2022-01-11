@@ -101,7 +101,10 @@ void EngineApplication::StartEngine()
         shader->SetInt("ourSampler2D_1", 1);
 
         bool show_demo_window = false;
-        float zNear = 0.01f, zFar = 100.0f;
+        float zNear = 0.01f, zFar = 100.0f, degrees = 45.0f;
+        ancivec3 viewXYZ(0.0f, 0.0f, -3.0f);
+        float rotateDegrees = -55.0f;
+        ancivec3 rotateXZY(1.0f, 0.0f, 0.0f);
 
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
@@ -120,18 +123,35 @@ void EngineApplication::StartEngine()
                         ImGui::Text("ZNear");
                         ImGui::SameLine();
                         ImGui::DragFloat("zNear", &zNear, 0.1f);
+
                         ImGui::Text("zFar");
                         ImGui::SameLine();
                         ImGui::DragFloat("zFar", &zFar, 1.0f);
+
+                        ImGui::Text("degrees");
+                        ImGui::SameLine();
+                        ImGui::DragFloat("degrees", &degrees, 1.0f);
+
+                        ImGui::Text("view");
+                        ImGui::SameLine();
+                        ImGui::DragFloat3("view", glm::value_ptr(viewXYZ), 0.01f);
+
+                        ImGui::Text("rotateDegrees");
+                        ImGui::SameLine();
+                        ImGui::DragFloat("rotateDegrees", &rotateDegrees, 1.0f);
+
+                        ImGui::Text("rotateXZY");
+                        ImGui::SameLine();
+                        ImGui::DragFloat3("rotateXZY", glm::value_ptr(rotateXZY), 0.01f);
                 } ImGui::End();
 
                 ancimat4 model{1.0f};
                 ancimat4 projection{1.0f};
                 ancimat4 view{1.0f};
-                model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-                view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+                model = glm::rotate(model, glm::radians(rotateDegrees), rotateXZY);
+                view = glm::translate(view, viewXYZ);
                 ancivec2 dimension = _window->GetDimension();
-                projection = glm::perspective(glm::radians(45.0f), (float) dimension.x / (float) dimension.y, zNear, zFar);
+                projection = glm::perspective(glm::radians(degrees), (float) dimension.x / (float) dimension.y, zNear, zFar);
 
                 shader->SetMat4("model", model);
                 shader->SetMat4("view", view);
