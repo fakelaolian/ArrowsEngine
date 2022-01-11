@@ -4,6 +4,8 @@
 #include <AnciCore.h>
 #include <utility>
 
+typedef void (*RESIZE_CALLBACK)(anciu32 x, anciu32 y);
+
 class AnciWindow {
 public:
         AnciWindow(String title, ancivec2 dimension)          : _title(std::move(title)), _dimension(dimension) {};
@@ -12,9 +14,10 @@ public:
         virtual bool                    ShouldClose ()        = 0;
         virtual void                    PollEvents  ()        = 0;
         String&                         GetTitle    ()        { return _title;     }
-        glm::vec2                       GetDimension()        { return _dimension; };
+        ancivec2                        GetDimension()        { return _dimension; };
+        virtual void                    SetResizeCallback(RESIZE_CALLBACK callback) = 0;
 
-private:
+protected:
         String                          _title;
         ancivec2                        _dimension;
 
