@@ -55,13 +55,23 @@ void EngineApplication::StartEngine()
         shader->SetInt("ourSampler2D_0", 0);
         shader->SetInt("ourSampler2D_1", 1);
 
+        ancimat4 model{1.0f};
+        ancimat4 projection{1.0f};
+        ancimat4 view{1.0f};
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        ancivec2 dimension = _window->GetDimension();
+        projection = glm::perspective(glm::radians(45.0f), (float) dimension.x / (float) dimension.y, 0.1f, 100.0f);
+
+        shader->SetMat4("model", model);
+        shader->SetMat4("view", view);
+        shader->SetMat4("proj", projection);
+
         while (!_window->ShouldClose()) {
                 RHIClearColorBuffer(ancivec4(0.2f));
 
                 RHIBindTexture(texture0);
                 RHIBindTexture(texture1);
-
-                shader->Bind();
                 RHIBindVtxBuffer(vtxBuffer);
                 RHIDrawIdx(idxBuffer);
 

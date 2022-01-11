@@ -37,5 +37,4 @@ typedef glm::mat4           ancimat4;
 #define anciptr             std::shared_ptr
 
 #define make_anciptr        std::make_shared
-
-#define ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
+#define ARRAY_SIZE(array)   (sizeof(array) / sizeof((array)[0]))
