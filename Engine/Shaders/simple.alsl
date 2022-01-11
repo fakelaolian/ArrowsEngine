@@ -4,19 +4,35 @@
 #vtx
     layout (location = 0) in vec3 aPos;
     layout (location = 1) in vec3 aColor;
-    layout (location = 2) in vec3 aUv;
+    layout (location = 2) in vec2 aUv;
     layout (location = 3) in vec3 aNorml;
+
+    layout (location = 0) out vec3 outColor;
+    layout (location = 1) out vec2 outUv;
+
+    uniform mat4 model;
+    uniform mat4 view;
+    uniform mat4 proj;
 
     void main()
     {
-        gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+        outColor = aColor;
+        outUv = aUv;
+//        gl_Position = vec4(aPos, 1.0f);
+        gl_Position = proj * view * model * vec4(aPos, 1.0f);
     }
 #end
 
 #frag
+    layout (location = 0) in vec3 aColor;
+    layout (location = 1) in vec2 aUv;
+
     out vec4 FragColor;
+    uniform sampler2D ourSampler2D_0;
+    uniform sampler2D ourSampler2D_1;
+
     void main()
     {
-        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+        FragColor = mix(texture(ourSampler2D_0, aUv), texture(ourSampler2D_1, aUv), 0.5f);
     }
 #end

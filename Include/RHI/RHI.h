@@ -11,6 +11,10 @@
   typedef void * RHIIdxBuffer;
 #endif
 
+#ifndef RHITexture
+  typedef void * RHITexture;
+#endif
+
 enum RHIEnumCreateShaderMode {
         RHI_VERTEX_SHADER,
         RHI_FRAGMENT_SHADER,
@@ -20,6 +24,11 @@ enum RHIEnumPolygonMode {
         RHI_POLYGON_MODE_FILL,
         RHI_POLYGON_MODE_POINT,
         RHI_POLYGON_MODE_LINE,
+};
+
+enum RHIEnumImageFormat {
+        RHI_IMAGE_FORMAT_RGB,
+        RHI_IMAGE_FORMAT_RGBA,
 };
 
 /* 顶点数据布局 */
@@ -54,7 +63,30 @@ typedef VRHIShader * RHIShader;
  *      typedef void (*ANCI_RHI_TEST)();
  *      ANCIAPI ANCI_RHI_TEST ANCIRHITEST;
  *      #define RHITest ANCIRHITEST
+ *
+ *
+ *  列表：
+ *      float           RHIGetTime              (void)
+ *      void            RHIViewport             (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
+ *      void            RHISwapBuffers          (ANCI_WINDOW_HANDLE h)
+ *      void            RHIGenVtxBuffer         (RHIVtxArray *vertices, anciu32 count)
+ *      void            RHIGenIdxBuffer         (anciu32 *indices, anciu32 count)
+ *      void            RHIDeleteVtxBuffer      (RHIVtxBuffer)
+ *      void            RHIDeleteIdxBuffer      (RHIIdxBuffer)
+ *      void            RHIBindVtxBuffer        (RHIVtxBuffer)
+ *      void            RHIDrawVtx              (void)
+ *      void            RHIDrawIdx              (RHIIdxBuffer)
+ *      void            RHIPolygonMode          (RHIEnumPolygonMode)
+ *      RHIShader       RHICreateShader         (const char *alslFile)
+ *      void            RHIDeleteShader         (RHIShader)
+ *      void            RHIClearColorBuffer     (ancivec4 color)
+ *      RHITexture      RHIGenTexture           (RHIEnumImageFormat format, anciu32 width, anciu32 height, anciuc *pixels)
+ *      void            RHIBindTexture          (RHITexture)
+ *      void            RHIDeleteTexture        (RHITexture)
  */
+typedef float (*ANCI_RHI_GET_TIME)(void);
+ANCIAPI ANCI_RHI_GET_TIME ANCIRHIGETTIME;
+#define RHIGetTime ANCIRHIGETTIME
 typedef void (*ANCI_RHI_VIEWPORT)(anciu32 x, anciu32 y, anciu32 w, anciu32 h);
 ANCIAPI ANCI_RHI_VIEWPORT ANCIRHIVIEWPORT;
 #define RHIViewport ANCIRHIVIEWPORT
@@ -91,10 +123,18 @@ ANCIAPI ANCI_RHI_CREATE_SHADER ANCIRHICREATESHADER;
 typedef void (*ANCI_RHI_DELETE_SHADER)(RHIShader);
 ANCIAPI ANCI_RHI_DELETE_SHADER ANCIRHIDELETESHADER;
 #define RHIDeleteShader ANCIRHIDELETESHADER
-#define RHIBindShaderProgram ANCIRHIBINDSHADERPROGRAM
 typedef void (*ANCI_RHI_CLEAR_COLOR_BUFFER)(ancivec4 color);
 ANCIAPI ANCI_RHI_CLEAR_COLOR_BUFFER ANCIRHICLEARCOLORBUFFER;
 #define RHIClearColorBuffer ANCIRHICLEARCOLORBUFFER
+typedef RHITexture (*ANCI_RHI_GEN_TEXTURE)(RHIEnumImageFormat format, anciu32 width, anciu32 height, anciuc *pixels);
+ANCIAPI ANCI_RHI_GEN_TEXTURE ANCIRHIGENTEXTURE;
+#define RHIGenTexture ANCIRHIGENTEXTURE
+typedef void (*ANCI_RHI_BIND_TEXTURE)(RHITexture);
+ANCIAPI ANCI_RHI_BIND_TEXTURE ANCIRHIBINDTEXTURE;
+#define RHIBindTexture ANCIRHIBINDTEXTURE
+typedef void (*ANCI_RHI_DELETE_TEXTURE)(RHITexture);
+ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDELETETEXTURE;
+#define RHIDeleteTexture ANCIRHIDELETETEXTURE
 
 /**
  * 加载对应的API函数

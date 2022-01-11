@@ -24,4 +24,16 @@ OpenGLWindow::OpenGLWindow(const String &title, ancivec2 dimension) : AnciWindow
                 glfwTerminate();
                 throw std::runtime_error("加载GLAD失败。");
         }
+
+        glfwSetWindowUserPointer(_window_handle, this);
+}
+
+void OpenGLWindow::SetResizeCallback(RESIZE_CALLBACK callback)
+{
+        _callback_user_pointer._resize_callback = callback;
+        glfwSetFramebufferSizeCallback(_window_handle, [](GLFWwindow* window, int width, int height){
+                auto *glWindow = (OpenGLWindow *) glfwGetWindowUserPointer(window);
+                glWindow->_callback_user_pointer._resize_callback(width, height);
+                glWindow->_dimension = {width, height};
+        });
 }

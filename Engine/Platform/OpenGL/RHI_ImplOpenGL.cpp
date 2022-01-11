@@ -6,6 +6,7 @@
 
 #include "OpenGLShader.h"
 
+ANCI_RHI_GET_TIME                       ANCIRHIGETTIME              = nullptr;
 ANCI_RHI_VIEWPORT                       ANCIRHIVIEWPORT             = nullptr;
 ANCI_RHI_SWAP_BUFFERS                   ANCIRHISWAPBUFFERS          = nullptr;
 ANCI_RHI_GEN_IDXBUFFER                  ANCIRHIGENIDXBUFFER         = nullptr;
@@ -19,6 +20,11 @@ ANCI_RHI_POLYGON_MODE                   ANCIRHIPOLYGONMODE          = nullptr;
 ANCI_RHI_CREATE_SHADER                  ANCIRHICREATESHADER         = nullptr;
 ANCI_RHI_DELETE_SHADER                  ANCIRHIDELETESHADER         = nullptr;
 ANCI_RHI_CLEAR_COLOR_BUFFER             ANCIRHICLEARCOLORBUFFER     = nullptr;
+ANCI_RHI_GEN_TEXTURE                    ANCIRHIGENTEXTURE           = nullptr;
+ANCI_RHI_DELETE_TEXTURE                 ANCIRHIDELETETEXTURE        = nullptr;
+ANCI_RHI_BIND_TEXTURE                   ANCIRHIBINDTEXTURE          = nullptr;
+
+anciu32 _activeTexture                                              = 0;
 
 /** OpenGL的Vertex Buffer实现 */
 struct RHIVtxBuffer_ImplOpenGL {
@@ -37,15 +43,18 @@ struct RHIIdxBuffer_ImplOpenGL {
 #define IIdxBuffer RHIIdxBuffer_ImplOpenGL *
 #define CONV_IDX(ptr) ((RHIIdxBuffer_ImplOpenGL *) (ptr))
 
-void OpenGL_GLViewport    (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
-{
-        glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h);
-}
+/** OpenGL的Texture实现 */
+struct RHITexture_ImplOpenGL {
+        anciu32 textureId;
+        anciu32 width;
+        anciu32 height;
+};
+#define ITexture RHITexture_ImplOpenGL *
+#define CONV_TEX(ptr) ((RHITexture_ImplOpenGL *) (ptr))
 
-void OpenGL_GLSwapBuffers (ANCI_WINDOW_HANDLE h)
-{
-        glfwSwapBuffers((GLFWwindow *) h);
-}
+float GLFW_GetTime        () { return glfwGetTime(); }
+void OpenGL_GLViewport    (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
+void OpenGL_GLSwapBuffers (ANCI_WINDOW_HANDLE h) { glfwSwapBuffers((GLFWwindow *) h); }
 
 RHIVtxBuffer OpenGL_GenVtxBuffer(RHIVtxArray *vertices, anciu32 count)
 {
@@ -111,6 +120,7 @@ void OpenGL_BindVtxBuffer(RHIVtxBuffer vtxBuffer)
 void OpenGL_DrawVtx()
 {
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        _activeTexture = 0;
 }
 
 void OpenGL_DrawIdx(RHIIdxBuffer idxBuffer)
@@ -119,6 +129,7 @@ void OpenGL_DrawIdx(RHIIdxBuffer idxBuffer)
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->ebo);
         glDrawElements(GL_TRIANGLES, buffer->count, GL_UNSIGNED_INT, 0);
+        _activeTexture = 0;
 }
 
 void OpenGL_PolygonMode(RHIEnumPolygonMode mode)
@@ -146,8 +157,53 @@ void OpenGL_ClearColorBuffer(ancivec4 color)
         glClear(GL_COLOR_BUFFER_BIT);
 }
 
+RHITexture OpenGL_GenTexture(RHIEnumImageFormat imageFormat, anciu32 width, anciu32 height, anciuc *pixels)
+{
+        anciu32 textureId;
+        GLint   format;
+
+        format = GL_RGB;
+
+        if (imageFormat == RHI_IMAGE_FORMAT_RGB)
+                format = GL_RGB;
+
+        if (imageFormat == RHI_IMAGE_FORMAT_RGBA)
+                format = GL_RGBA;
+
+        glGenTextures(1, &textureId);
+        glBindTexture(GL_TEXTURE_2D, textureId);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        // 为当前绑定的纹理对象设置环绕、过滤方式
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        return new RHITexture_ImplOpenGL{textureId, width, height};
+}
+
+void OpenGL_BindTexture(RHITexture texture)
+{
+        ITexture itexture = CONV_TEX(texture);
+        glActiveTexture(GL_TEXTURE0 + _activeTexture);
+        glBindTexture(GL_TEXTURE_2D, itexture->textureId);
+        _activeTexture++;
+}
+
+void OpenGL_DeleteTexture(RHITexture texture)
+{
+        ITexture itexture = CONV_TEX(texture);
+        glDeleteTextures(1, &itexture->textureId);
+
+       delete itexture;
+}
+
 void RHIApiLoad()
 {
+        ANCIRHIGETTIME          = GLFW_GetTime;
         ANCIRHIVIEWPORT         = OpenGL_GLViewport;
         ANCIRHISWAPBUFFERS      = OpenGL_GLSwapBuffers;
         ANCIRHIGENVTXBUFFER     = OpenGL_GenVtxBuffer;
@@ -161,4 +217,7 @@ void RHIApiLoad()
         ANCIRHICREATESHADER     = OpenGL_CreateShader;
         ANCIRHIDELETESHADER     = OpenGL_DeleteShader;
         ANCIRHICLEARCOLORBUFFER = OpenGL_ClearColorBuffer;
+        ANCIRHIGENTEXTURE       = OpenGL_GenTexture;
+        ANCIRHIDELETETEXTURE    = OpenGL_DeleteTexture;
+        ANCIRHIBINDTEXTURE      = OpenGL_BindTexture;
 }
