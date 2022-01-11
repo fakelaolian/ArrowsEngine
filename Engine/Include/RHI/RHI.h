@@ -15,18 +15,13 @@
   typedef void * RHITexture;
 #endif
 
-enum RHIEnumCreateShaderMode {
-        RHI_VERTEX_SHADER,
-        RHI_FRAGMENT_SHADER,
-};
-
-enum RHIEnumPolygonMode {
+enum RHIPolygonModeBits {
         RHI_POLYGON_MODE_FILL,
         RHI_POLYGON_MODE_POINT,
         RHI_POLYGON_MODE_LINE,
 };
 
-enum RHIEnumImageFormat {
+enum RHIFormat {
         RHI_IMAGE_FORMAT_RGB,
         RHI_IMAGE_FORMAT_RGBA,
 };
@@ -76,11 +71,11 @@ typedef VRHIShader * RHIShader;
  *      void            RHIBindVtxBuffer        (RHIVtxBuffer)
  *      void            RHIDrawVtx              (void)
  *      void            RHIDrawIdx              (RHIIdxBuffer)
- *      void            RHIPolygonMode          (RHIEnumPolygonMode)
+ *      void            RHIPolygonMode          (RHIPolygonModeBits)
  *      RHIShader       RHICreateShader         (const char *alslFile)
  *      void            RHIDeleteShader         (RHIShader)
  *      void            RHIClearColorBuffer     (ancivec4 color)
- *      RHITexture      RHIGenTexture           (RHIEnumImageFormat format, anciu32 width, anciu32 height, anciuc *pixels)
+ *      RHITexture      RHIGenTexture           (RHIFormat format, anciu32 width, anciu32 height, anciuc *pixels)
  *      void            RHIBindTexture          (RHITexture)
  *      void            RHIDeleteTexture        (RHITexture)
  */
@@ -114,7 +109,7 @@ ANCIAPI ANCI_RHI_DRAW_VTX ANCIRHIDRAWVTX;
 typedef void (*ANCI_RHI_DRAW_IDX)(RHIIdxBuffer);
 ANCIAPI ANCI_RHI_DRAW_IDX ANCIRHIDRAWIDX;
 #define RHIDrawIdx ANCIRHIDRAWIDX
-typedef void (*ANCI_RHI_POLYGON_MODE)(RHIEnumPolygonMode);
+typedef void (*ANCI_RHI_POLYGON_MODE)(RHIPolygonModeBits);
 ANCIAPI ANCI_RHI_POLYGON_MODE ANCIRHIPOLYGONMODE;
 #define RHIPolygonMode ANCIRHIPOLYGONMODE
 typedef RHIShader (*ANCI_RHI_CREATE_SHADER)(const char *alslFile);
@@ -126,7 +121,7 @@ ANCIAPI ANCI_RHI_DELETE_SHADER ANCIRHIDELETESHADER;
 typedef void (*ANCI_RHI_CLEAR_COLOR_BUFFER)(ancivec4 color);
 ANCIAPI ANCI_RHI_CLEAR_COLOR_BUFFER ANCIRHICLEARCOLORBUFFER;
 #define RHIClearColorBuffer ANCIRHICLEARCOLORBUFFER
-typedef RHITexture (*ANCI_RHI_GEN_TEXTURE)(RHIEnumImageFormat format, anciu32 width, anciu32 height, anciuc *pixels);
+typedef RHITexture (*ANCI_RHI_GEN_TEXTURE)(RHIFormat format, anciu32 width, anciu32 height, anciuc *pixels);
 ANCIAPI ANCI_RHI_GEN_TEXTURE ANCIRHIGENTEXTURE;
 #define RHIGenTexture ANCIRHIGENTEXTURE
 typedef void (*ANCI_RHI_BIND_TEXTURE)(RHITexture);

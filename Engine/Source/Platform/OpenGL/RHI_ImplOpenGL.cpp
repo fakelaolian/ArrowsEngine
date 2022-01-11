@@ -132,7 +132,7 @@ void OpenGL_DrawIdx(RHIIdxBuffer idxBuffer)
         _activeTexture = 0;
 }
 
-void OpenGL_PolygonMode(RHIEnumPolygonMode mode)
+void OpenGL_PolygonMode(RHIPolygonModeBits mode)
 {
         switch (mode) {
                 case RHI_POLYGON_MODE_FILL:  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  break;
@@ -157,7 +157,7 @@ void OpenGL_ClearColorBuffer(ancivec4 color)
         glClear(GL_COLOR_BUFFER_BIT);
 }
 
-RHITexture OpenGL_GenTexture(RHIEnumImageFormat imageFormat, anciu32 width, anciu32 height, anciuc *pixels)
+RHITexture OpenGL_GenTexture(RHIFormat imageFormat, anciu32 width, anciu32 height, anciuc *pixels)
 {
         anciu32 textureId;
         GLint   format;
