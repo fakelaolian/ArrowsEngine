@@ -201,7 +201,7 @@ void OpenGL_DeleteTexture(RHITexture texture)
        delete itexture;
 }
 
-void RHIApiLoad()
+void RHIAPIFuncLoad()
 {
         ANCIRHIGETTIME          = GLFW_GetTime;
         ANCIRHIVIEWPORT         = OpenGL_GLViewport;

@@ -56,7 +56,7 @@ EngineApplication::EngineApplication(AnciEnumGraphicsApi api)
         _window->SetResizeCallback(FResizeCallback);
 
         /* 初始化RHI函数 */
-        RHIApiLoad();
+        RHIAPIFuncLoad();
 
         SetUpImGui(_window->GetHandle());
 }
