@@ -15,10 +15,21 @@ typedef void *          RHIShader;
 typedef unsigned char   anciuc;
 typedef unsigned int    anciu32;
 typedef unsigned long   anciu64;
+typedef unsigned        ancibool;
+
+#define RHI_TRUE        1U
+#define RHI_FALSE       0U
 
 #ifndef ANCIAPI
 #  define ANCIAPI extern
 #endif
+
+/* 图形API选择枚举 */
+typedef enum RHIGraphAPIBits {
+        Vulkan,
+        OpenGL,
+        DX12
+} RHIGraphAPIBits;
 
 typedef enum RHIPolygonModeBits {
         RHI_POLYGON_MODE_FILL,
@@ -46,6 +57,11 @@ typedef struct RHIVtxBufferCreateInfo {
         anciu32 stride;
 } RHIVtxBufferCreateInfo;
 
+typedef struct RHIDimension {
+        int x;
+        int y;
+} RHIDimension;
+
 /**
  * RHI函数指针，命名规范：
  *      1. typedef <Result> <ANCI_RHI_*>();
@@ -62,7 +78,7 @@ typedef struct RHIVtxBufferCreateInfo {
  *      float           RHIGetTime              (void)
  *      void            RHIViewport             (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
  *      void            RHISwapBuffers          (RHIWindow h)
- *      void            RHIGenVtxBuffer         (RHIVtxArray *vertices, anciu32 count)
+ *      void            RHIGenVtxBuffer         (const void *pVertices, RHIVtxBufferCreateInfo *createInfo)
  *      void            RHIGenIdxBuffer         (anciu32 *indices, anciu32 count)
  *      void            RHIDeleteVtxBuffer      (RHIVtxBuffer)
  *      void            RHIDeleteIdxBuffer      (RHIIdxBuffer)
@@ -153,10 +169,35 @@ typedef void (*ANCI_RHI_DELETE_TEXTURE)(RHITexture);
 ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDELETETEXTURE;
 #define RHIDeleteTexture ANCIRHIDELETETEXTURE
 
+////////////////////////////////////////////////////////////////////////////////////
+//////                            和窗口有关的函数                              //////
+////////////////////////////////////////////////////////////////////////////////////
+typedef void (*F_RHI_WINDOW_RESIZE_CALLBACK)(RHIWindow, int, int);
+
+typedef RHIWindow (*ANCI_RHI_CREATE_WINDOW)(const char *title, int width, int height);
+ANCIAPI ANCI_RHI_CREATE_WINDOW ANCIRHICREATEWIDNOW;
+#define RHICreateWindow ANCIRHICREATEWIDNOW
+typedef void (*ANCI_RHI_WINDOW_POLL_EVENTS)();
+ANCIAPI ANCI_RHI_WINDOW_POLL_EVENTS ANCIRHIWINDOWPOLLEVENTS;
+#define RHIPollEvents ANCIRHIWINDOWPOLLEVENTS
+typedef ancibool (*ANCI_RHI_WINDOW_SHOULD_CLOSE)(RHIWindow);
+ANCIAPI ANCI_RHI_WINDOW_SHOULD_CLOSE ANCIRHIWINDOWSHOULDCLOSE;
+#define RHIWindowShouldClose ANCIRHIWINDOWSHOULDCLOSE
+typedef void (*ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK)(RHIWindow, F_RHI_WINDOW_RESIZE_CALLBACK);
+ANCIAPI ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK ANCIRHIWINDOWSETRESIZECALLBACK;
+#define RHISetWindowResizeCallback ANCIRHIWINDOWSETRESIZECALLBACK
+typedef void (*ANCI_RHI_DELETE_WINDOW)(RHIWindow);
+ANCIAPI ANCI_RHI_DELETE_WINDOW ANCIRHIDELETWINDOW;
+#define RHIDeleteWindow ANCIRHIDELETWINDOW
+
+typedef void (*ANCI_RHI_TERMINATE)();
+ANCIAPI ANCI_RHI_TERMINATE ANCIRHITERMINATE;
+#define RHITerminate ANCIRHITERMINATE
+
 /**
  * 加载对应的API函数
  */
-ANCIAPI void RHIAPIFuncLoad();
+ANCIAPI int RHIProcAddressInit(RHIGraphAPIBits);
 
 #ifdef __cplusplus
 }

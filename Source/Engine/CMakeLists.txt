@@ -15,14 +15,11 @@ LINK_LIBRARIES(imm32)
 LINK_DIRECTORIES(${PROJECT_NAME} ThirdParty/glfw3/lib-mingw-w64)
 ADD_EXECUTABLE(${PROJECT_NAME}
         Source/Main/main.cpp
-        # --* Tools *-- #
-        Source/Tools/AnciCreator.cpp
         # --* Application *-- #
+        Source/Application/EngineWindow.cpp
         Source/Application/EngineApplication.cpp
         # --* Alsl *-- #
         Source/Alsl/Alsl.cpp
-        # --* Platform/OpenGL *-- #
-        Source/Platform/OpenGL/OpenGLWindow.cpp
         # --* ThirdParty/glad *-- #
         ThirdParty/glad/src/glad.c
         # --* ThirdParty/ImGui *-- #
