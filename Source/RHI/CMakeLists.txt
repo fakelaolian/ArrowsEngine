@@ -10,4 +10,6 @@ LINK_DIRECTORIES(third)
 ADD_LIBRARY(${PROJECT_NAME} STATIC
         third/glad/src/glad.c
         source/alsl.c
-        source/rhi_impl_opengl.c)
+        source/glfw.c
+        source/load_proc_functions.c
+        source/impl_opengl.c)

@@ -6,7 +6,7 @@ int main()
         system("chcp 65001");
 #endif
 
-        EngineApplication application {AnciEnumGraphicsApi::OpenGL};
+        EngineApplication application {};
         application.StartEngine();
 
         return 0;

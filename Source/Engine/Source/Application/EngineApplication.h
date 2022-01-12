@@ -2,16 +2,16 @@
 #pragma once
 
 #include <AnciCore.h>
-#include <AnciWindow.h>
+#include "EngineWindow.h"
 
 /**
  * 引擎应用程序，负责启动引擎
  */
 class EngineApplication {
 public:
-        explicit                EngineApplication(AnciEnumGraphicsApi api);
+        explicit                EngineApplication();
         void                    StartEngine();
 
 private:
-        anciptr<AnciWindow>     _window;
+        anciptr<EngineWindow>   _window;
 };

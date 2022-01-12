@@ -2,6 +2,7 @@
 #ifndef __CORE_H__
 #define __CORE_H__
 
+#include <stdio.h>
 #include <malloc.h>
 
 /**
@@ -10,5 +11,7 @@
 #define vmalloc malloc
 #define vrealloc realloc
 #define vfree free
+
+#define verror printf
 
 #endif /*__CORE_H__*/

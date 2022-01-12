@@ -18,13 +18,6 @@
 #  define String std::string
 #endif
 
-/* 图形API选择枚举 */
-enum AnciEnumGraphicsApi {
-        Vulkan,
-        OpenGL,
-        DX12
-};
-
 typedef unsigned char       anciuc;
 typedef unsigned int        anciu32;
 typedef unsigned long       anciu64;
