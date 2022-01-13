@@ -32,8 +32,11 @@ ANCI_RHI_CLEAR_COLOR_BUFFER             ANCIRHICLEARCOLORBUFFER           = NULL
 ANCI_RHI_GEN_TEXTURE                    ANCIRHIGENTEXTURE                 = NULL;
 ANCI_RHI_DELETE_TEXTURE                 ANCIRHIDELETETEXTURE              = NULL;
 ANCI_RHI_BIND_TEXTURE                   ANCIRHIBINDTEXTURE                = NULL;
+ANCI_RHI_ENABLE                         ANCIRHIENABLE                     = NULL;
 
-anciu32 _activeTexture                                                    = 0;
+GLbitfield                              _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
+ancibool                                _gl_depth_test_enable_state       = RHI_FALSE;
+anciu32                                 _activeTexture                    = 0;
 
 /** OpenGL的Vertex Buffer实现 */
 typedef struct RHIVtxBufferGL {
@@ -146,9 +149,9 @@ void _opengl_bind_vtx_buffer(RHIVtxBuffer vtxBuffer)
         glBindVertexArray(CONV_VTX(vtxBuffer)->vao);
 }
 
-void _opengl_draw_vtx()
+void _opengl_draw_vtx(anciu32 index, anciu32 offset)
 {
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, index, offset);
         _activeTexture = 0;
 }
 
@@ -271,10 +274,10 @@ void _opengl_delete_shader(RHIShader shader)
 void _opengl_clear_color(float r, float g, float b, float a)
 {
         glClearColor(r, g, b, a);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(_gl_clear_bits);
 }
 
-GLint _opengl_get_texture_wrap_value(RHITextureWrapMode mode)
+GLint _opengl_get_texture_wrap_value(RHITextureWrapModeBits mode)
 {
         switch (mode) {
                 case RHI_TEXTURE_WRAP_REPEAT:           return GL_REPEAT;
@@ -284,10 +287,10 @@ GLint _opengl_get_texture_wrap_value(RHITextureWrapMode mode)
         }
 
         verror("不支持的纹理环绕方式。");
-        return NULL;
+        return 0;
 }
 
-GLint _opengl_get_texture_filter_value(RHITextureFilterMode mode)
+GLint _opengl_get_texture_filter_value(RHITextureFilterModeBits mode)
 {
         switch (mode) {
                 case RHI_TEXTURE_FILTER_NEAREST: return GL_NEAREST;
@@ -295,7 +298,7 @@ GLint _opengl_get_texture_filter_value(RHITextureFilterMode mode)
         }
 
         verror("不支持的纹理过滤方式。");
-        return NULL;
+        return 0;
 }
 
 RHITexture _opengl_gen_texture(RHITextureCreateInfo *createInfo)
@@ -347,6 +350,26 @@ void _opengl_delete_texture(RHITexture texture)
         vfree(itexture);
 }
 
+void _opengl_enbale(RHIEnableBits enable, ancibool is_enable)
+{
+        switch (enable) {
+                case RHI_DEPTH_TEST: {
+                        if (_gl_depth_test_enable_state == is_enable) return;
+
+                        if (is_enable) {
+                                glEnable(GL_DEPTH_TEST);
+                                _gl_clear_bits |= GL_DEPTH_BUFFER_BIT;
+                        } else {
+                                glDisable(GL_DEPTH_TEST);
+                                _gl_clear_bits ^= GL_DEPTH_BUFFER_BIT;
+                        }
+
+                        _gl_depth_test_enable_state = is_enable;
+                        return;
+                }
+        }
+}
+
 void OpenGLRHIImpl()
 {
         _load_glfw_functions();
@@ -375,5 +398,6 @@ void OpenGLRHIImpl()
         ANCIRHIGENTEXTURE                       = _opengl_gen_texture;
         ANCIRHIDELETETEXTURE                    = _opengl_delete_texture;
         ANCIRHIBINDTEXTURE                      = _opengl_bind_texture;
+        ANCIRHIENABLE                           = _opengl_enbale;
 }
 

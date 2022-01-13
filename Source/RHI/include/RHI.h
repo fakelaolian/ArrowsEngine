@@ -43,6 +43,10 @@ typedef enum RHIFormat {
         RHI_FLOAT,
 } RHIFormat;
 
+typedef enum RHIEnableBits {
+        RHI_DEPTH_TEST
+} RHIEnableBits;
+
 typedef struct RHIVtxBufferLayout {
         anciu32 location;
         anciu32 size;
@@ -57,26 +61,26 @@ typedef struct RHIVtxBufferCreateInfo {
         anciu32 stride;
 } RHIVtxBufferCreateInfo;
 
-typedef enum RHITextureWrapMode {
+typedef enum RHITextureWrapModeBits {
         RHI_TEXTURE_WRAP_REPEAT,
         RHI_TEXTURE_WRAP_MIRRORED_REPEAT,
         RHI_TEXTURE_WRAP_CLAMP_TO_EDGE,
         RHI_TEXTURE_WRAP_CLAMP_TO_BORDER
-} RHITextureWrapMode;
+} RHITextureWrapModeBits;
 
-typedef enum RHITextureFilterMode {
+typedef enum RHITextureFilterModeBits {
         RHI_TEXTURE_FILTER_NEAREST,
         RHI_TEXTURE_FILTER_LINEAR
-} RHITextureFilterMode;
+} RHITextureFilterModeBits;
 
 typedef struct RHITextureCreateInfo {
         RHIFormat format;
         anciu32 width;
         anciu32 height;
-        RHITextureWrapMode textureWrapU;
-        RHITextureWrapMode textureWrapV;
-        RHITextureFilterMode textureFilterMin;
-        RHITextureFilterMode textureFilterMag;
+        RHITextureWrapModeBits textureWrapU;
+        RHITextureWrapModeBits textureWrapV;
+        RHITextureFilterModeBits textureFilterMin;
+        RHITextureFilterModeBits textureFilterMag;
         anciuc *pPixels;
 } RHITextureCreateInfo;
 
@@ -140,7 +144,7 @@ ANCIAPI ANCI_RHI_DESTROY_IDX_BUFFER ANCIRHIDELETEIDXBUFFER;
 typedef void (*ANCI_RHI_BIND_VTX)(RHIVtxBuffer);
 ANCIAPI ANCI_RHI_BIND_VTX ANCIRHIBINDVTX;
 #define RHIBindVtxBuffer ANCIRHIBINDVTX
-typedef void (*ANCI_RHI_DRAW_VTX)();
+typedef void (*ANCI_RHI_DRAW_VTX)(anciu32 index, anciu32 offset);
 ANCIAPI ANCI_RHI_DRAW_VTX ANCIRHIDRAWVTX;
 #define RHIDrawVtx ANCIRHIDRAWVTX
 typedef void (*ANCI_RHI_DRAW_IDX)(RHIIdxBuffer);
@@ -191,6 +195,9 @@ ANCIAPI ANCI_RHI_BIND_TEXTURE ANCIRHIBINDTEXTURE;
 typedef void (*ANCI_RHI_DELETE_TEXTURE)(RHITexture);
 ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDELETETEXTURE;
 #define RHIDeleteTexture ANCIRHIDELETETEXTURE
+typedef void (*ANCI_RHI_ENABLE)(RHIEnableBits, ancibool);
+ANCIAPI ANCI_RHI_ENABLE ANCIRHIENABLE;
+#define RHIEnable ANCIRHIENABLE
 
 ////////////////////////////////////////////////////////////////////////////////////
 //////                    暴露给ImGui或者其他库使用                             //////

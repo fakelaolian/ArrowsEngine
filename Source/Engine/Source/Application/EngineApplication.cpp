@@ -57,8 +57,8 @@ EngineApplication::EngineApplication()
 
 struct RHIVtxBufferArray {
         ancivec3 pos;
-        ancivec3 color;
         ancivec2 uv;
+        ancivec3 color;
         ancivec3 normal;
 };
 
@@ -66,16 +66,48 @@ void EngineApplication::StartEngine()
 {
 
         RHIVtxBufferArray vertices[] = {
-                {{0.5f,  0.5f,  0.0f}, {1.0f, 0.5f, 0.2f}, {1.0f, 1.0f}},
-                {{0.5f,  -0.5f, 0.0f}, {1.0f, 0.5f, 0.2f}, {1.0f, 0.0f}},
-                {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.5f, 0.2f}, {0.0f, 0.0f}},
-                {{-0.5f, 0.5f,  0.0f}, {1.0f, 0.5f, 0.2f}, {0.0f, 1.0f}},
+                {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
+                {{0.5f,  -0.5f, -0.5f}, {1.0f, 0.0f,}},
+                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f,}},
+                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f,}},
+                {{-0.5f, 0.5f,  -0.5f}, {0.0f, 1.0f,}},
+                {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f,}},
+                {{-0.5f, -0.5f, 0.5f},  {0.0f, 0.0f,}},
+                {{0.5f,  -0.5f, 0.5f},  {1.0f, 0.0f,}},
+                {{0.5f,  0.5f,  0.5f},  {1.0f, 1.0f,}},
+                {{0.5f,  0.5f,  0.5f},  {1.0f, 1.0f,}},
+                {{-0.5f, 0.5f,  0.5f},  {0.0f, 1.0f,}},
+                {{-0.5f, -0.5f, 0.5f},  {0.0f, 0.0f,}},
+                {{-0.5f, 0.5f,  0.5f},  {1.0f, 0.0f,}},
+                {{-0.5f, 0.5f,  -0.5f}, {1.0f, 1.0f,}},
+                {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f,}},
+                {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f,}},
+                {{-0.5f, -0.5f, 0.5f},  {0.0f, 0.0f,}},
+                {{-0.5f, 0.5f,  0.5f},  {1.0f, 0.0f,}},
+                {{0.5f,  0.5f,  0.5f},  {1.0f, 0.0f,}},
+                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f,}},
+                {{0.5f,  -0.5f, -0.5f}, {0.0f, 1.0f,}},
+                {{0.5f,  -0.5f, -0.5f}, {0.0f, 1.0f,}},
+                {{0.5f,  -0.5f, 0.5f},  {0.0f, 0.0f,}},
+                {{0.5f,  0.5f,  0.5f},  {1.0f, 0.0f,}},
+                {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f,}},
+                {{0.5f,  -0.5f, -0.5f}, {1.0f, 1.0f,}},
+                {{0.5f,  -0.5f, 0.5f},  {1.0f, 0.0f,}},
+                {{0.5f,  -0.5f, 0.5f},  {1.0f, 0.0f,}},
+                {{-0.5f, -0.5f, 0.5f},  {0.0f, 0.0f,}},
+                {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f,}},
+                {{-0.5f, 0.5f,  -0.5f}, {0.0f, 1.0f,}},
+                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f,}},
+                {{0.5f,  0.5f,  0.5f},  {1.0f, 0.0f,}},
+                {{0.5f,  0.5f,  0.5f},  {1.0f, 0.0f,}},
+                {{-0.5f, 0.5f,  0.5f},  {0.0f, 0.0f,}},
+                {{-0.5f, 0.5f,  -0.5f}, {0.0f, 1.0f,}}
         };
 
         RHIVtxBufferLayout layouts[] = {
                 {0, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, pos)},
-                {1, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, color)},
-                {2, 2, RHI_FLOAT, offsetof(RHIVtxBufferArray, uv)},
+                {1, 2, RHI_FLOAT, offsetof(RHIVtxBufferArray, uv)},
+                {2, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, color)},
                 {3, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, normal)},
         };
 
@@ -140,11 +172,14 @@ void EngineApplication::StartEngine()
         ancivec3 viewXYZ(0.0f, 0.0f, -3.0f);
         float rotateDegrees = -55.0f;
         ancivec3 rotateXZY(1.0f, 0.0f, 0.0f);
-
+        ancibool isEnableDepthTest = RHI_TRUE;
         clock_t renderTime;
 
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
+
+                clock_t renderStartTime;
+                renderStartTime = clock();
 
                 // Start the Dear ImGui frame
                 ImGui_ImplOpenGL3_NewFrame();
@@ -155,6 +190,7 @@ void EngineApplication::StartEngine()
                         ImGui::ShowDemoWindow(&show_demo_window);
 
                 RHIClearColorBuffer(0.2f, 0.2f, 0.2f, 0.2f);
+                RHIEnable(RHI_DEPTH_TEST, isEnableDepthTest);
 
                 if (ImGui::Begin("Debug")) {
                         ImGui::Text("ZNear");
@@ -180,14 +216,15 @@ void EngineApplication::StartEngine()
                         ImGui::Text("rotateXZY");
                         ImGui::SameLine();
                         ImGui::DragFloat3("rotateXZY", glm::value_ptr(rotateXZY), 0.01f);
+
+                        if (ImGui::Button("EnableDepthTest")) {
+                                isEnableDepthTest = !isEnableDepthTest;
+                        } ImGui::SameLine(); ImGui::Text("%d", isEnableDepthTest);
                 } ImGui::End();
 
                 if (ImGui::Begin("Performance")) {
                         ImGui::Text("RenderTime: %ldms", renderTime);
                 } ImGui::End();
-
-                clock_t renderStartTime;
-                renderStartTime = clock();
 
                 ancimat4 model{1.0f};
                 ancimat4 projection{1.0f};
@@ -204,7 +241,7 @@ void EngineApplication::StartEngine()
                 RHIBindTexture(texture0);
                 RHIBindTexture(texture1);
                 RHIBindVtxBuffer(vtxBuffer);
-                RHIDrawIdx(idxBuffer);
+                RHIDrawVtx(0, 36);
 
                 // Rendering
                 ImGui::Render();
@@ -223,4 +260,10 @@ void EngineApplication::StartEngine()
 
                 renderTime = clock() - renderStartTime;
         }
+
+        RHIDeleteShader(shader);
+        RHIDeleteTexture(texture0);
+        RHIDeleteTexture(texture1);
+        RHIDeleteVtxBuffer(vtxBuffer);
+        RHIDeleteVtxBuffer(idxBuffer);
 }
