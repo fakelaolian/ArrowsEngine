@@ -23,6 +23,7 @@ ANCI_RHI_BIND_SHADER                    ANCIRHIBINDSHADER                 = NULL
 ANCI_RHI_UNIFORM_FLOAT2                 ANCIRHIUNIFORMFLOAT2              = NULL;
 ANCI_RHI_UNIFORM_INT                    ANCIRHIUNIFORMINT                 = NULL;
 ANCI_RHI_UNIFORM_FLOAT3                 ANCIRHIUNIFORMFLOAT3              = NULL;
+ANCI_RHI_UNIFORM_FLOAT3V                ANCIRHIUNIFORMFLOAT3V             = NULL;
 ANCI_RHI_UNIFORM_FLOAT4                 ANCIRHIUNIFORMFLOAT4              = NULL;
 ANCI_RHI_UNIFORM_MATRIX2FV              ANCIRHIUNIFORMMATRIX2FV           = NULL;
 ANCI_RHI_UNIFORM_MATRIX3FV              ANCIRHIUNIFORMMATRIX3FV           = NULL;
@@ -243,6 +244,11 @@ void _opengl_uniform3f(RHIShader shader, const char *name, float x, float y, flo
         glUniform3f(glGetUniformLocation(CONV_SHADER(shader)->program, name), x, y, z);
 }
 
+void _opengl_uniform3fv(RHIShader shader, const char *name, float* value)
+{
+        _opengl_uniform3f(shader, name, value[0], value[1], value[2]);
+}
+
 void _opengl_uniform4f(RHIShader shader, const char *name, float x, float y, float z, float w)
 {
         glUniform4f(glGetUniformLocation(CONV_SHADER(shader)->program, name), x, y, z, w);
@@ -389,6 +395,7 @@ void OpenGLRHIImpl()
         ANCIRHIUNIFORMINT                       = _opengl_uniform1i;
         ANCIRHIUNIFORMFLOAT2                    = _opengl_uniform2f;
         ANCIRHIUNIFORMFLOAT3                    = _opengl_uniform3f;
+        ANCIRHIUNIFORMFLOAT3V                   = _opengl_uniform3fv;
         ANCIRHIUNIFORMFLOAT4                    = _opengl_uniform4f;
         ANCIRHIUNIFORMMATRIX2FV                 = _opengl_uniform_matrix2fv;
         ANCIRHIUNIFORMMATRIX3FV                 = _opengl_uniform_matrix3fv;

@@ -58,9 +58,92 @@ struct RHIVtxBufferArray {
         ancivec3 normal;
 };
 
+bool isShowCursor = true;
+bool firstMouse = true;
+float lastX, lastY;
+void UpdateCamera(EngineWindow &window, Camera& camera, float deltaTime)
+{
+        if (RHIGetKey(window.GetHandle(), RHI_KEY_ESCAPE) == RHI_PRESS) {
+                isShowCursor = !isShowCursor;
+                !isShowCursor ? RHISetCursorMode(window.GetHandle(), RHI_CURSOR_DISABLE) :
+                RHISetCursorMode(window.GetHandle(), RHI_CURSOR_NORMAL);
+        }
+
+        /* 更新相机数据 */
+        if (RHIGetKey(window.GetHandle(), RHI_KEY_W) == RHI_PRESS)
+                camera.ProcessKeyboard(FORWARD, deltaTime);
+        if (RHIGetKey(window.GetHandle(), RHI_KEY_S) == RHI_PRESS)
+                camera.ProcessKeyboard(BACKWARD, deltaTime);
+        if (RHIGetKey(window.GetHandle(), RHI_KEY_A) == RHI_PRESS)
+                camera.ProcessKeyboard(LEFT, deltaTime);
+        if (RHIGetKey(window.GetHandle(), RHI_KEY_D) == RHI_PRESS)
+                camera.ProcessKeyboard(RIGHT, deltaTime);
+
+        RHIDimension2f cursor = window.GetCursor();
+        float xpos = static_cast<float>(cursor.x);
+        float ypos = static_cast<float>(cursor.y);
+
+        if (firstMouse)
+        {
+                lastX = xpos;
+                lastY = ypos;
+                firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+        lastX = xpos;
+        lastY = ypos;
+
+        camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+clock_t renderTime;
+void UpdateImGui()
+{
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        if (ImGui::Begin("Performance")) {
+                ImGui::Text("RenderTime: %ldms", renderTime);
+        } ImGui::End();
+
+        // Rendering
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        ImGuiIO &io = ImGui::GetIO();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+                RHIWindow backup_current_context = RHIGetCurrentContext_GL();
+                ImGui::UpdatePlatformWindows();
+                ImGui::RenderPlatformWindowsDefault();
+                RHIMakeContextCurrent_GL(backup_current_context);
+        }
+}
+
+void UpdateMVPMatrix(EngineWindow &engineWindow, Camera &camera, RHIShader shader, ancivec3 modelPos)
+{
+        ancimat4 model{1.0f};
+        ancimat4 projection{1.0f};
+        ancimat4 view{1.0f};
+        model = glm::rotate(model, glm::radians(-55.0f), ancivec3(1.0f, 0.0f, 0.0f));
+        model = glm::translate(model, modelPos);
+
+        RHIDimension2i dimension = engineWindow.GetDimension();
+        projection = glm::perspective(glm::radians(45.0f), (float) dimension.x / (float) dimension.y, 0.01f, 100.0f);
+
+        ancimat4 viewMatrix = camera.GetViewMatrix();
+        RHIUniformMatrix4fv(shader, "model", glm::value_ptr(model));
+        RHIUniformMatrix4fv(shader, "view", glm::value_ptr(viewMatrix));
+        RHIUniformMatrix4fv(shader, "proj", glm::value_ptr(projection));
+}
+
 void EngineApplication::StartEngine()
 {
-
         RHIVtxBufferArray vertices[] = {
                 {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
                 {{0.5f,  -0.5f, -0.5f}, {1.0f, 0.0f,}},
@@ -119,80 +202,19 @@ void EngineApplication::StartEngine()
                 0, 1, 3,
                 1, 2, 3
         };
+
         RHIIdxBuffer idxBuffer = RHIGenIdxBuffer(indices, ARRAY_SIZE(indices));
-
-        RHIShader shader = RHICreateShader("../../../Source/Engine/Shaders/simple.alsl");
-
-        int width, height, ns;
-        stbi_set_flip_vertically_on_load(true);
-        anciuc *pixels = stbi_load("../../../Assets/container.jpg", &width, &height, &ns, 0);
-        if (!pixels)
-                throw std::runtime_error("加载纹理失败。");
-
-        RHITextureCreateInfo textureCreateInfo0 = {};
-        textureCreateInfo0.format = RHI_IMAGE_FORMAT_RGB;
-        textureCreateInfo0.width = width;
-        textureCreateInfo0.height = height;
-        textureCreateInfo0.pPixels = pixels;
-        textureCreateInfo0.textureWrapU = RHI_TEXTURE_WRAP_REPEAT;
-        textureCreateInfo0.textureWrapV = RHI_TEXTURE_WRAP_REPEAT;
-        textureCreateInfo0.textureFilterMin = RHI_TEXTURE_FILTER_NEAREST;
-        textureCreateInfo0.textureFilterMag = RHI_TEXTURE_FILTER_NEAREST;
-
-        RHITexture texture0 = RHIGenTexture(&textureCreateInfo0);
-        stbi_image_free(pixels);
-
-        pixels = stbi_load("../../../Assets/awesomeface.png", &width, &height, &ns, 0);
-        if (!pixels)
-                throw std::runtime_error("加载纹理失败。");
-
-        RHITextureCreateInfo textureCreateInfo1 = {};
-        textureCreateInfo1.format = RHI_IMAGE_FORMAT_RGBA;
-        textureCreateInfo1.width = width;
-        textureCreateInfo1.height = height;
-        textureCreateInfo1.pPixels = pixels;
-        textureCreateInfo1.textureWrapU = RHI_TEXTURE_WRAP_REPEAT;
-        textureCreateInfo1.textureWrapV = RHI_TEXTURE_WRAP_REPEAT;
-        textureCreateInfo1.textureFilterMin = RHI_TEXTURE_FILTER_NEAREST;
-        textureCreateInfo1.textureFilterMag = RHI_TEXTURE_FILTER_NEAREST;
-
-        RHITexture texture1 = RHIGenTexture(&textureCreateInfo1);
-        stbi_image_free(pixels);
-
-        RHIBindShader(shader);
-        RHIUniform1i(shader, "ourSampler2D_0", 0);
-        RHIUniform1i(shader, "ourSampler2D_1", 1);
-
-        bool show_demo_window = false;
-        float zNear = 0.01f, zFar = 100.0f, degrees = 45.0f;
-        float rotateDegrees = -55.0f;
-        ancivec3 rotateXZY(1.0f, 0.0f, 0.0f);
-        ancibool isEnableDepthTest = RHI_TRUE;
-        clock_t renderTime;
-
-        ancivec3 cubePositions[] = {
-                glm::vec3( 0.0f,  0.0f,  0.0f),
-                glm::vec3( 2.0f,  5.0f, -15.0f),
-                glm::vec3(-1.5f, -2.2f, -2.5f),
-                glm::vec3(-3.8f, -2.0f, -12.3f),
-                glm::vec3( 2.4f, -0.4f, -3.5f),
-                glm::vec3(-1.7f,  3.0f, -7.5f),
-                glm::vec3( 1.3f, -2.0f, -2.5f),
-                glm::vec3( 1.5f,  2.0f, -2.5f),
-                glm::vec3( 1.5f,  0.2f, -1.5f),
-                glm::vec3(-1.3f,  1.0f, -1.5f)
-        };
-
+        RHIShader colorShader = RHICreateShader("../../../Source/Engine/Shaders/color.alsl");
+        RHIShader lightShader = RHICreateShader("../../../Source/Engine/Shaders/light.alsl");
         Camera camera{};
 
         float deltaTime = 0.0f;
         float lastTime  = 0.0f;
 
-        bool isShowCursor = true;
+        ancivec3 objectColor{1.0f, 0.5f, 0.31f};
+        ancivec3 lightColor{1.0f, 1.0f, 1.0f};
 
-        bool firstMouse = true;
-        float lastX, lastY;
-
+        RHIEnable(RHI_DEPTH_TEST, RHI_TRUE);
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
 
@@ -203,111 +225,25 @@ void EngineApplication::StartEngine()
                 clock_t renderStartTime;
                 renderStartTime = clock();
 
-                if (RHIGetKey(_window->GetHandle(), RHI_KEY_ESCAPE) == RHI_PRESS) {
-                        isShowCursor = !isShowCursor;
-                        !isShowCursor ? RHISetCursorMode(_window->GetHandle(), RHI_CURSOR_DISABLE) :
-                                        RHISetCursorMode(_window->GetHandle(), RHI_CURSOR_NORMAL);
-                }
+                RHIClearColorBuffer(0.0f, 0.0f, 0.0f, 0.0f);
 
-                // Start the Dear ImGui frame
-                ImGui_ImplOpenGL3_NewFrame();
-                ImGui_ImplGlfw_NewFrame();
-                ImGui::NewFrame();
+                UpdateImGui();
+                UpdateCamera(*_window, camera, deltaTime);
 
-                if (show_demo_window)
-                        ImGui::ShowDemoWindow(&show_demo_window);
-
-                RHIClearColorBuffer(0.2f, 0.2f, 0.2f, 0.2f);
-                RHIEnable(RHI_DEPTH_TEST, isEnableDepthTest);
-
-                if (ImGui::Begin("Debug")) {
-                        ImGui::Text("ZNear");
-                        ImGui::DragFloat("zNear", &zNear, 0.1f);
-                        ImGui::DragFloat("zFar", &zFar, 1.0f);
-                        ImGui::DragFloat("degrees", &degrees, 1.0f);
-                        ImGui::DragFloat("rotateDegrees", &rotateDegrees, 1.0f);
-
-                        if (ImGui::Button("EnableDepthTest")) {
-                                isEnableDepthTest = !isEnableDepthTest;
-                        } ImGui::SameLine(); ImGui::Text("%d", isEnableDepthTest);
-                } ImGui::End();
-
-                if (ImGui::Begin("Performance")) {
-                        ImGui::Text("RenderTime: %ldms", renderTime);
-                } ImGui::End();
-
-                RHIBindTexture(texture0);
-                RHIBindTexture(texture1);
+                RHIBindShader(colorShader);
                 RHIBindVtxBuffer(vtxBuffer);
+                UpdateMVPMatrix(*_window, camera, colorShader, {0.0f, 0.0f, -1.0f});
+                RHIUniform3fv(colorShader, "objectColor", glm::value_ptr(objectColor));
+                RHIUniform3fv(lightShader, "lightColor", glm::value_ptr(lightColor));
+                RHIDrawVtx(0, 36);
 
-                /* 更新相机数据 */
-                if (RHIGetKey(_window->GetHandle(), RHI_KEY_W) == RHI_PRESS)
-                        camera.ProcessKeyboard(FORWARD, deltaTime);
-                if (RHIGetKey(_window->GetHandle(), RHI_KEY_S) == RHI_PRESS)
-                        camera.ProcessKeyboard(BACKWARD, deltaTime);
-                if (RHIGetKey(_window->GetHandle(), RHI_KEY_A) == RHI_PRESS)
-                        camera.ProcessKeyboard(LEFT, deltaTime);
-                if (RHIGetKey(_window->GetHandle(), RHI_KEY_D) == RHI_PRESS)
-                        camera.ProcessKeyboard(RIGHT, deltaTime);
-
-                RHIDimension2f cursor = _window->GetCursor();
-                float xpos = static_cast<float>(cursor.x);
-                float ypos = static_cast<float>(cursor.y);
-
-                if (firstMouse)
-                {
-                        lastX = xpos;
-                        lastY = ypos;
-                        firstMouse = false;
-                }
-
-                float xoffset = xpos - lastX;
-                float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-                lastX = xpos;
-                lastY = ypos;
-
-                camera.ProcessMouseMovement(xoffset, yoffset);
-
-                for (ancivec3 pos : cubePositions) {
-                        ancimat4 model{1.0f};
-                        ancimat4 projection{1.0f};
-                        ancimat4 view{1.0f};
-                        model = glm::rotate(model, glm::radians(rotateDegrees), rotateXZY);
-                        model = glm::translate(model, pos);
-
-                        RHIDimension2i dimension = _window->GetDimension();
-                        projection = glm::perspective(glm::radians(degrees), (float) dimension.x / (float) dimension.y, zNear, zFar);
-
-                        ancimat4 viewMatrix = camera.GetViewMatrix();
-                        RHIUniformMatrix4fv(shader, "model", glm::value_ptr(model));
-                        RHIUniformMatrix4fv(shader, "view", glm::value_ptr(viewMatrix));
-                        RHIUniformMatrix4fv(shader, "proj", glm::value_ptr(projection));
-
-                        RHIDrawVtx(0, 36);
-                }
-
-                // Rendering
-                ImGui::Render();
-                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-                ImGuiIO &io = ImGui::GetIO();
-                if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-                {
-                        RHIWindow backup_current_context = RHIGetCurrentContext_GL();
-                        ImGui::UpdatePlatformWindows();
-                        ImGui::RenderPlatformWindowsDefault();
-                        RHIMakeContextCurrent_GL(backup_current_context);
-                }
+                RHIBindShader(lightShader);
+                RHIBindVtxBuffer(vtxBuffer);
+                UpdateMVPMatrix(*_window, camera, lightShader, {3.0f, 0.0f, -1.0f});
+                RHIUniform3fv(lightShader, "lightColor", glm::value_ptr(lightColor));
+                RHIDrawVtx(0, 36);
 
                 RHISwapBuffers(_window->GetHandle());
-
                 renderTime = clock() - renderStartTime;
         }
-
-        RHIDeleteShader(shader);
-        RHIDeleteTexture(texture0);
-        RHIDeleteTexture(texture1);
-        RHIDeleteVtxBuffer(vtxBuffer);
-        RHIDeleteVtxBuffer(idxBuffer);
 }
