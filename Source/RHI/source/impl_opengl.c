@@ -71,8 +71,8 @@ typedef struct RHIShaderGL {
 #define IShader RHIShaderGL *
 #define CONV_SHADER(ptr) ((RHIShaderGL *) (ptr))
 
-float _glfw_get_time        () { return glfwGetTime(); }
-void _opengl_viewport    (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
+float _glfw_get_time () { return glfwGetTime(); }
+void _opengl_viewport (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
 void _opengl_swap_buffers (RHIWindow h) { glfwSwapBuffers((GLFWwindow *) h); }
 
 RHIVtxBuffer _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferCreateInfo *createInfo)

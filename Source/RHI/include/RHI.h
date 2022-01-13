@@ -215,10 +215,15 @@ typedef struct RHITextureCreateInfo {
         anciuc *pPixels;
 } RHITextureCreateInfo;
 
-typedef struct RHIDimension {
+typedef struct RHIDimension2i {
         int x;
         int y;
-} RHIDimension;
+} RHIDimension2i;
+
+typedef struct RHIDimension2f {
+        float x;
+        float y;
+} RHIDimension2f;
 
 typedef enum RHIInputCursorModeBits{
         RHI_CURSOR_NORMAL,
@@ -360,6 +365,7 @@ ANCIAPI ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT ANCIRHIOPENGLMAKECONTEXTCURRENT;
 //////                            和窗口有关的函数                             //////
 ////////////////////////////////////////////////////////////////////////////////////
 typedef void (*F_RHI_WINDOW_RESIZE_CALLBACK)(RHIWindow, int, int);
+typedef void (*F_RHI_WINDOW_CURSOR_CALLBACK)(RHIWindow, double, double);
 
 typedef RHIWindow (*ANCI_RHI_CREATE_WINDOW)(const char *title, int width, int height);
 ANCIAPI ANCI_RHI_CREATE_WINDOW ANCIRHICREATEWIDNOW;
@@ -379,6 +385,9 @@ ANCIAPI ANCI_RHI_WINDOW_SHOULD_CLOSE ANCIRHIWINDOWSHOULDCLOSE;
 typedef void (*ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK)(RHIWindow, F_RHI_WINDOW_RESIZE_CALLBACK);
 ANCIAPI ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK ANCIRHIWINDOWSETRESIZECALLBACK;
 #define RHISetWindowResizeCallback ANCIRHIWINDOWSETRESIZECALLBACK
+typedef void (*ANCI_RHI_WINDOW_SET_CURSOR_CALLBACK)(RHIWindow, F_RHI_WINDOW_CURSOR_CALLBACK);
+ANCIAPI ANCI_RHI_WINDOW_SET_CURSOR_CALLBACK ANCIRHIWINDOWSETCURSORCALLBACK;
+#define RHISetWindowCursorCallback ANCIRHIWINDOWSETCURSORCALLBACK
 typedef void (*ANCI_RHI_DELETE_WINDOW)(RHIWindow);
 ANCIAPI ANCI_RHI_DELETE_WINDOW ANCIRHIDELETWINDOW;
 #define RHIDeleteWindow ANCIRHIDELETWINDOW

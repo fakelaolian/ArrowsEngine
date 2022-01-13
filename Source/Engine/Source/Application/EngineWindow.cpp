@@ -13,4 +13,9 @@ EngineWindow::EngineWindow(const char *title, int w, int h)
                 RHIViewport(0, 0, w, h);
         });
 
+        RHISetWindowCursorCallback(_window, [](RHIWindow window, double x, double  y) {
+                EngineWindow *_window = (EngineWindow *) RHIGetUserPointer(window);
+                _window->SetCursor((float) x, (float) y);
+        });
+
 }

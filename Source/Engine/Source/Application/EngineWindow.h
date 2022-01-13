@@ -22,14 +22,21 @@ public:
         inline void SetDimension(int x, int y)
         { _dimension = {x, y}; }
 
-        inline const RHIDimension &GetDimension() const
+        inline void SetCursor(float x, float y)
+        { _cursor = {x, y}; }
+
+        inline const RHIDimension2f &GetCursor()
+        { return _cursor; }
+
+        inline const RHIDimension2i &GetDimension() const
         { return _dimension; }
 
         static inline void PollEvents()
         { RHIPollEvents(); };
 
 private:
-        RHIDimension            _dimension;
+        RHIDimension2f          _cursor;
+        RHIDimension2i          _dimension;
         RHIWindow               _window;
 
 };

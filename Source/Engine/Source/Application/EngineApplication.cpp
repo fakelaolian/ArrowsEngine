@@ -188,6 +188,11 @@ void EngineApplication::StartEngine()
         float deltaTime = 0.0f;
         float lastTime  = 0.0f;
 
+        bool isShowCursor = true;
+
+        bool firstMouse = true;
+        float lastX, lastY;
+
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
 
@@ -197,6 +202,12 @@ void EngineApplication::StartEngine()
 
                 clock_t renderStartTime;
                 renderStartTime = clock();
+
+                if (RHIGetKey(_window->GetHandle(), RHI_KEY_ESCAPE) == RHI_PRESS) {
+                        isShowCursor = !isShowCursor;
+                        !isShowCursor ? RHISetCursorMode(_window->GetHandle(), RHI_CURSOR_DISABLE) :
+                                        RHISetCursorMode(_window->GetHandle(), RHI_CURSOR_NORMAL);
+                }
 
                 // Start the Dear ImGui frame
                 ImGui_ImplOpenGL3_NewFrame();
@@ -215,7 +226,6 @@ void EngineApplication::StartEngine()
                         ImGui::DragFloat("zFar", &zFar, 1.0f);
                         ImGui::DragFloat("degrees", &degrees, 1.0f);
                         ImGui::DragFloat("rotateDegrees", &rotateDegrees, 1.0f);
-                        ImGui::DragFloat("CameraMoveSpeed", &camera.GetCameraMoveSpeed(), 0.1f);
 
                         if (ImGui::Button("EnableDepthTest")) {
                                 isEnableDepthTest = !isEnableDepthTest;
@@ -230,7 +240,34 @@ void EngineApplication::StartEngine()
                 RHIBindTexture(texture1);
                 RHIBindVtxBuffer(vtxBuffer);
 
-                camera.Update(_window->GetHandle(), deltaTime);
+                /* 更新相机数据 */
+                if (RHIGetKey(_window->GetHandle(), RHI_KEY_W) == RHI_PRESS)
+                        camera.ProcessKeyboard(FORWARD, deltaTime);
+                if (RHIGetKey(_window->GetHandle(), RHI_KEY_S) == RHI_PRESS)
+                        camera.ProcessKeyboard(BACKWARD, deltaTime);
+                if (RHIGetKey(_window->GetHandle(), RHI_KEY_A) == RHI_PRESS)
+                        camera.ProcessKeyboard(LEFT, deltaTime);
+                if (RHIGetKey(_window->GetHandle(), RHI_KEY_D) == RHI_PRESS)
+                        camera.ProcessKeyboard(RIGHT, deltaTime);
+
+                RHIDimension2f cursor = _window->GetCursor();
+                float xpos = static_cast<float>(cursor.x);
+                float ypos = static_cast<float>(cursor.y);
+
+                if (firstMouse)
+                {
+                        lastX = xpos;
+                        lastY = ypos;
+                        firstMouse = false;
+                }
+
+                float xoffset = xpos - lastX;
+                float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+                lastX = xpos;
+                lastY = ypos;
+
+                camera.ProcessMouseMovement(xoffset, yoffset);
 
                 for (ancivec3 pos : cubePositions) {
                         ancimat4 model{1.0f};
@@ -239,7 +276,7 @@ void EngineApplication::StartEngine()
                         model = glm::rotate(model, glm::radians(rotateDegrees), rotateXZY);
                         model = glm::translate(model, pos);
 
-                        RHIDimension dimension = _window->GetDimension();
+                        RHIDimension2i dimension = _window->GetDimension();
                         projection = glm::perspective(glm::radians(degrees), (float) dimension.x / (float) dimension.y, zNear, zFar);
 
                         ancimat4 viewMatrix = camera.GetViewMatrix();

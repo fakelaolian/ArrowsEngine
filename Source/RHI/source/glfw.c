@@ -7,6 +7,7 @@
 ANCI_RHI_CREATE_WINDOW                  ANCIRHICREATEWIDNOW                      = NULL;
 ANCI_RHI_WINDOW_SHOULD_CLOSE            ANCIRHIWINDOWSHOULDCLOSE                 = NULL;
 ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK     ANCIRHIWINDOWSETRESIZECALLBACK           = NULL;
+ANCI_RHI_WINDOW_SET_CURSOR_CALLBACK     ANCIRHIWINDOWSETCURSORCALLBACK           = NULL;
 ANCI_RHI_WINDOW_POLL_EVENTS             ANCIRHIWINDOWPOLLEVENTS                  = NULL;
 ANCI_RHI_DELETE_WINDOW                  ANCIRHIDELETWINDOW                       = NULL;
 ANCI_RHI_TERMINATE                      ANCIRHITERMINATE                         = NULL;
@@ -18,6 +19,7 @@ ANCI_RHI_SET_USER_POINTER               ANCIRHISETUSERPOINTER                   
 ANCI_RHI_GET_USER_POINTER               ANCIRHIGETUSERPOINTER                    = NULL;
 
 F_RHI_WINDOW_RESIZE_CALLBACK            _window_resize_callback                  = NULL;
+F_RHI_WINDOW_CURSOR_CALLBACK            _window_cursor_callback                  = NULL;
 
 RHIWindow _glfw_create_window(const char *title, int width, int height)
 {
@@ -51,7 +53,17 @@ void _glfw_set_window_resize_callback0(GLFWwindow *window, int x, int y)
 void _glfw_set_window_resize_callback(RHIWindow window, F_RHI_WINDOW_RESIZE_CALLBACK fcallback)
 {
         _window_resize_callback = fcallback;
-        glfwSetFramebufferSizeCallback((GLFWwindow *) window, _glfw_set_window_resize_callback0);}
+        glfwSetFramebufferSizeCallback((GLFWwindow *) window, _glfw_set_window_resize_callback0);
+}
+
+void _glfw_set_window_cursor_callback0(GLFWwindow *window, double x, double y)
+{ _window_cursor_callback(window, x, y); }
+
+void _glfw_set_window_cursor_callback(RHIWindow window, F_RHI_WINDOW_CURSOR_CALLBACK fcallback)
+{
+        _window_cursor_callback = fcallback;
+        glfwSetCursorPosCallback((GLFWwindow *) window, _glfw_set_window_cursor_callback0);
+}
 
 void _glfw_poll_events()
 { glfwPollEvents(); }
@@ -110,4 +122,5 @@ void _load_glfw_functions()
         ANCIRHISETCURSORINPUTMODE       = _glfw_set_cursor_mode;
         ANCIRHISETUSERPOINTER           = _glfw_set_user_pointer;
         ANCIRHIGETUSERPOINTER           = _glfw_get_user_pointer;
+        ANCIRHIWINDOWSETCURSORCALLBACK  = _glfw_set_window_cursor_callback;
 }
