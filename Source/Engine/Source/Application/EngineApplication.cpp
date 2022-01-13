@@ -171,7 +171,6 @@ void EngineApplication::StartEngine()
 
         bool show_demo_window = false;
         float zNear = 0.01f, zFar = 100.0f, degrees = 45.0f;
-        ancivec3 viewXYZ(0.0f, 0.0f, -3.0f);
         float rotateDegrees = -55.0f;
         ancivec3 rotateXZY(1.0f, 0.0f, 0.0f);
         ancibool isEnableDepthTest = RHI_TRUE;
@@ -192,8 +191,15 @@ void EngineApplication::StartEngine()
 
         Camera camera{};
 
+        float deltaTime = 0.0f;
+        float lastTime  = 0.0f;
+
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
+
+                float currentFrame = RHIGetTime();
+                deltaTime = currentFrame - lastTime;
+                lastTime = currentFrame;
 
                 clock_t renderStartTime;
                 renderStartTime = clock();
@@ -222,10 +228,6 @@ void EngineApplication::StartEngine()
                         ImGui::SameLine();
                         ImGui::DragFloat("degrees", &degrees, 1.0f);
 
-                        ImGui::Text("view");
-                        ImGui::SameLine();
-                        ImGui::DragFloat3("view", glm::value_ptr(viewXYZ), 0.01f);
-
                         ImGui::Text("rotateDegrees");
                         ImGui::SameLine();
                         ImGui::DragFloat("rotateDegrees", &rotateDegrees, 1.0f);
@@ -247,6 +249,8 @@ void EngineApplication::StartEngine()
                 RHIBindTexture(texture1);
                 RHIBindVtxBuffer(vtxBuffer);
 
+                camera.Update(_window->GetHandle(), deltaTime);
+
                 for (ancivec3 pos : cubePositions) {
                         ancimat4 model{1.0f};
                         ancimat4 projection{1.0f};
@@ -254,7 +258,6 @@ void EngineApplication::StartEngine()
                         model = glm::rotate(model, glm::radians(rotateDegrees), rotateXZY);
                         model = glm::translate(model, pos);
 
-                        view = glm::translate(view, viewXYZ);
                         RHIDimension dimension = _window->GetDimension();
                         projection = glm::perspective(glm::radians(degrees), (float) dimension.x / (float) dimension.y, zNear, zFar);
 

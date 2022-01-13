@@ -12,6 +12,7 @@ ANCI_RHI_DELETE_WINDOW                  ANCIRHIDELETWINDOW                      
 ANCI_RHI_TERMINATE                      ANCIRHITERMINATE                         = NULL;
 ANCI_RHI_OPENGL_GET_CURRENT_CONTEXT     ANCIRHIOPENGLGETCURRENTCONTEXT           = NULL;
 ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT    ANCIRHIOPENGLMAKECONTEXTCURRENT          = NULL;
+ANCI_RHI_GET_KEY                        ANCIRHIGETKEY                            = NULL;
 
 F_RHI_WINDOW_RESIZE_CALLBACK            _window_resize_callback                  = NULL;
 
@@ -39,45 +40,33 @@ RHIWindow _glfw_create_window(const char *title, int width, int height)
 }
 
 ancibool _glfw_should_clsoe(RHIWindow window)
-{
-        return glfwWindowShouldClose((GLFWwindow *) window);
-}
+{ return glfwWindowShouldClose((GLFWwindow *) window); }
 
 void _glfw_set_window_resize_callback0(GLFWwindow *window, int x, int y)
-{
-        _window_resize_callback(window, x, y);
-}
+{ _window_resize_callback(window, x, y); }
 
 void _glfw_set_window_resize_callback(RHIWindow window, F_RHI_WINDOW_RESIZE_CALLBACK fcallback)
 {
         _window_resize_callback = fcallback;
-        glfwSetFramebufferSizeCallback((GLFWwindow *) window, _glfw_set_window_resize_callback0);
-}
+        glfwSetFramebufferSizeCallback((GLFWwindow *) window, _glfw_set_window_resize_callback0);}
 
 void _glfw_poll_events()
-{
-        glfwPollEvents();
-}
+{ glfwPollEvents(); }
 
 void _glfw_destroy_window(RHIWindow window)
-{
-        glfwDestroyWindow((GLFWwindow *) window);
-}
+{ glfwDestroyWindow((GLFWwindow *) window); }
 
 void _glfw_terminate()
-{
-        glfwTerminate();
-}
+{ glfwTerminate(); }
 
 RHIWindow _glfw_get_current_context()
-{
-        return glfwGetCurrentContext();
-}
+{ return glfwGetCurrentContext(); }
 
 void _glfw_make_context_current(RHIWindow h)
-{
-        glfwMakeContextCurrent((GLFWwindow *) h);
-}
+{ glfwMakeContextCurrent((GLFWwindow *) h); }
+
+ancibool _glfw_get_key(RHIWindow window, RHIKeyCodeBits keycode)
+{ return (glfwGetKey((GLFWwindow *) window, keycode) == GLFW_PRESS) ? RHI_PRESS : RHI_RELEASE; }
 
 void _load_glfw_functions()
 {
@@ -98,4 +87,5 @@ void _load_glfw_functions()
         ANCIRHITERMINATE                = _glfw_terminate;
         ANCIRHIOPENGLGETCURRENTCONTEXT  = _glfw_get_current_context;
         ANCIRHIOPENGLMAKECONTEXTCURRENT = _glfw_make_context_current;
+        ANCIRHIGETKEY                   = _glfw_get_key;
 }
