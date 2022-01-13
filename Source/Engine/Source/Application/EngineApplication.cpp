@@ -4,12 +4,55 @@
 #include <RHI.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+#include <ctime>
+
+void SetUpImGui(ANCI_WINDOW_HANDLE h)
+{
+        // Setup Dear ImGui context
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+        //io.ConfigViewportsNoAutoMerge = true;
+        //io.ConfigViewportsNoTaskBarIcon = true;
+
+        // Setup Dear ImGui style
+        ImGui::StyleColorsDark();
+        //ImGui::StyleColorsClassic();
+
+        // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+        ImGuiStyle& style = ImGui::GetStyle();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+                style.WindowRounding = 0.0f;
+                style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+        }
+
+        // Setup Platform/Renderer backends
+        ImGui_ImplGlfw_InitForOpenGL((GLFWwindow *) h, true);
+        ImGui_ImplOpenGL3_Init("#version 410");
+}
+
+void F_ResizeCallback(RHIWindow window, int w, int h)
+{
+        RHIViewport(0, 0, w, h);
+}
 
 EngineApplication::EngineApplication()
 {
         /* 初始化RHI函数 */
         RHIProcAddressInit(OpenGL);
+
         _window = make_anciptr<EngineWindow>("暗刺引擎", 800, 800);
+        RHISetWindowResizeCallback(_window->GetHandle(), F_ResizeCallback);
+
+        SetUpImGui(_window->GetHandle());
 }
 
 struct RHIVtxBufferArray {
@@ -78,10 +121,53 @@ void EngineApplication::StartEngine()
         float rotateDegrees = -55.0f;
         ancivec3 rotateXZY(1.0f, 0.0f, 0.0f);
 
+        clock_t renderTime;
+
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
 
+                // Start the Dear ImGui frame
+                ImGui_ImplOpenGL3_NewFrame();
+                ImGui_ImplGlfw_NewFrame();
+                ImGui::NewFrame();
+
+                if (show_demo_window)
+                        ImGui::ShowDemoWindow(&show_demo_window);
+
                 RHIClearColorBuffer(0.2f, 0.2f, 0.2f, 0.2f);
+
+                if (ImGui::Begin("Debug")) {
+                        ImGui::Text("ZNear");
+                        ImGui::SameLine();
+                        ImGui::DragFloat("zNear", &zNear, 0.1f);
+
+                        ImGui::Text("zFar");
+                        ImGui::SameLine();
+                        ImGui::DragFloat("zFar", &zFar, 1.0f);
+
+                        ImGui::Text("degrees");
+                        ImGui::SameLine();
+                        ImGui::DragFloat("degrees", &degrees, 1.0f);
+
+                        ImGui::Text("view");
+                        ImGui::SameLine();
+                        ImGui::DragFloat3("view", glm::value_ptr(viewXYZ), 0.01f);
+
+                        ImGui::Text("rotateDegrees");
+                        ImGui::SameLine();
+                        ImGui::DragFloat("rotateDegrees", &rotateDegrees, 1.0f);
+
+                        ImGui::Text("rotateXZY");
+                        ImGui::SameLine();
+                        ImGui::DragFloat3("rotateXZY", glm::value_ptr(rotateXZY), 0.01f);
+                } ImGui::End();
+
+                if (ImGui::Begin("Performance")) {
+                        ImGui::Text("RenderTime: %ldms", renderTime);
+                } ImGui::End();
+
+                clock_t renderStartTime;
+                renderStartTime = clock();
 
                 ancimat4 model{1.0f};
                 ancimat4 projection{1.0f};
@@ -100,6 +186,21 @@ void EngineApplication::StartEngine()
                 RHIBindVtxBuffer(vtxBuffer);
                 RHIDrawIdx(idxBuffer);
 
+                // Rendering
+                ImGui::Render();
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+                ImGuiIO &io = ImGui::GetIO();
+                if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+                {
+                        RHIWindow backup_current_context = RHIGetCurrentContext_GL();
+                        ImGui::UpdatePlatformWindows();
+                        ImGui::RenderPlatformWindowsDefault();
+                        RHIMakeContextCurrent_GL(backup_current_context);
+                }
+
                 RHISwapBuffers(_window->GetHandle());
+
+                renderTime = clock() - renderStartTime;
         }
 }

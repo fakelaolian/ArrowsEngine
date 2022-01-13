@@ -10,6 +10,8 @@ ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK     ANCIRHIWINDOWSETRESIZECALLBACK          
 ANCI_RHI_WINDOW_POLL_EVENTS             ANCIRHIWINDOWPOLLEVENTS                  = NULL;
 ANCI_RHI_DELETE_WINDOW                  ANCIRHIDELETWINDOW                       = NULL;
 ANCI_RHI_TERMINATE                      ANCIRHITERMINATE                         = NULL;
+ANCI_RHI_OPENGL_GET_CURRENT_CONTEXT     ANCIRHIOPENGLGETCURRENTCONTEXT           = NULL;
+ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT    ANCIRHIOPENGLMAKECONTEXTCURRENT          = NULL;
 
 F_RHI_WINDOW_RESIZE_CALLBACK            _window_resize_callback                  = NULL;
 
@@ -67,6 +69,16 @@ void _glfw_terminate()
         glfwTerminate();
 }
 
+RHIWindow _glfw_get_current_context()
+{
+        return glfwGetCurrentContext();
+}
+
+void _glfw_make_context_current(RHIWindow h)
+{
+        glfwMakeContextCurrent((GLFWwindow *) h);
+}
+
 void _load_glfw_functions()
 {
         if(!glfwInit()) {
@@ -84,4 +96,6 @@ void _load_glfw_functions()
         ANCIRHIWINDOWPOLLEVENTS         = _glfw_poll_events;
         ANCIRHIDELETWINDOW              = _glfw_destroy_window;
         ANCIRHITERMINATE                = _glfw_terminate;
+        ANCIRHIOPENGLGETCURRENTCONTEXT  = _glfw_get_current_context;
+        ANCIRHIOPENGLMAKECONTEXTCURRENT = _glfw_make_context_current;
 }
