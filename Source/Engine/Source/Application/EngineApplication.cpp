@@ -11,7 +11,7 @@
 
 #include "Camera/Camera.hpp"
 
-void SetUpImGui(ANCI_WINDOW_HANDLE h)
+void SetUpImGui(RHIWindow h)
 {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
@@ -217,24 +217,11 @@ void EngineApplication::StartEngine()
 
                 if (ImGui::Begin("Debug")) {
                         ImGui::Text("ZNear");
-                        ImGui::SameLine();
                         ImGui::DragFloat("zNear", &zNear, 0.1f);
-
-                        ImGui::Text("zFar");
-                        ImGui::SameLine();
                         ImGui::DragFloat("zFar", &zFar, 1.0f);
-
-                        ImGui::Text("degrees");
-                        ImGui::SameLine();
                         ImGui::DragFloat("degrees", &degrees, 1.0f);
-
-                        ImGui::Text("rotateDegrees");
-                        ImGui::SameLine();
                         ImGui::DragFloat("rotateDegrees", &rotateDegrees, 1.0f);
-
-                        ImGui::Text("rotateXZY");
-                        ImGui::SameLine();
-                        ImGui::DragFloat3("rotateXZY", glm::value_ptr(rotateXZY), 0.01f);
+                        ImGui::DragFloat("CameraMoveSpeed", &camera.GetCameraMoveSpeed(), 0.1f);
 
                         if (ImGui::Button("EnableDepthTest")) {
                                 isEnableDepthTest = !isEnableDepthTest;

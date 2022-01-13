@@ -9,9 +9,16 @@ public:
         {
         }
 
+        inline float &GetCameraMoveSpeed()
+        { return _move_speed; }
+
+
+        inline void SetCameraMoveSpeed(float speed)
+        { _move_speed = speed; }
+
         inline void Update(RHIWindow window, float dt)
         {
-                float speed = 1.0f * dt;
+                float speed = _move_speed * dt;
                 if (RHIGetKey(window, RHI_KEY_W) == RHI_PRESS)
                         _camera_pos += speed * _camera_front;
                 if (RHIGetKey(window, RHI_KEY_S) == RHI_PRESS)
@@ -31,6 +38,7 @@ public:
         }
 
 private:
+        float    _move_speed = 1.0f;
         ancivec3 _camera_pos{0.0f, 0.0f, 3.0f};
         ancivec3 _camera_front{0.0f, 0.0f, -1.0f};
         ancivec3 _camera_up{0.0f, -1.0f, 0.0f};
