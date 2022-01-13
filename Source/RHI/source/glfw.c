@@ -14,6 +14,8 @@ ANCI_RHI_OPENGL_GET_CURRENT_CONTEXT     ANCIRHIOPENGLGETCURRENTCONTEXT          
 ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT    ANCIRHIOPENGLMAKECONTEXTCURRENT          = NULL;
 ANCI_RHI_GET_KEY                        ANCIRHIGETKEY                            = NULL;
 ANCI_RHI_SET_CURSOR_INPUT_MODE          ANCIRHISETCURSORINPUTMODE                = NULL;
+ANCI_RHI_SET_USER_POINTER               ANCIRHISETUSERPOINTER                    = NULL;
+ANCI_RHI_GET_USER_POINTER               ANCIRHIGETUSERPOINTER                    = NULL;
 
 F_RHI_WINDOW_RESIZE_CALLBACK            _window_resize_callback                  = NULL;
 
@@ -69,6 +71,12 @@ void _glfw_make_context_current(RHIWindow h)
 ancibool _glfw_get_key(RHIWindow window, RHIKeyCodeBits keycode)
 { return (glfwGetKey((GLFWwindow *) window, keycode) == GLFW_PRESS) ? RHI_PRESS : RHI_RELEASE; }
 
+void _glfw_set_user_pointer(RHIWindow window, void *any)
+{ glfwSetWindowUserPointer(window, any); }
+
+void *_glfw_get_user_pointer(RHIWindow window)
+{ return glfwGetWindowUserPointer(window); }
+
 void _glfw_set_cursor_mode(RHIWindow window, RHIInputCursorModeBits bit)
 {
         switch (bit) {
@@ -100,4 +108,6 @@ void _load_glfw_functions()
         ANCIRHIOPENGLMAKECONTEXTCURRENT = _glfw_make_context_current;
         ANCIRHIGETKEY                   = _glfw_get_key;
         ANCIRHISETCURSORINPUTMODE       = _glfw_set_cursor_mode;
+        ANCIRHISETUSERPOINTER           = _glfw_set_user_pointer;
+        ANCIRHIGETUSERPOINTER           = _glfw_get_user_pointer;
 }

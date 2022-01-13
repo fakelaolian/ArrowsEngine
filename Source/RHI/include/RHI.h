@@ -226,11 +226,6 @@ typedef enum RHIInputCursorModeBits{
         RHI_CURSOR_DISABLE
 } RHIInputCursorModeBits;
 
-////////////////////////////////////////////////////////////////////////////////////
-//////                               回调函数                                 //////
-////////////////////////////////////////////////////////////////////////////////////
-typedef void (*F_RHI_WINDOW_RESIZE_CALLBACK)(RHIWindow, int, int);
-
 /**
  * RHI函数指针，命名规范：
  *      1. typedef <Result> <ANCI_RHI_*>();
@@ -262,270 +257,81 @@ typedef void (*F_RHI_WINDOW_RESIZE_CALLBACK)(RHIWindow, int, int);
  *      void            RHIBindTexture          (RHITexture)
  *      void            RHIDeleteTexture        (RHITexture)
  */
-
-/** 获取当前时间； */
 typedef float (*ANCI_RHI_GET_TIME)(void);
 ANCIAPI ANCI_RHI_GET_TIME ANCIRHIGETTIME;
 #define RHIGetTime ANCIRHIGETTIME
-
-/**
- * 设置渲染视口大小；
- *
- * @param [i] x     裁剪坐标
- * @param [i] y     裁剪坐标
- * @param [i] w     窗口宽度
- * @param [i] h     窗口高度
- */
 typedef void (*ANCI_RHI_VIEWPORT)(anciu32 x, anciu32 y, anciu32 w, anciu32 h);
 ANCIAPI ANCI_RHI_VIEWPORT ANCIRHIVIEWPORT;
 #define RHIViewport ANCIRHIVIEWPORT
-
-/**
- * 交换缓冲区；
- * @param [i] h 当前窗口句柄
- */
 typedef void (*ANCI_RHI_SWAP_BUFFERS)(RHIWindow h);
 ANCIAPI ANCI_RHI_SWAP_BUFFERS ANCIRHISWAPBUFFERS;
 #define RHISwapBuffers ANCIRHISWAPBUFFERS
-
-/**
- * 创建顶点缓冲；
- *
- * createInfo参数是用来描述顶点缓冲布局使用的。假设我们有这样的一个顶点对象：
- *
- *      // 顶点对象
- *      typedef struct VtxBuf {
- *          vec3 pos;
- *          vec2 uv;
- *          vec3 color;
- *      } VtxBuf;
- *
- * 那么createInfo就是用来描述的顶点布局的。类似下面这样：
- *
- *      RHIVtxBufferLayout layouts[] = {
- *              {0, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, pos)},
- *              {1, 2, RHI_FLOAT, offsetof(RHIVtxBufferArray, uv)},
- *              {2, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, color)},
- *      };
- *
- * @param [i] pVertices     顶点数组
- * @param [i] createInfo    顶点描述信息
- */
-typedef RHIVtxBuffer (*ANCI_RHI_GEN_VTXBUFFER)(const void *pVertices, RHIVtxBufferCreateInfo *createInfo);
+typedef RHIVtxBuffer (*ANCI_RHI_GEN_VTXBUFFER)(const void *pVertices, RHIVtxBufferCreateInfo *);
 ANCIAPI ANCI_RHI_GEN_VTXBUFFER ANCIRHIGENVTXBUFFER;
 #define RHIGenVtxBuffer ANCIRHIGENVTXBUFFER
-
-/**
- * 生成索引缓冲区；
- *
- * @param [i] indices 索引数组
- * @param [i] count   索引数组大小
- */
 typedef RHIIdxBuffer (*ANCI_RHI_GEN_IDXBUFFER)(anciu32 *indices, anciu32 count);
 ANCIAPI ANCI_RHI_GEN_IDXBUFFER ANCIRHIGENIDXBUFFER;
 #define RHIGenIdxBuffer ANCIRHIGENIDXBUFFER
-
-/**
- * 删除顶点缓冲区；
- * @param [i] RHIVtxBuffer 顶点缓冲句柄
- */
 typedef void (*ANCI_RHI_DESTROY_VTX_BUFFER)(RHIVtxBuffer);
 ANCIAPI ANCI_RHI_DESTROY_VTX_BUFFER ANCIRHIDELETEVTXBUFFER;
 #define RHIDeleteVtxBuffer ANCIRHIDELETEVTXBUFFER
-
-/**
- * 删除索引缓冲区；
- * @param [i] RHIIdxBuffer 索引缓冲句柄
- */
 typedef void (*ANCI_RHI_DESTROY_IDX_BUFFER)(RHIIdxBuffer);
 ANCIAPI ANCI_RHI_DESTROY_IDX_BUFFER ANCIRHIDELETEIDXBUFFER;
 #define RHIDeleteIdxBuffer ANCIRHIDELETEIDXBUFFER
-
-/**
- * 绑定顶点缓冲区；
- * @param [i] RHIVtxBuffer
- */
 typedef void (*ANCI_RHI_BIND_VTX)(RHIVtxBuffer);
 ANCIAPI ANCI_RHI_BIND_VTX ANCIRHIBINDVTX;
 #define RHIBindVtxBuffer ANCIRHIBINDVTX
-
-/**
- * 根据顶点缓冲区渲染；
- *
- * @param [i] index     开始位置
- * @param [i] offset    结束位置
- */
 typedef void (*ANCI_RHI_DRAW_VTX)(anciu32 index, anciu32 offset);
 ANCIAPI ANCI_RHI_DRAW_VTX ANCIRHIDRAWVTX;
 #define RHIDrawVtx ANCIRHIDRAWVTX
-
-/**
- * 根据索引缓冲区渲染；
- * @param [i] RHIIdxBuffer 索引缓冲区句柄
- */
 typedef void (*ANCI_RHI_DRAW_IDX)(RHIIdxBuffer);
 ANCIAPI ANCI_RHI_DRAW_IDX ANCIRHIDRAWIDX;
 #define RHIDrawIdx ANCIRHIDRAWIDX
-
-/**
- * 设置渲染几何模式；
- * @param [i] RHIPolygonModeBits 三种模式，分别是：三点成面，三点成线，三点成点
- */
 typedef void (*ANCI_RHI_POLYGON_MODE)(RHIPolygonModeBits);
 ANCIAPI ANCI_RHI_POLYGON_MODE ANCIRHIPOLYGONMODE;
 #define RHIPolygonMode ANCIRHIPOLYGONMODE
-
-/**
- * 创建着色器对象；
- * @param [i] alsl RHI定义的alsl着色器文件
- */
 typedef RHIShader (*ANCI_RHI_CREATE_SHADER)(const char *alsl);
 ANCIAPI ANCI_RHI_CREATE_SHADER ANCIRHICREATESHADER;
 #define RHICreateShader ANCIRHICREATESHADER
-
-/**
- * 绑定着色器对象；
- * @param [i] RHIShader 着色器句柄
- */
 typedef void (*ANCI_RHI_BIND_SHADER)(RHIShader);
 ANCIAPI ANCI_RHI_BIND_SHADER ANCIRHIBINDSHADER;
 #define RHIBindShader ANCIRHIBINDSHADER
-
-/**
- * 传送uniform vec2类型的数据给着色器（以后可能会删除，目前是alsl会被解析成glsl，未来可能会替换为SPIR-V）；
- *
- * @param [i] RHIShader 着色器句柄
- * @param [i] name      uniform名称
- * @param [i] x         第一个数据
- * @param [i] y         第二个数据
- */
 typedef void (*ANCI_RHI_UNIFORM_FLOAT2)(RHIShader, const char *name, float x, float y);
 ANCIAPI ANCI_RHI_UNIFORM_FLOAT2 ANCIRHIUNIFORMFLOAT2;
 #define RHIUniform2f ANCIRHIUNIFORMFLOAT2
-
-/**
- * 传送uniform int类型的数据给着色器（以后可能会删除，目前是alsl会被解析成glsl，未来可能会替换为SPIR-V）；
- *
- * @param [i] RHIShader 着色器句柄
- * @param [i] name      uniform名称
- * @param [i] value     发送的int数据
- */
 typedef void (*ANCI_RHI_UNIFORM_INT)(RHIShader, const char *name, int value);
 ANCIAPI ANCI_RHI_UNIFORM_INT ANCIRHIUNIFORMINT;
 #define RHIUniform1i ANCIRHIUNIFORMINT
-
-/**
- * 传送uniform vec3类型的数据给着色器（以后可能会删除，目前是alsl会被解析成glsl，未来可能会替换为SPIR-V）；
- *
- * @param [i] RHIShader 着色器句柄
- * @param [i] name      uniform名称
- * @param [i] x         x
- * @param [i] y         y
- * @param [i] z         z
- */
 typedef void (*ANCI_RHI_UNIFORM_FLOAT3)(RHIShader, const char *name, float x, float y, float z);
 ANCIAPI ANCI_RHI_UNIFORM_FLOAT3 ANCIRHIUNIFORMFLOAT3;
 #define RHIUniform3f ANCIRHIUNIFORMFLOAT3
-
-/**
- * 传送uniform vec4类型的数据给着色器（以后可能会删除，目前是alsl会被解析成glsl，未来可能会替换为SPIR-V）；
- *
- * @param [i] RHIShader 着色器句柄
- * @param [i] name      uniform名称
- * @param [i] x         x
- * @param [i] y         y
- * @param [i] z         z
- * @param [i] w         w
- */
 typedef void (*ANCI_RHI_UNIFORM_FLOAT4)(RHIShader, const char *name, float x, float y, float z, float w);
 ANCIAPI ANCI_RHI_UNIFORM_FLOAT4 ANCIRHIUNIFORMFLOAT4;
 #define RHIUniform4f ANCIRHIUNIFORMFLOAT4
-
-/**
- * 传送uniform mat2类型的数据给着色器（以后可能会删除，目前是alsl会被解析成glsl，未来可能会替换为SPIR-V）；
- *
- * @param [i] RHIShader 着色器句柄
- * @param [i] name      uniform名称
- * @param [i] matrix    2x2矩阵
- */
 typedef void (*ANCI_RHI_UNIFORM_MATRIX2FV)(RHIShader, const char *name, float *matrix);
 ANCIAPI ANCI_RHI_UNIFORM_MATRIX2FV ANCIRHIUNIFORMMATRIX2FV;
 #define RHIUniformMatrix2fv ANCIRHIUNIFORMMATRIX2FV
-
-/**
- * 传送uniform mat3类型的数据给着色器（以后可能会删除，目前是alsl会被解析成glsl，未来可能会替换为SPIR-V）；
- *
- * @param [i] RHIShader 着色器句柄
- * @param [i] name      uniform名称
- * @param [i] matrix    3x3矩阵
- */
 typedef void (*ANCI_RHI_UNIFORM_MATRIX3FV)(RHIShader, const char *name, float *matrix);
 ANCIAPI ANCI_RHI_UNIFORM_MATRIX3FV ANCIRHIUNIFORMMATRIX3FV;
 #define RHIUniformMatrix3fv ANCIRHIUNIFORMMATRIX3FV
-
-/**
- * 传送uniform mat4类型的数据给着色器（以后可能会删除，目前是alsl会被解析成glsl，未来可能会替换为SPIR-V）；
- *
- * @param [i] RHIShader 着色器句柄
- * @param [i] name      uniform名称
- * @param [i] matrix    4x4矩阵
- */
 typedef void (*ANCI_RHI_UNIFORM_MATRIX4FV)(RHIShader shader, const char *name, float *matrix);
 ANCIAPI ANCI_RHI_UNIFORM_MATRIX4FV ANCIRHIUNIFORMMATRIX4FV;
 #define RHIUniformMatrix4fv ANCIRHIUNIFORMMATRIX4FV
-
-/**
- * 删除着色器句柄；
- * @param [i] RHIShader 着色器句柄
- */
 typedef void (*ANCI_RHI_DELETE_SHADER)(RHIShader);
 ANCIAPI ANCI_RHI_DELETE_SHADER ANCIRHIDELETESHADER;
 #define RHIDeleteShader ANCIRHIDELETESHADER
-
-/**
- * 清屏并设置清屏颜色；
-
- * @param [i] r
- * @param [i] g
- * @param [i] b
- * @param [i] a
- */
 typedef void (*ANCI_RHI_CLEAR_COLOR_BUFFER)(float r, float g, float b, float a);
 ANCIAPI ANCI_RHI_CLEAR_COLOR_BUFFER ANCIRHICLEARCOLORBUFFER;
 #define RHIClearColorBuffer ANCIRHICLEARCOLORBUFFER
-
-/**
- * 生成纹理对象；
- *
- * 在描述纹理对象的结构体中WRAP, 和Filter是设置纹理的环绕方式以及过滤方式。
- * 具体的话参考枚举：RHITextureWrapModeBits， RHITextureFilterModeBits，如果不明白是什么意思可以百度。
- *
- * @param [i] createInfo 描述纹理数据的结构体
- */
-typedef RHITexture (*ANCI_RHI_GEN_TEXTURE)(RHITextureCreateInfo *createInfo);
+typedef RHITexture (*ANCI_RHI_GEN_TEXTURE)(RHITextureCreateInfo *);
 ANCIAPI ANCI_RHI_GEN_TEXTURE ANCIRHIGENTEXTURE;
 #define RHIGenTexture ANCIRHIGENTEXTURE
-
-/**
- * 绑定纹理；
- * @param [i] RHITexture 纹理对象句柄
- */
 typedef void (*ANCI_RHI_BIND_TEXTURE)(RHITexture);
 ANCIAPI ANCI_RHI_BIND_TEXTURE ANCIRHIBINDTEXTURE;
 #define RHIBindTexture ANCIRHIBINDTEXTURE
-
-/**
- * 删除纹理；
- * @param [i] RHITexture 纹理对象句柄
- */
 typedef void (*ANCI_RHI_DELETE_TEXTURE)(RHITexture);
 ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDELETETEXTURE;
 #define RHIDeleteTexture ANCIRHIDELETETEXTURE
-
-/**
- * 设置一些功能的启用和关闭；
- * @param [i] RHIEnableBits 开关项枚举
- */
 typedef void (*ANCI_RHI_ENABLE)(RHIEnableBits, ancibool);
 ANCIAPI ANCI_RHI_ENABLE ANCIRHIENABLE;
 #define RHIEnable ANCIRHIENABLE
@@ -533,27 +339,9 @@ ANCIAPI ANCI_RHI_ENABLE ANCIRHIENABLE;
 ////////////////////////////////////////////////////////////////////////////////////
 //////                              设备输入                                   //////
 ////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * 获取键盘的按下状态；
- *
- * @param [i] RHIWindow         当前窗口句柄
- * @param [i] RHIKeyCodeBits    KeyCode，对应的键值
- */
 typedef RHIGetKeyMode (*ANCI_RHI_GET_KEY)(RHIWindow, RHIKeyCodeBits);
 ANCIAPI ANCI_RHI_GET_KEY ANCIRHIGETKEY;
 #define RHIGetKey ANCIRHIGETKEY
-
-/**
- * 设置鼠标输入模式；
- *
- * @param [i] RHIWindow                 当前窗口句柄
- * @param [i] RHIInputCursorModeBits    鼠标输入模式：
- *
- *            1. 显示模式
- *            2. 隐藏模式
- *            3. 隐藏并作用
- */
 typedef void (*ANCI_RHI_SET_CURSOR_INPUT_MODE)(RHIWindow, RHIInputCursorModeBits);
 ANCIAPI ANCI_RHI_SET_CURSOR_INPUT_MODE ANCIRHISETCURSORINPUTMODE;
 #define RHISetCursorMode ANCIRHISETCURSORINPUTMODE
@@ -571,49 +359,30 @@ ANCIAPI ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT ANCIRHIOPENGLMAKECONTEXTCURRENT;
 ////////////////////////////////////////////////////////////////////////////////////
 //////                            和窗口有关的函数                             //////
 ////////////////////////////////////////////////////////////////////////////////////
+typedef void (*F_RHI_WINDOW_RESIZE_CALLBACK)(RHIWindow, int, int);
 
-/**
- * 创建窗口
- *
- * @param [i] title     窗口标题
- * @param [i] width     窗口宽度
- * @param [i] height    窗口高度
- */
 typedef RHIWindow (*ANCI_RHI_CREATE_WINDOW)(const char *title, int width, int height);
 ANCIAPI ANCI_RHI_CREATE_WINDOW ANCIRHICREATEWIDNOW;
 #define RHICreateWindow ANCIRHICREATEWIDNOW
-
-/** 活动事件 */
 typedef void (*ANCI_RHI_WINDOW_POLL_EVENTS)();
 ANCIAPI ANCI_RHI_WINDOW_POLL_EVENTS ANCIRHIWINDOWPOLLEVENTS;
 #define RHIPollEvents ANCIRHIWINDOWPOLLEVENTS
-
-/**
- * 判断窗口是否点击关闭；
- * @param [i] RHIWindow 窗口句柄
- */
+typedef void (*ANCI_RHI_SET_USER_POINTER)(RHIWindow, void *);
+ANCIAPI ANCI_RHI_SET_USER_POINTER ANCIRHISETUSERPOINTER;
+#define RHISetUserPointer ANCIRHISETUSERPOINTER
+typedef void * (*ANCI_RHI_GET_USER_POINTER)(RHIWindow);
+ANCIAPI ANCI_RHI_GET_USER_POINTER ANCIRHIGETUSERPOINTER;
+#define RHIGetUserPointer ANCIRHIGETUSERPOINTER
 typedef ancibool (*ANCI_RHI_WINDOW_SHOULD_CLOSE)(RHIWindow);
 ANCIAPI ANCI_RHI_WINDOW_SHOULD_CLOSE ANCIRHIWINDOWSHOULDCLOSE;
 #define RHIWindowShouldClose ANCIRHIWINDOWSHOULDCLOSE
-
-/**
- * 设置窗口改变大小时的回调函数；
- * @param [i] RHIWindow                     窗口句柄
- * @param [i] F_RHI_WINDOW_RESIZE_CALLBACK  回调函数指针
- */
 typedef void (*ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK)(RHIWindow, F_RHI_WINDOW_RESIZE_CALLBACK);
 ANCIAPI ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK ANCIRHIWINDOWSETRESIZECALLBACK;
 #define RHISetWindowResizeCallback ANCIRHIWINDOWSETRESIZECALLBACK
-
-/**
- * 删除窗口；
- * @param [i] RHIWindow                     窗口句柄
- */
 typedef void (*ANCI_RHI_DELETE_WINDOW)(RHIWindow);
 ANCIAPI ANCI_RHI_DELETE_WINDOW ANCIRHIDELETWINDOW;
 #define RHIDeleteWindow ANCIRHIDELETWINDOW
 
-/** 销毁所有RHI的上下文数据； */
 typedef void (*ANCI_RHI_TERMINATE)();
 ANCIAPI ANCI_RHI_TERMINATE ANCIRHITERMINATE;
 #define RHITerminate ANCIRHITERMINATE

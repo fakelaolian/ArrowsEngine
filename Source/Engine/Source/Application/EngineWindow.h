@@ -19,6 +19,9 @@ public:
         inline bool ShouldClose()
         { return RHIWindowShouldClose(_window); };
 
+        inline void SetDimension(int x, int y)
+        { _dimension = {x, y}; }
+
         inline const RHIDimension &GetDimension() const
         { return _dimension; }
 

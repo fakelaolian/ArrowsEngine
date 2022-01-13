@@ -41,18 +41,12 @@ void SetUpImGui(RHIWindow h)
         ImGui_ImplOpenGL3_Init("#version 410");
 }
 
-void F_ResizeCallback(RHIWindow window, int w, int h)
-{
-        RHIViewport(0, 0, w, h);
-}
-
 EngineApplication::EngineApplication()
 {
         /* 初始化RHI函数 */
         RHIProcAddressInit(OpenGL);
 
         _window = make_anciptr<EngineWindow>("暗刺引擎", 800, 800);
-        RHISetWindowResizeCallback(_window->GetHandle(), F_ResizeCallback);
 
         SetUpImGui(_window->GetHandle());
 }
