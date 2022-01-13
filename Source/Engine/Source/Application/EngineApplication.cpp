@@ -101,14 +101,34 @@ void EngineApplication::StartEngine()
         if (!pixels)
                 throw std::runtime_error("加载纹理失败。");
 
-        RHITexture texture0 = RHIGenTexture(RHI_IMAGE_FORMAT_RGB, width, height, pixels);
+        RHITextureCreateInfo textureCreateInfo0 = {};
+        textureCreateInfo0.format = RHI_IMAGE_FORMAT_RGB;
+        textureCreateInfo0.width = width;
+        textureCreateInfo0.height = height;
+        textureCreateInfo0.pPixels = pixels;
+        textureCreateInfo0.textureWrapU = RHI_TEXTURE_WRAP_REPEAT;
+        textureCreateInfo0.textureWrapV = RHI_TEXTURE_WRAP_REPEAT;
+        textureCreateInfo0.textureFilterMin = RHI_TEXTURE_FILTER_NEAREST;
+        textureCreateInfo0.textureFilterMag = RHI_TEXTURE_FILTER_NEAREST;
+
+        RHITexture texture0 = RHIGenTexture(&textureCreateInfo0);
         stbi_image_free(pixels);
 
         pixels = stbi_load("../../../Assets/awesomeface.png", &width, &height, &ns, 0);
         if (!pixels)
                 throw std::runtime_error("加载纹理失败。");
 
-        RHITexture texture1 = RHIGenTexture(RHI_IMAGE_FORMAT_RGBA, width, height, pixels);
+        RHITextureCreateInfo textureCreateInfo1 = {};
+        textureCreateInfo1.format = RHI_IMAGE_FORMAT_RGBA;
+        textureCreateInfo1.width = width;
+        textureCreateInfo1.height = height;
+        textureCreateInfo1.pPixels = pixels;
+        textureCreateInfo1.textureWrapU = RHI_TEXTURE_WRAP_REPEAT;
+        textureCreateInfo1.textureWrapV = RHI_TEXTURE_WRAP_REPEAT;
+        textureCreateInfo1.textureFilterMin = RHI_TEXTURE_FILTER_NEAREST;
+        textureCreateInfo1.textureFilterMag = RHI_TEXTURE_FILTER_NEAREST;
+
+        RHITexture texture1 = RHIGenTexture(&textureCreateInfo1);
         stbi_image_free(pixels);
 
         RHIBindShader(shader);

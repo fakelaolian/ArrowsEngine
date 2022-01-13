@@ -274,35 +274,59 @@ void _opengl_clear_color(float r, float g, float b, float a)
         glClear(GL_COLOR_BUFFER_BIT);
 }
 
-RHITexture _opengl_gen_texture(RHIFormat imageFormat, anciu32 width, anciu32 height, anciuc *pixels)
+GLint _opengl_get_texture_wrap_value(RHITextureWrapMode mode)
+{
+        switch (mode) {
+                case RHI_TEXTURE_WRAP_REPEAT:           return GL_REPEAT;
+                case RHI_TEXTURE_WRAP_MIRRORED_REPEAT:  return GL_MIRRORED_REPEAT;
+                case RHI_TEXTURE_WRAP_CLAMP_TO_EDGE:    return GL_CLAMP_TO_EDGE;
+                case RHI_TEXTURE_WRAP_CLAMP_TO_BORDER:  return GL_CLAMP_TO_BORDER;
+        }
+
+        verror("不支持的纹理环绕方式。");
+        return NULL;
+}
+
+GLint _opengl_get_texture_filter_value(RHITextureFilterMode mode)
+{
+        switch (mode) {
+                case RHI_TEXTURE_FILTER_NEAREST: return GL_NEAREST;
+                case RHI_TEXTURE_FILTER_LINEAR:  return GL_LINEAR;
+        }
+
+        verror("不支持的纹理过滤方式。");
+        return NULL;
+}
+
+RHITexture _opengl_gen_texture(RHITextureCreateInfo *createInfo)
 {
         anciu32 textureId;
         GLint   format;
 
         format = GL_RGB;
 
-        if (imageFormat == RHI_IMAGE_FORMAT_RGB)
+        if (createInfo->format == RHI_IMAGE_FORMAT_RGB)
                 format = GL_RGB;
 
-        if (imageFormat == RHI_IMAGE_FORMAT_RGBA)
+        if (createInfo->format == RHI_IMAGE_FORMAT_RGBA)
                 format = GL_RGBA;
 
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_2D, textureId);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, createInfo->width, createInfo->height, 0, format, GL_UNSIGNED_BYTE, createInfo->pPixels);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         // 为当前绑定的纹理对象设置环绕、过滤方式
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _opengl_get_texture_wrap_value(createInfo->textureWrapU));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _opengl_get_texture_wrap_value(createInfo->textureWrapV));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMin));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMag));
 
         RHITextureGL *pTextureGL = vmalloc(sizeof(RHITextureGL));
         pTextureGL->textureId = textureId;
-        pTextureGL->width = width;
-        pTextureGL->height = height;
+        pTextureGL->width = createInfo->width;
+        pTextureGL->height = createInfo->height;
 
         return pTextureGL;
 }

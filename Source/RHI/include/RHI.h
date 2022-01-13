@@ -57,6 +57,29 @@ typedef struct RHIVtxBufferCreateInfo {
         anciu32 stride;
 } RHIVtxBufferCreateInfo;
 
+typedef enum RHITextureWrapMode {
+        RHI_TEXTURE_WRAP_REPEAT,
+        RHI_TEXTURE_WRAP_MIRRORED_REPEAT,
+        RHI_TEXTURE_WRAP_CLAMP_TO_EDGE,
+        RHI_TEXTURE_WRAP_CLAMP_TO_BORDER
+} RHITextureWrapMode;
+
+typedef enum RHITextureFilterMode {
+        RHI_TEXTURE_FILTER_NEAREST,
+        RHI_TEXTURE_FILTER_LINEAR
+} RHITextureFilterMode;
+
+typedef struct RHITextureCreateInfo {
+        RHIFormat format;
+        anciu32 width;
+        anciu32 height;
+        RHITextureWrapMode textureWrapU;
+        RHITextureWrapMode textureWrapV;
+        RHITextureFilterMode textureFilterMin;
+        RHITextureFilterMode textureFilterMag;
+        anciuc *pPixels;
+} RHITextureCreateInfo;
+
 typedef struct RHIDimension {
         int x;
         int y;
@@ -159,7 +182,7 @@ ANCIAPI ANCI_RHI_DELETE_SHADER ANCIRHIDELETESHADER;
 typedef void (*ANCI_RHI_CLEAR_COLOR_BUFFER)(float r, float g, float b, float a);
 ANCIAPI ANCI_RHI_CLEAR_COLOR_BUFFER ANCIRHICLEARCOLORBUFFER;
 #define RHIClearColorBuffer ANCIRHICLEARCOLORBUFFER
-typedef RHITexture (*ANCI_RHI_GEN_TEXTURE)(RHIFormat format, anciu32 width, anciu32 height, anciuc *pixels);
+typedef RHITexture (*ANCI_RHI_GEN_TEXTURE)(RHITextureCreateInfo *);
 ANCIAPI ANCI_RHI_GEN_TEXTURE ANCIRHIGENTEXTURE;
 #define RHIGenTexture ANCIRHIGENTEXTURE
 typedef void (*ANCI_RHI_BIND_TEXTURE)(RHITexture);
