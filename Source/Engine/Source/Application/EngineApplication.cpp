@@ -9,6 +9,8 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include <ctime>
 
+#include "Camera/Camera.hpp"
+
 void SetUpImGui(ANCI_WINDOW_HANDLE h)
 {
         // Setup Dear ImGui context
@@ -175,6 +177,21 @@ void EngineApplication::StartEngine()
         ancibool isEnableDepthTest = RHI_TRUE;
         clock_t renderTime;
 
+        ancivec3 cubePositions[] = {
+                glm::vec3( 0.0f,  0.0f,  0.0f),
+                glm::vec3( 2.0f,  5.0f, -15.0f),
+                glm::vec3(-1.5f, -2.2f, -2.5f),
+                glm::vec3(-3.8f, -2.0f, -12.3f),
+                glm::vec3( 2.4f, -0.4f, -3.5f),
+                glm::vec3(-1.7f,  3.0f, -7.5f),
+                glm::vec3( 1.3f, -2.0f, -2.5f),
+                glm::vec3( 1.5f,  2.0f, -2.5f),
+                glm::vec3( 1.5f,  0.2f, -1.5f),
+                glm::vec3(-1.3f,  1.0f, -1.5f)
+        };
+
+        Camera camera{};
+
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
 
@@ -226,22 +243,28 @@ void EngineApplication::StartEngine()
                         ImGui::Text("RenderTime: %ldms", renderTime);
                 } ImGui::End();
 
-                ancimat4 model{1.0f};
-                ancimat4 projection{1.0f};
-                ancimat4 view{1.0f};
-                model = glm::rotate(model, glm::radians(rotateDegrees), rotateXZY);
-                view = glm::translate(view, viewXYZ);
-                RHIDimension dimension = _window->GetDimension();
-                projection = glm::perspective(glm::radians(degrees), (float) dimension.x / (float) dimension.y, zNear, zFar);
-
-                RHIUniformMatrix4fv(shader, "model", glm::value_ptr(model));
-                RHIUniformMatrix4fv(shader, "view", glm::value_ptr(view));
-                RHIUniformMatrix4fv(shader, "proj", glm::value_ptr(projection));
-
                 RHIBindTexture(texture0);
                 RHIBindTexture(texture1);
                 RHIBindVtxBuffer(vtxBuffer);
-                RHIDrawVtx(0, 36);
+
+                for (ancivec3 pos : cubePositions) {
+                        ancimat4 model{1.0f};
+                        ancimat4 projection{1.0f};
+                        ancimat4 view{1.0f};
+                        model = glm::rotate(model, glm::radians(rotateDegrees), rotateXZY);
+                        model = glm::translate(model, pos);
+
+                        view = glm::translate(view, viewXYZ);
+                        RHIDimension dimension = _window->GetDimension();
+                        projection = glm::perspective(glm::radians(degrees), (float) dimension.x / (float) dimension.y, zNear, zFar);
+
+                        ancimat4 viewMatrix = camera.GetViewMatrix();
+                        RHIUniformMatrix4fv(shader, "model", glm::value_ptr(model));
+                        RHIUniformMatrix4fv(shader, "view", glm::value_ptr(viewMatrix));
+                        RHIUniformMatrix4fv(shader, "proj", glm::value_ptr(projection));
+
+                        RHIDrawVtx(0, 36);
+                }
 
                 // Rendering
                 ImGui::Render();
