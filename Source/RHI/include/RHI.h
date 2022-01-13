@@ -170,7 +170,17 @@ ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDELETETEXTURE;
 #define RHIDeleteTexture ANCIRHIDELETETEXTURE
 
 ////////////////////////////////////////////////////////////////////////////////////
-//////                            和窗口有关的函数                              //////
+//////                    暴露给ImGui或者其他库使用                             //////
+////////////////////////////////////////////////////////////////////////////////////
+typedef RHIWindow (*ANCI_RHI_OPENGL_GET_CURRENT_CONTEXT)();
+ANCIAPI ANCI_RHI_OPENGL_GET_CURRENT_CONTEXT ANCIRHIOPENGLGETCURRENTCONTEXT;
+#define RHIGetCurrentContext_GL ANCIRHIOPENGLGETCURRENTCONTEXT
+typedef void (*ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT)(RHIWindow);
+ANCIAPI ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT ANCIRHIOPENGLMAKECONTEXTCURRENT;
+#define RHIMakeContextCurrent_GL ANCIRHIOPENGLMAKECONTEXTCURRENT
+
+////////////////////////////////////////////////////////////////////////////////////
+//////                            和窗口有关的函数                             //////
 ////////////////////////////////////////////////////////////////////////////////////
 typedef void (*F_RHI_WINDOW_RESIZE_CALLBACK)(RHIWindow, int, int);
 
