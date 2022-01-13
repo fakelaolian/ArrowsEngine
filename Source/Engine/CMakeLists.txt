@@ -18,8 +18,6 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         # --* Application *-- #
         Source/Application/EngineWindow.cpp
         Source/Application/EngineApplication.cpp
-        # --* Alsl *-- #
-        Source/Alsl/Alsl.cpp
         # --* ThirdParty/glad *-- #
         ThirdParty/glad/src/glad.c
         # --* ThirdParty/ImGui *-- #

@@ -7,13 +7,19 @@
 ANCI_RHI_CREATE_WINDOW                  ANCIRHICREATEWIDNOW                      = NULL;
 ANCI_RHI_WINDOW_SHOULD_CLOSE            ANCIRHIWINDOWSHOULDCLOSE                 = NULL;
 ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK     ANCIRHIWINDOWSETRESIZECALLBACK           = NULL;
+ANCI_RHI_WINDOW_SET_CURSOR_CALLBACK     ANCIRHIWINDOWSETCURSORCALLBACK           = NULL;
 ANCI_RHI_WINDOW_POLL_EVENTS             ANCIRHIWINDOWPOLLEVENTS                  = NULL;
 ANCI_RHI_DELETE_WINDOW                  ANCIRHIDELETWINDOW                       = NULL;
 ANCI_RHI_TERMINATE                      ANCIRHITERMINATE                         = NULL;
 ANCI_RHI_OPENGL_GET_CURRENT_CONTEXT     ANCIRHIOPENGLGETCURRENTCONTEXT           = NULL;
 ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT    ANCIRHIOPENGLMAKECONTEXTCURRENT          = NULL;
+ANCI_RHI_GET_KEY                        ANCIRHIGETKEY                            = NULL;
+ANCI_RHI_SET_CURSOR_INPUT_MODE          ANCIRHISETCURSORINPUTMODE                = NULL;
+ANCI_RHI_SET_USER_POINTER               ANCIRHISETUSERPOINTER                    = NULL;
+ANCI_RHI_GET_USER_POINTER               ANCIRHIGETUSERPOINTER                    = NULL;
 
 F_RHI_WINDOW_RESIZE_CALLBACK            _window_resize_callback                  = NULL;
+F_RHI_WINDOW_CURSOR_CALLBACK            _window_cursor_callback                  = NULL;
 
 RHIWindow _glfw_create_window(const char *title, int width, int height)
 {
@@ -39,14 +45,10 @@ RHIWindow _glfw_create_window(const char *title, int width, int height)
 }
 
 ancibool _glfw_should_clsoe(RHIWindow window)
-{
-        return glfwWindowShouldClose((GLFWwindow *) window);
-}
+{ return glfwWindowShouldClose((GLFWwindow *) window); }
 
 void _glfw_set_window_resize_callback0(GLFWwindow *window, int x, int y)
-{
-        _window_resize_callback(window, x, y);
-}
+{ _window_resize_callback(window, x, y); }
 
 void _glfw_set_window_resize_callback(RHIWindow window, F_RHI_WINDOW_RESIZE_CALLBACK fcallback)
 {
@@ -54,29 +56,47 @@ void _glfw_set_window_resize_callback(RHIWindow window, F_RHI_WINDOW_RESIZE_CALL
         glfwSetFramebufferSizeCallback((GLFWwindow *) window, _glfw_set_window_resize_callback0);
 }
 
-void _glfw_poll_events()
+void _glfw_set_window_cursor_callback0(GLFWwindow *window, double x, double y)
+{ _window_cursor_callback(window, x, y); }
+
+void _glfw_set_window_cursor_callback(RHIWindow window, F_RHI_WINDOW_CURSOR_CALLBACK fcallback)
 {
-        glfwPollEvents();
+        _window_cursor_callback = fcallback;
+        glfwSetCursorPosCallback((GLFWwindow *) window, _glfw_set_window_cursor_callback0);
 }
+
+void _glfw_poll_events()
+{ glfwPollEvents(); }
 
 void _glfw_destroy_window(RHIWindow window)
-{
-        glfwDestroyWindow((GLFWwindow *) window);
-}
+{ glfwDestroyWindow((GLFWwindow *) window); }
 
 void _glfw_terminate()
-{
-        glfwTerminate();
-}
+{ glfwTerminate(); }
 
 RHIWindow _glfw_get_current_context()
-{
-        return glfwGetCurrentContext();
-}
+{ return glfwGetCurrentContext(); }
 
 void _glfw_make_context_current(RHIWindow h)
+{ glfwMakeContextCurrent((GLFWwindow *) h); }
+
+ancibool _glfw_get_key(RHIWindow window, RHIKeyCodeBits keycode)
+{ return (glfwGetKey((GLFWwindow *) window, keycode) == GLFW_PRESS) ? RHI_PRESS : RHI_RELEASE; }
+
+void _glfw_set_user_pointer(RHIWindow window, void *any)
+{ glfwSetWindowUserPointer(window, any); }
+
+void *_glfw_get_user_pointer(RHIWindow window)
+{ return glfwGetWindowUserPointer(window); }
+
+void _glfw_set_cursor_mode(RHIWindow window, RHIInputCursorModeBits bit)
 {
-        glfwMakeContextCurrent((GLFWwindow *) h);
+        switch (bit) {
+
+                case RHI_CURSOR_NORMAL:  glfwSetInputMode((GLFWwindow *) window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);   break;
+                case RHI_CURSOR_HIDDEN:  glfwSetInputMode((GLFWwindow *) window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);   break;
+                case RHI_CURSOR_DISABLE: glfwSetInputMode((GLFWwindow *) window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); break;
+        }
 }
 
 void _load_glfw_functions()
@@ -98,4 +118,9 @@ void _load_glfw_functions()
         ANCIRHITERMINATE                = _glfw_terminate;
         ANCIRHIOPENGLGETCURRENTCONTEXT  = _glfw_get_current_context;
         ANCIRHIOPENGLMAKECONTEXTCURRENT = _glfw_make_context_current;
+        ANCIRHIGETKEY                   = _glfw_get_key;
+        ANCIRHISETCURSORINPUTMODE       = _glfw_set_cursor_mode;
+        ANCIRHISETUSERPOINTER           = _glfw_set_user_pointer;
+        ANCIRHIGETUSERPOINTER           = _glfw_get_user_pointer;
+        ANCIRHIWINDOWSETCURSORCALLBACK  = _glfw_set_window_cursor_callback;
 }

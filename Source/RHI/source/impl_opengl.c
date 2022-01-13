@@ -32,8 +32,11 @@ ANCI_RHI_CLEAR_COLOR_BUFFER             ANCIRHICLEARCOLORBUFFER           = NULL
 ANCI_RHI_GEN_TEXTURE                    ANCIRHIGENTEXTURE                 = NULL;
 ANCI_RHI_DELETE_TEXTURE                 ANCIRHIDELETETEXTURE              = NULL;
 ANCI_RHI_BIND_TEXTURE                   ANCIRHIBINDTEXTURE                = NULL;
+ANCI_RHI_ENABLE                         ANCIRHIENABLE                     = NULL;
 
-anciu32 _activeTexture                                                    = 0;
+GLbitfield                              _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
+ancibool                                _gl_depth_test_enable_state       = RHI_FALSE;
+anciu32                                 _activeTexture                    = 0;
 
 /** OpenGL的Vertex Buffer实现 */
 typedef struct RHIVtxBufferGL {
@@ -68,8 +71,8 @@ typedef struct RHIShaderGL {
 #define IShader RHIShaderGL *
 #define CONV_SHADER(ptr) ((RHIShaderGL *) (ptr))
 
-float _glfw_get_time        () { return glfwGetTime(); }
-void _opengl_viewport    (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
+float _glfw_get_time () { return glfwGetTime(); }
+void _opengl_viewport (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
 void _opengl_swap_buffers (RHIWindow h) { glfwSwapBuffers((GLFWwindow *) h); }
 
 RHIVtxBuffer _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferCreateInfo *createInfo)
@@ -146,9 +149,9 @@ void _opengl_bind_vtx_buffer(RHIVtxBuffer vtxBuffer)
         glBindVertexArray(CONV_VTX(vtxBuffer)->vao);
 }
 
-void _opengl_draw_vtx()
+void _opengl_draw_vtx(anciu32 index, anciu32 offset)
 {
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, index, offset);
         _activeTexture = 0;
 }
 
@@ -271,38 +274,62 @@ void _opengl_delete_shader(RHIShader shader)
 void _opengl_clear_color(float r, float g, float b, float a)
 {
         glClearColor(r, g, b, a);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(_gl_clear_bits);
 }
 
-RHITexture _opengl_gen_texture(RHIFormat imageFormat, anciu32 width, anciu32 height, anciuc *pixels)
+GLint _opengl_get_texture_wrap_value(RHITextureWrapModeBits mode)
+{
+        switch (mode) {
+                case RHI_TEXTURE_WRAP_REPEAT:           return GL_REPEAT;
+                case RHI_TEXTURE_WRAP_MIRRORED_REPEAT:  return GL_MIRRORED_REPEAT;
+                case RHI_TEXTURE_WRAP_CLAMP_TO_EDGE:    return GL_CLAMP_TO_EDGE;
+                case RHI_TEXTURE_WRAP_CLAMP_TO_BORDER:  return GL_CLAMP_TO_BORDER;
+        }
+
+        verror("不支持的纹理环绕方式。");
+        return 0;
+}
+
+GLint _opengl_get_texture_filter_value(RHITextureFilterModeBits mode)
+{
+        switch (mode) {
+                case RHI_TEXTURE_FILTER_NEAREST: return GL_NEAREST;
+                case RHI_TEXTURE_FILTER_LINEAR:  return GL_LINEAR;
+        }
+
+        verror("不支持的纹理过滤方式。");
+        return 0;
+}
+
+RHITexture _opengl_gen_texture(RHITextureCreateInfo *createInfo)
 {
         anciu32 textureId;
         GLint   format;
 
         format = GL_RGB;
 
-        if (imageFormat == RHI_IMAGE_FORMAT_RGB)
+        if (createInfo->format == RHI_IMAGE_FORMAT_RGB)
                 format = GL_RGB;
 
-        if (imageFormat == RHI_IMAGE_FORMAT_RGBA)
+        if (createInfo->format == RHI_IMAGE_FORMAT_RGBA)
                 format = GL_RGBA;
 
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_2D, textureId);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, createInfo->width, createInfo->height, 0, format, GL_UNSIGNED_BYTE, createInfo->pPixels);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         // 为当前绑定的纹理对象设置环绕、过滤方式
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _opengl_get_texture_wrap_value(createInfo->textureWrapU));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _opengl_get_texture_wrap_value(createInfo->textureWrapV));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMin));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMag));
 
         RHITextureGL *pTextureGL = vmalloc(sizeof(RHITextureGL));
         pTextureGL->textureId = textureId;
-        pTextureGL->width = width;
-        pTextureGL->height = height;
+        pTextureGL->width = createInfo->width;
+        pTextureGL->height = createInfo->height;
 
         return pTextureGL;
 }
@@ -321,6 +348,26 @@ void _opengl_delete_texture(RHITexture texture)
         glDeleteTextures(1, &itexture->textureId);
 
         vfree(itexture);
+}
+
+void _opengl_enbale(RHIEnableBits enable, ancibool is_enable)
+{
+        switch (enable) {
+                case RHI_DEPTH_TEST: {
+                        if (_gl_depth_test_enable_state == is_enable) return;
+
+                        if (is_enable) {
+                                glEnable(GL_DEPTH_TEST);
+                                _gl_clear_bits |= GL_DEPTH_BUFFER_BIT;
+                        } else {
+                                glDisable(GL_DEPTH_TEST);
+                                _gl_clear_bits ^= GL_DEPTH_BUFFER_BIT;
+                        }
+
+                        _gl_depth_test_enable_state = is_enable;
+                        return;
+                }
+        }
 }
 
 void OpenGLRHIImpl()
@@ -351,5 +398,6 @@ void OpenGLRHIImpl()
         ANCIRHIGENTEXTURE                       = _opengl_gen_texture;
         ANCIRHIDELETETEXTURE                    = _opengl_delete_texture;
         ANCIRHIBINDTEXTURE                      = _opengl_bind_texture;
+        ANCIRHIENABLE                           = _opengl_enbale;
 }
 

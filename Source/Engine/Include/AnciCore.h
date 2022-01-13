@@ -5,18 +5,9 @@
 #  define ANCIAPI extern
 #endif
 
-#ifndef ANCI_WINDOW_HANDLE
-#  define ANCI_WINDOW_HANDLE void *
-#endif
-
 #include <memory>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#ifndef String
-#  include <string>
-#  define String std::string
-#endif
 
 typedef unsigned char       anciuc;
 typedef unsigned int        anciu32;
