@@ -20,6 +20,7 @@ ANCI_RHI_DRAW_IDX                       ANCIRHIDRAWIDX                    = NULL
 ANCI_RHI_POLYGON_MODE                   ANCIRHIPOLYGONMODE                = NULL;
 ANCI_RHI_CREATE_SHADER                  ANCIRHICREATESHADER               = NULL;
 ANCI_RHI_BIND_SHADER                    ANCIRHIBINDSHADER                 = NULL;
+ANCI_RHI_UNIFORM_FLOAT1                 ANCIRHIUNIFORMFLOAT1              = NULL;
 ANCI_RHI_UNIFORM_FLOAT2                 ANCIRHIUNIFORMFLOAT2              = NULL;
 ANCI_RHI_UNIFORM_INT                    ANCIRHIUNIFORMINT                 = NULL;
 ANCI_RHI_UNIFORM_FLOAT3                 ANCIRHIUNIFORMFLOAT3              = NULL;
@@ -34,6 +35,7 @@ ANCI_RHI_GEN_TEXTURE                    ANCIRHIGENTEXTURE                 = NULL
 ANCI_RHI_DELETE_TEXTURE                 ANCIRHIDELETETEXTURE              = NULL;
 ANCI_RHI_BIND_TEXTURE                   ANCIRHIBINDTEXTURE                = NULL;
 ANCI_RHI_ENABLE                         ANCIRHIENABLE                     = NULL;
+ANCI_RHI_GET_TEXTURE_ID                 ANCIRHIGETTEXTUREID               = NULL;
 
 GLbitfield                              _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
 ancibool                                _gl_depth_test_enable_state       = RHI_FALSE;
@@ -234,6 +236,11 @@ void _opengl_uniform1i(RHIShader shader, const char *name, int value)
         glUniform1i(glGetUniformLocation(CONV_SHADER(shader)->program, name), value);
 }
 
+void _opengl_uniform1f(RHIShader shader, const char *name, float x)
+{
+        glUniform1f(glGetUniformLocation(CONV_SHADER(shader)->program, name), x);
+}
+
 void _opengl_uniform2f(RHIShader shader, const char *name, float x, float y)
 {
         glUniform2f(glGetUniformLocation(CONV_SHADER(shader)->program, name), x, y);
@@ -376,6 +383,11 @@ void _opengl_enbale(RHIEnableBits enable, ancibool is_enable)
         }
 }
 
+RHIID _opengl_get_texture_id(RHITexture texture)
+{
+        return CONV_TEX(texture)->textureId;
+}
+
 void OpenGLRHIImpl()
 {
         _load_glfw_functions();
@@ -393,6 +405,7 @@ void OpenGLRHIImpl()
         ANCIRHICREATESHADER                     = _opengl_create_shader;
         ANCIRHIBINDSHADER                       = _opengl_bind_shader;
         ANCIRHIUNIFORMINT                       = _opengl_uniform1i;
+        ANCIRHIUNIFORMFLOAT1                    = _opengl_uniform1f;
         ANCIRHIUNIFORMFLOAT2                    = _opengl_uniform2f;
         ANCIRHIUNIFORMFLOAT3                    = _opengl_uniform3f;
         ANCIRHIUNIFORMFLOAT3V                   = _opengl_uniform3fv;
@@ -406,5 +419,6 @@ void OpenGLRHIImpl()
         ANCIRHIDELETETEXTURE                    = _opengl_delete_texture;
         ANCIRHIBINDTEXTURE                      = _opengl_bind_texture;
         ANCIRHIENABLE                           = _opengl_enbale;
+        ANCIRHIGETTEXTUREID                     = _opengl_get_texture_id;
 }
 

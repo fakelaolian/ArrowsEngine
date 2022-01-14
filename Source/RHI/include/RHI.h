@@ -6,16 +6,17 @@
 extern "C" {
 #endif
 
+typedef unsigned char   anciuc;
+typedef unsigned int    anciu32;
+typedef unsigned long   anciu64;
+typedef unsigned        ancibool;
+
 typedef void *          RHIWindow;
 typedef void *          RHIVtxBuffer;
 typedef void *          RHIIdxBuffer;
 typedef void *          RHITexture;
 typedef void *          RHIShader;
-
-typedef unsigned char   anciuc;
-typedef unsigned int    anciu32;
-typedef unsigned long   anciu64;
-typedef unsigned        ancibool;
+typedef anciu32         RHIID;
 
 #define RHI_TRUE        1U
 #define RHI_FALSE       0U
@@ -301,6 +302,9 @@ ANCIAPI ANCI_RHI_CREATE_SHADER ANCIRHICREATESHADER;
 typedef void (*ANCI_RHI_BIND_SHADER)(RHIShader);
 ANCIAPI ANCI_RHI_BIND_SHADER ANCIRHIBINDSHADER;
 #define RHIBindShader ANCIRHIBINDSHADER
+typedef void (*ANCI_RHI_UNIFORM_FLOAT1)(RHIShader, const char *name, float x);
+ANCIAPI ANCI_RHI_UNIFORM_FLOAT1 ANCIRHIUNIFORMFLOAT1;
+#define RHIUniform1f ANCIRHIUNIFORMFLOAT1
 typedef void (*ANCI_RHI_UNIFORM_FLOAT2)(RHIShader, const char *name, float x, float y);
 ANCIAPI ANCI_RHI_UNIFORM_FLOAT2 ANCIRHIUNIFORMFLOAT2;
 #define RHIUniform2f ANCIRHIUNIFORMFLOAT2
@@ -343,6 +347,9 @@ ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDELETETEXTURE;
 typedef void (*ANCI_RHI_ENABLE)(RHIEnableBits, ancibool);
 ANCIAPI ANCI_RHI_ENABLE ANCIRHIENABLE;
 #define RHIEnable ANCIRHIENABLE
+typedef RHIID (*ANCI_RHI_GET_TEXTURE_ID)(RHITexture);
+ANCIAPI ANCI_RHI_GET_TEXTURE_ID ANCIRHIGETTEXTUREID;
+#define RHIGetTextureId ANCIRHIGETTEXTUREID
 
 ////////////////////////////////////////////////////////////////////////////////////
 //////                              设备输入                                   //////
