@@ -31,11 +31,14 @@ ANCI_RHI_UNIFORM_MATRIX3FV              ANCIRHIUNIFORMMATRIX3FV           = NULL
 ANCI_RHI_UNIFORM_MATRIX4FV              ANCIRHIUNIFORMMATRIX4FV           = NULL;
 ANCI_RHI_DELETE_SHADER                  ANCIRHIDELETESHADER               = NULL;
 ANCI_RHI_CLEAR_COLOR_BUFFER             ANCIRHICLEARCOLORBUFFER           = NULL;
-ANCI_RHI_GEN_TEXTURE                    ANCIRHIGENTEXTURE                 = NULL;
+ANCI_RHI_GEN_TEXTURE2D                  ANCIRHIGENTEXTURE2D               = NULL;
 ANCI_RHI_DELETE_TEXTURE                 ANCIRHIDELETETEXTURE              = NULL;
-ANCI_RHI_BIND_TEXTURE                   ANCIRHIBINDTEXTURE                = NULL;
+ANCI_RHI_BIND_TEXTURE2D                 ANCIRHIBINDTEXTURE2D              = NULL;
 ANCI_RHI_ENABLE                         ANCIRHIENABLE                     = NULL;
 ANCI_RHI_GET_TEXTURE_ID                 ANCIRHIGETTEXTUREID               = NULL;
+ANCI_RHI_BIND_TEXTURE_CUBE_MAP          ANCIRHIBINDTEXTURECUBEMAP         = NULL;
+ANCI_RHI_CREATE_TEXTURE_CUBE_MAP        ANCIRHICREATETEXTURECUBEMAP       = NULL;
+ANCI_RHI_DEPTH_OPTION                   ANCIRHIDEPTHOPTION                = NULL;
 
 GLbitfield                              _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
 ancibool                                _gl_depth_test_enable_state       = RHI_FALSE;
@@ -290,6 +293,20 @@ void _opengl_clear_color(float r, float g, float b, float a)
         glClear(_gl_clear_bits);
 }
 
+GLint _opengl_get_format(RHIFormat format)
+{
+        if (format == RHI_IMAGE_FORMAT_RGB)
+                return GL_RGB;
+
+        if (format == RHI_IMAGE_FORMAT_RGBA)
+                return GL_RGBA;
+
+        if (format == RHI_IMAGE_FORMAT_RED)
+                return GL_RED;
+
+        return GL_RGBA;
+}
+
 GLint _opengl_get_texture_wrap_value(RHITextureWrapModeBits mode)
 {
         switch (mode) {
@@ -314,28 +331,19 @@ GLint _opengl_get_texture_filter_value(RHITextureFilterModeBits mode)
         return 0;
 }
 
-RHITexture _opengl_gen_texture(RHITextureCreateInfo *createInfo)
+RHITexture _opengl_gen_texture2d(RHITexture2DCreateInfo *createInfo)
 {
         anciu32 textureId;
-        GLint   format;
-
-        format = GL_RGB;
-
-        if (createInfo->format == RHI_IMAGE_FORMAT_RGB)
-                format = GL_RGB;
-
-        if (createInfo->format == RHI_IMAGE_FORMAT_RGBA)
-                format = GL_RGBA;
 
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_2D, textureId);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, format, createInfo->width, createInfo->height, 0, format, GL_UNSIGNED_BYTE, createInfo->pPixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, _opengl_get_format(createInfo->format),
+                     createInfo->width, createInfo->height, 0, _opengl_get_format(createInfo->format), GL_UNSIGNED_BYTE, createInfo->pPixels);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         // 为当前绑定的纹理对象设置环绕、过滤方式
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _opengl_get_texture_wrap_value(createInfo->textureWrapU));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _opengl_get_texture_wrap_value(createInfo->textureWrapV));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _opengl_get_texture_wrap_value(createInfo->textureWrapS));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _opengl_get_texture_wrap_value(createInfo->textureWrapT));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMin));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMag));
 
@@ -388,6 +396,62 @@ RHIID _opengl_get_texture_id(RHITexture texture)
         return CONV_TEX(texture)->textureId;
 }
 
+RHITexture _opengl_create_texture_cube_map(RHITextureCubeCreateInfo *createInfo)
+{
+        anciu32 textureId;
+        glGenTextures(1, &textureId);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
+
+        for (int i = 0; i < 6; i++) {
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                             0,
+                             _opengl_get_format(createInfo->format[i]),
+                             createInfo->width[i],
+                             createInfo->height[i],
+                             0,
+                             _opengl_get_format(createInfo->format[i]),
+                             GL_UNSIGNED_BYTE,
+                             createInfo->pPixels[i]);
+        }
+
+        // 为当前绑定的纹理对象设置环绕、过滤方式
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, _opengl_get_texture_wrap_value(createInfo->textureWrapS));
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, _opengl_get_texture_wrap_value(createInfo->textureWrapT));
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, _opengl_get_texture_wrap_value(createInfo->textureWrapR));
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMin));
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMag));
+
+        RHITextureGL *pTextureGL = vmalloc(sizeof(RHITextureGL));
+        pTextureGL->textureId = textureId;
+
+        return pTextureGL;
+}
+
+void _opengl_bind_texture_cube_map(RHITexture texture)
+{
+        ITexture itexture = CONV_TEX(texture);
+        glActiveTexture(GL_TEXTURE0 + _activeTexture);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, itexture->textureId);
+        _activeTexture++;
+}
+
+void _opengl_depth_option(RHIDepthOptionBits bits)
+{
+        GLenum op;
+        switch(bits) {
+                case RHI_DEPTH_OPTION_ALWAYS: op = GL_ALWAYS; break;
+                case RHI_DEPTH_OPTION_NEVER: op = GL_NEVER; break;
+                case RHI_DEPTH_OPTION_EQ: op = GL_EQUAL;break;
+                case RHI_DEPTH_OPTION_NE: op = GL_NOTEQUAL; break;
+                case RHI_DEPTH_OPTION_LT: op = GL_LESS; break;
+                case RHI_DEPTH_OPTION_LE: op = GL_LEQUAL; break;
+                case RHI_DEPTH_OPTION_GT: op = GL_GREATER; break;
+                case RHI_DEPTH_OPTION_GE: op = GL_GEQUAL; break;
+        }
+
+        glDepthFunc(op);
+}
+
 void OpenGLRHIImpl()
 {
         _load_glfw_functions();
@@ -415,10 +479,15 @@ void OpenGLRHIImpl()
         ANCIRHIUNIFORMMATRIX4FV                 = _opengl_uniform_matrix4fv;
         ANCIRHIDELETESHADER                     = _opengl_delete_shader;
         ANCIRHICLEARCOLORBUFFER                 = _opengl_clear_color;
-        ANCIRHIGENTEXTURE                       = _opengl_gen_texture;
+        ANCIRHIGENTEXTURE2D                     = _opengl_gen_texture2d;
         ANCIRHIDELETETEXTURE                    = _opengl_delete_texture;
-        ANCIRHIBINDTEXTURE                      = _opengl_bind_texture;
+        ANCIRHIBINDTEXTURE2D                    = _opengl_bind_texture;
         ANCIRHIENABLE                           = _opengl_enbale;
         ANCIRHIGETTEXTUREID                     = _opengl_get_texture_id;
+        ANCIRHICREATETEXTURECUBEMAP             = _opengl_create_texture_cube_map;
+        ANCIRHIBINDTEXTURECUBEMAP               = _opengl_bind_texture_cube_map;
+        ANCIRHIBINDTEXTURECUBEMAP               = _opengl_bind_texture_cube_map;
+        ANCIRHIBINDTEXTURECUBEMAP               = _opengl_bind_texture_cube_map;
+        ANCIRHIDEPTHOPTION                      = _opengl_depth_option;
 }
 

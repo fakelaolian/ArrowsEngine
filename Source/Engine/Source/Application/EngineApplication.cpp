@@ -8,6 +8,9 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include <ctime>
+#include <vector>
+
+#include <glad/glad.h>
 
 #include "Camera/Camera.hpp"
 
@@ -133,21 +136,43 @@ void EndImGui()
         }
 }
 
-void UpdateMVPMatrix(EngineWindow &engineWindow, Camera &camera, RHIShader shader, ancivec3 modelPos)
+void LoadCubeMap(RHITexture *cubeTexture)
 {
-        ancimat4 model{1.0f};
-        ancimat4 projection{1.0f};
-        ancimat4 view{1.0f};
-        model = glm::rotate(model, glm::radians(-55.0f), ancivec3(1.0f, 0.0f, 0.0f));
-        model = glm::translate(model, modelPos);
+        ////////////////////////////////////////////////////////////
+        ////////                   天空盒                    ////////
+        ////////////////////////////////////////////////////////////
+        std::vector<const char *> skyboxsImage = {
+                "../../../Assets/skyboxs/a/right.jpg",
+                "../../../Assets/skyboxs/a/left.jpg",
+                "../../../Assets/skyboxs/a/top.jpg",
+                "../../../Assets/skyboxs/a/bottom.jpg",
+                "../../../Assets/skyboxs/a/front.jpg",
+                "../../../Assets/skyboxs/a/back.jpg",
+        };
 
-        RHIDimension2i dimension = engineWindow.GetDimension();
-        projection = glm::perspective(glm::radians(45.0f), (float) dimension.x / (float) dimension.y, 0.01f, 100.0f);
+        RHITextureCubeCreateInfo skyboxCreateInfo = {};
+        skyboxCreateInfo.textureFilterMin = RHI_TEXTURE_FILTER_LINEAR;
+        skyboxCreateInfo.textureFilterMag = RHI_TEXTURE_FILTER_LINEAR;
+        skyboxCreateInfo.textureWrapS = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
+        skyboxCreateInfo.textureWrapT = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
+        skyboxCreateInfo.textureWrapR = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
 
-        ancimat4 viewMatrix = camera.GetViewMatrix();
-        RHIUniformMatrix4fv(shader, "model", glm::value_ptr(model));
-        RHIUniformMatrix4fv(shader, "view", glm::value_ptr(viewMatrix));
-        RHIUniformMatrix4fv(shader, "proj", glm::value_ptr(projection));
+        int w = 0, h = 0, nr = 0;
+        for (anciu32 i = 0; i < skyboxsImage.size(); i++) {
+                anciuc *pixels = stbi_load(skyboxsImage[i], &w, &h, &nr, 0);
+
+                skyboxCreateInfo.format[i] = RHI_IMAGE_FORMAT_RGB;
+                skyboxCreateInfo.pPixels[i] = pixels;
+                skyboxCreateInfo.width[i] = w;
+                skyboxCreateInfo.height[i] = h;
+        }
+
+        *cubeTexture = RHIGenTextureCubeMap(&skyboxCreateInfo);
+
+        for (auto p_data : skyboxCreateInfo.pPixels) {
+                stbi_image_free(p_data);
+        }
+
 }
 
 void EngineApplication::StartEngine()
@@ -204,128 +229,134 @@ void EngineApplication::StartEngine()
         vtxBufferCreateInfo.pBufferLayout = layouts;
         vtxBufferCreateInfo.bufferLayoutCount = ARRAY_SIZE(layouts);
 
-        RHIVtxBuffer vtxBuffer = RHIGenVtxBuffer(vertices, &vtxBufferCreateInfo);
+        RHIVtxBuffer cubeVtxBuffer = RHIGenVtxBuffer(vertices, &vtxBufferCreateInfo);
 
-        RHIShader lightShader = RHICreateShader("../../../Source/Engine/Shaders/color.alsl");
-        RHIShader lightCubeShader = RHICreateShader("../../../Source/Engine/Shaders/light.alsl");
+        RHIShader cubeShader = RHICreateShader("../../../Source/Engine/Shaders/cube.alsl");
+        RHIShader skyboxShader = RHICreateShader("../../../Source/Engine/Shaders/skyboxs.alsl");
 
         int width, height, nc;
         anciuc *pixels = stbi_load("../../../Assets/container2.png", &width, &height, &nc, 0);
 
-        RHITextureCreateInfo textureCreateInfo = {};
+        RHITexture2DCreateInfo textureCreateInfo = {};
         textureCreateInfo.pPixels = pixels;
         textureCreateInfo.width = width;
         textureCreateInfo.height = height;
         textureCreateInfo.format = RHI_IMAGE_FORMAT_RGBA;
-        textureCreateInfo.textureWrapU = RHI_TEXTURE_WRAP_REPEAT;
-        textureCreateInfo.textureWrapV = RHI_TEXTURE_WRAP_REPEAT;
+        textureCreateInfo.textureWrapS = RHI_TEXTURE_WRAP_REPEAT;
+        textureCreateInfo.textureWrapT = RHI_TEXTURE_WRAP_REPEAT;
         textureCreateInfo.textureFilterMin = RHI_TEXTURE_FILTER_LINEAR;
         textureCreateInfo.textureFilterMag = RHI_TEXTURE_FILTER_LINEAR;
 
-        RHITexture texture0 = RHIGenTexture(&textureCreateInfo);
-
-        pixels = stbi_load("../../../Assets/container2_specular.png", &width, &height, &nc, 0);
-
-        textureCreateInfo.pPixels = pixels;
-        textureCreateInfo.width = width;
-        textureCreateInfo.height = height;
-        RHITexture texture1 = RHIGenTexture(&textureCreateInfo);
+        RHITexture cubeTexture = RHIGenTexture2D(&textureCreateInfo);
 
         stbi_image_free(pixels);
+
+        /* 加载天空盒 */
+        RHIVtxBufferArray skyboxArray[] = {
+                {{-1.0f,  1.0f, -1.0f}},
+                {{-1.0f, -1.0f, -1.0f}},
+                {{1.0f, -1.0f, -1.0f}},
+                {{1.0f, -1.0f, -1.0f}},
+                {{1.0f,  1.0f, -1.0f}},
+                {{-1.0f,  1.0f, -1.0f}},
+                {{-1.0f, -1.0f,  1.0f}},
+                {{-1.0f, -1.0f, -1.0f}},
+                {{-1.0f,  1.0f, -1.0f}},
+                {{-1.0f,  1.0f, -1.0f}},
+                {{-1.0f,  1.0f,  1.0f}},
+                {{-1.0f, -1.0f,  1.0f}},
+                {{1.0f, -1.0f, -1.0f}},
+                {{1.0f, -1.0f,  1.0f}},
+                {{1.0f,  1.0f,  1.0f}},
+                {{1.0f,  1.0f,  1.0f}},
+                {{1.0f,  1.0f, -1.0f}},
+                {{1.0f, -1.0f, -1.0f}},
+                {{-1.0f, -1.0f,  1.0f}},
+                {{-1.0f,  1.0f,  1.0f}},
+                {{1.0f,  1.0f,  1.0f}},
+                {{1.0f,  1.0f,  1.0f}},
+                {{1.0f, -1.0f,  1.0f}},
+                {{-1.0f, -1.0f,  1.0f}},
+                {{-1.0f,  1.0f, -1.0f}},
+                {{1.0f,  1.0f, -1.0f}},
+                {{1.0f,  1.0f,  1.0f}},
+                {{1.0f,  1.0f,  1.0f}},
+                {{-1.0f,  1.0f,  1.0f}},
+                {{-1.0f,  1.0f, -1.0f}},
+                {{-1.0f, -1.0f, -1.0f}},
+                {{-1.0f, -1.0f,  1.0f}},
+                {{1.0f, -1.0f, -1.0f}},
+                {{1.0f, -1.0f, -1.0f}},
+                {{-1.0f, -1.0f,  1.0f}},
+                {{1.0f, -1.0f,  1.0f}}
+        };
+        RHIVtxBuffer skyboxBufArray = RHIGenVtxBuffer(skyboxArray, &vtxBufferCreateInfo);
+
+        RHITexture skyboxTexture;
+        LoadCubeMap(&skyboxTexture);
 
         Camera camera{{-0.747, 1.247, 4.816}};
 
         float deltaTime = 0.0f;
         float lastTime  = 0.0f;
 
-        ancivec3 objectPos{0.0f, 0.0f, -1.0f};
-        ancivec3 objectColor{1.0f, 0.5f, 0.31f};
+        RHIBindShader(cubeShader);
+        RHIUniform1i(cubeShader, "cubeTexture", 0);
+        RHIBindShader(skyboxShader);
+        RHIUniform1i(skyboxShader, "skybox", 0);
 
-        ancivec3 lightPos{2.590, -0.630, 5.950};
-        ancivec3 lightColor{1.0f, 1.0f, 1.0f};
-
-        ancivec3 materialAmbient{1.0f, 0.5f, 0.31f};
-        ancivec3 materialDiffuse{1.0f, 0.5f, 0.31f};
-        ancivec3 materialSpecular{0.5f, 0.5f, 0.5f};
-        float materialShininess{32.0f};
-
-        ancivec3 lightAmbient{0.2f, 0.2f, 0.2f};
-        ancivec3 lightDiffuse{0.5f, 0.5f, 0.5f};
-        ancivec3 lightSpecular{1.0f, 1.0f, 1.0f};
+        ancivec3 skyboxScale{1.0f};
+        float skyboxScalefv = 1.0f;
+        float skyBoxRotate = -55.0f;
 
         RHIEnable(RHI_DEPTH_TEST, RHI_TRUE);
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
+                RHIClearColorBuffer(0.0f, 0.0f, 0.0f, 0.0f);
 
                 float currentFrame = RHIGetTime();
                 deltaTime = currentFrame - lastTime;
                 lastTime = currentFrame;
 
-                clock_t renderStartTime;
-                renderStartTime = clock();
+                UpdateCamera(*_window, camera, deltaTime);
 
-                RHIClearColorBuffer(0.0f, 0.0f, 0.0f, 0.0f);
+                ancimat4 model{1.0f};
+                model = glm::rotate(model, glm::radians(-55.0f), {0.0f, 0.0f, -3.0f});
+                model = glm::translate(model, {1.0f, 1.0f, 1.0f});
+                ancimat4 projection{1.0f};
+                ancimat4 view{1.0f};
+                RHIDimension2i dimension = _window->GetDimension();
+                projection = glm::perspective(glm::radians(45.0f), (float) dimension.x / (float) dimension.y, 0.01f, 100.0f);
+
+                ancimat4 viewMatrix = camera.GetViewMatrix();
+
+                RHIBindShader(cubeShader);
+                RHIUniformMatrix4fv(cubeShader, "model", glm::value_ptr(model));
+                RHIUniformMatrix4fv(cubeShader, "view", glm::value_ptr(viewMatrix));
+                RHIUniformMatrix4fv(cubeShader, "projection", glm::value_ptr(projection));
+                RHIBindTexture2D(cubeTexture);
+                RHIBindVtxBuffer(cubeVtxBuffer);
+                RHIDrawVtx(0, 36);
+
+                RHIDepthOption(RHI_DEPTH_OPTION_LE);
+                RHIBindShader(skyboxShader);
+                ancimat4 skyboxView = ancimat4(ancimat3(viewMatrix));
+                RHIUniformMatrix4fv(cubeShader, "view", glm::value_ptr(skyboxView));
+                RHIUniformMatrix4fv(cubeShader, "projection", glm::value_ptr(projection));
+                RHIBindTextureCubeMap(skyboxTexture);
+                RHIBindVtxBuffer(skyboxBufArray);
+                RHIDrawVtx(0, 36);
+                RHIDepthOption(RHI_DEPTH_OPTION_LT);
 
                 BeginImGui();
                 {
                         if (ImGui::Begin("Debug")) {
-                                ImGui::DragFloat3("LightPosition", glm::value_ptr(lightPos), 0.01f);
-
-                                ImGui::Text("Material");
-                                        ImGui::DragFloat3("materialAmbient", glm::value_ptr(materialAmbient), 0.01f);
-                                ImGui::DragFloat3("materialDiffuse", glm::value_ptr(materialDiffuse), 0.01f);
-                                ImGui::DragFloat3("materialSpecular", glm::value_ptr(materialSpecular), 0.01f);
-
-                                ImGui::Text("Light");
-                                ImGui::DragFloat3("lightAmbient", glm::value_ptr(lightAmbient), 0.01f);
-                                ImGui::DragFloat3("lightDiffuse", glm::value_ptr(lightDiffuse), 0.01f);
-                                ImGui::DragFloat3("lightSpecular", glm::value_ptr(lightSpecular), 0.01f);
-
-                                ImGui::Text("Camera");
-                                ImGui::DragFloat3("Position", glm::value_ptr(camera.Position), 0.01f);
-
-                                ImGui::Text("Image");
-                                ImGui::Image((void *) (intptr_t) RHIGetTextureId(texture0), ImVec2(64, 64));
-
+                                ImGui::DragFloat("skyboxScale", &skyboxScalefv, 1.0f);
+                                skyboxScale.x = skyboxScale.y = skyboxScale.z = skyboxScalefv;
+                                ImGui::DragFloat("skyBoxRotate", &skyBoxRotate, 1.0f);
                         } ImGui::End();
-
-                        if (ImGui::Begin("Performance")) {
-                                ImGui::Text("RenderTime: %ldms", renderTime);
-                        } ImGui::End();
-                }
-                EndImGui();
-
-
-                UpdateCamera(*_window, camera, deltaTime);
-
-                RHIBindShader(lightShader);
-                RHIBindVtxBuffer(vtxBuffer);
-                UpdateMVPMatrix(*_window, camera, lightShader, objectPos);
-                RHIUniform3fv(lightShader, "objectColor", glm::value_ptr(objectColor));
-                RHIUniform3fv(lightShader, "lightPos", glm::value_ptr(lightPos));
-                RHIUniform3fv(lightShader, "viewPos", glm::value_ptr(camera.Position));
-
-                // 材质
-                RHIUniform1i(lightShader, "materialDiffuse", 0);
-                RHIUniform1i(lightShader, "materialSpecular", 1);
-                RHIUniform1f(lightShader,  "material.shininess", materialShininess);
-
-                // 光照
-                RHIUniform3fv(lightShader, "light.ambient",  glm::value_ptr(lightAmbient));
-                RHIUniform3fv(lightShader, "light.diffuse",  glm::value_ptr(lightDiffuse));
-                RHIUniform3fv(lightShader, "light.specular", glm::value_ptr(lightSpecular));
-                RHIDrawVtx(0, 36);
-
-                RHIBindShader(lightCubeShader);
-                RHIBindTexture(texture0);
-                RHIBindTexture(texture1);
-                RHIBindVtxBuffer(vtxBuffer);
-
-                UpdateMVPMatrix(*_window, camera, lightCubeShader, lightPos);
-                RHIUniform3fv(lightCubeShader, "lightColor", glm::value_ptr(lightColor));
-                RHIDrawVtx(0, 36);
+                } EndImGui();
 
                 RHISwapBuffers(_window->GetHandle());
-                renderTime = clock() - renderStartTime;
         }
 }
