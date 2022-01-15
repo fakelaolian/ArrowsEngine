@@ -6,16 +6,17 @@
 extern "C" {
 #endif
 
+typedef unsigned char   anciuc;
+typedef unsigned int    anciu32;
+typedef unsigned long   anciu64;
+typedef unsigned        ancibool;
+
 typedef void *          RHIWindow;
 typedef void *          RHIVtxBuffer;
 typedef void *          RHIIdxBuffer;
 typedef void *          RHITexture;
 typedef void *          RHIShader;
-
-typedef unsigned char   anciuc;
-typedef unsigned int    anciu32;
-typedef unsigned long   anciu64;
-typedef unsigned        ancibool;
+typedef anciu32         RHIID;
 
 #define RHI_TRUE        1U
 #define RHI_FALSE       0U
@@ -171,6 +172,7 @@ typedef enum RHIPolygonModeBits {
 typedef enum RHIFormat {
         RHI_IMAGE_FORMAT_RGB,
         RHI_IMAGE_FORMAT_RGBA,
+        RHI_IMAGE_FORMAT_RED,
         RHI_FLOAT,
 } RHIFormat;
 
@@ -204,16 +206,28 @@ typedef enum RHITextureFilterModeBits {
         RHI_TEXTURE_FILTER_LINEAR
 } RHITextureFilterModeBits;
 
-typedef struct RHITextureCreateInfo {
-        RHIFormat format;
+typedef struct RHITexture2DCreateInfo {
         anciu32 width;
         anciu32 height;
-        RHITextureWrapModeBits textureWrapU;
-        RHITextureWrapModeBits textureWrapV;
+        RHIFormat format;
+        RHITextureWrapModeBits textureWrapS;
+        RHITextureWrapModeBits textureWrapT;
         RHITextureFilterModeBits textureFilterMin;
         RHITextureFilterModeBits textureFilterMag;
         anciuc *pPixels;
-} RHITextureCreateInfo;
+} RHITexture2DCreateInfo;
+
+typedef struct RHITextureCubeCreateInfo {
+        anciu32 width[6];
+        anciu32 height[6];
+        anciuc *pPixels[6];
+        RHIFormat format[6];
+        RHITextureWrapModeBits textureWrapS;
+        RHITextureWrapModeBits textureWrapT;
+        RHITextureWrapModeBits textureWrapR;
+        RHITextureFilterModeBits textureFilterMin;
+        RHITextureFilterModeBits textureFilterMag;
+} RHITextureCubeCreateInfo;
 
 typedef struct RHIDimension2i {
         int x;
@@ -230,6 +244,22 @@ typedef enum RHIInputCursorModeBits{
         RHI_CURSOR_HIDDEN,
         RHI_CURSOR_DISABLE
 } RHIInputCursorModeBits;
+
+typedef enum RHITextureFormatBits {
+        RHI_TEXTURE_2D,
+        RHI_TEXTURE_CUBE_MAP,
+} RHITextureFormatBits;
+
+typedef enum RHIDepthOptionBits {
+        RHI_DEPTH_OPTION_ALWAYS,
+        RHI_DEPTH_OPTION_NEVER,
+        RHI_DEPTH_OPTION_EQ,
+        RHI_DEPTH_OPTION_NE,
+        RHI_DEPTH_OPTION_LT,
+        RHI_DEPTH_OPTION_LE,
+        RHI_DEPTH_OPTION_GT,
+        RHI_DEPTH_OPTION_GE,
+} RHIDepthOptionBits;
 
 /**
  * RHI函数指针，命名规范：
@@ -301,6 +331,9 @@ ANCIAPI ANCI_RHI_CREATE_SHADER ANCIRHICREATESHADER;
 typedef void (*ANCI_RHI_BIND_SHADER)(RHIShader);
 ANCIAPI ANCI_RHI_BIND_SHADER ANCIRHIBINDSHADER;
 #define RHIBindShader ANCIRHIBINDSHADER
+typedef void (*ANCI_RHI_UNIFORM_FLOAT1)(RHIShader, const char *name, float x);
+ANCIAPI ANCI_RHI_UNIFORM_FLOAT1 ANCIRHIUNIFORMFLOAT1;
+#define RHIUniform1f ANCIRHIUNIFORMFLOAT1
 typedef void (*ANCI_RHI_UNIFORM_FLOAT2)(RHIShader, const char *name, float x, float y);
 ANCIAPI ANCI_RHI_UNIFORM_FLOAT2 ANCIRHIUNIFORMFLOAT2;
 #define RHIUniform2f ANCIRHIUNIFORMFLOAT2
@@ -310,6 +343,9 @@ ANCIAPI ANCI_RHI_UNIFORM_INT ANCIRHIUNIFORMINT;
 typedef void (*ANCI_RHI_UNIFORM_FLOAT3)(RHIShader, const char *name, float x, float y, float z);
 ANCIAPI ANCI_RHI_UNIFORM_FLOAT3 ANCIRHIUNIFORMFLOAT3;
 #define RHIUniform3f ANCIRHIUNIFORMFLOAT3
+typedef void (*ANCI_RHI_UNIFORM_FLOAT3V)(RHIShader, const char *name, float *);
+ANCIAPI ANCI_RHI_UNIFORM_FLOAT3V ANCIRHIUNIFORMFLOAT3V;
+#define RHIUniform3fv ANCIRHIUNIFORMFLOAT3V
 typedef void (*ANCI_RHI_UNIFORM_FLOAT4)(RHIShader, const char *name, float x, float y, float z, float w);
 ANCIAPI ANCI_RHI_UNIFORM_FLOAT4 ANCIRHIUNIFORMFLOAT4;
 #define RHIUniform4f ANCIRHIUNIFORMFLOAT4
@@ -328,18 +364,30 @@ ANCIAPI ANCI_RHI_DELETE_SHADER ANCIRHIDELETESHADER;
 typedef void (*ANCI_RHI_CLEAR_COLOR_BUFFER)(float r, float g, float b, float a);
 ANCIAPI ANCI_RHI_CLEAR_COLOR_BUFFER ANCIRHICLEARCOLORBUFFER;
 #define RHIClearColorBuffer ANCIRHICLEARCOLORBUFFER
-typedef RHITexture (*ANCI_RHI_GEN_TEXTURE)(RHITextureCreateInfo *);
-ANCIAPI ANCI_RHI_GEN_TEXTURE ANCIRHIGENTEXTURE;
-#define RHIGenTexture ANCIRHIGENTEXTURE
-typedef void (*ANCI_RHI_BIND_TEXTURE)(RHITexture);
-ANCIAPI ANCI_RHI_BIND_TEXTURE ANCIRHIBINDTEXTURE;
-#define RHIBindTexture ANCIRHIBINDTEXTURE
+typedef RHITexture (*ANCI_RHI_GEN_TEXTURE2D)(RHITexture2DCreateInfo *);
+ANCIAPI ANCI_RHI_GEN_TEXTURE2D ANCIRHIGENTEXTURE2D;
+#define RHIGenTexture2D ANCIRHIGENTEXTURE2D
+typedef void (*ANCI_RHI_BIND_TEXTURE2D)(RHITexture);
+ANCIAPI ANCI_RHI_BIND_TEXTURE2D ANCIRHIBINDTEXTURE2D;
+#define RHIBindTexture2D ANCIRHIBINDTEXTURE2D
 typedef void (*ANCI_RHI_DELETE_TEXTURE)(RHITexture);
 ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDELETETEXTURE;
 #define RHIDeleteTexture ANCIRHIDELETETEXTURE
 typedef void (*ANCI_RHI_ENABLE)(RHIEnableBits, ancibool);
 ANCIAPI ANCI_RHI_ENABLE ANCIRHIENABLE;
 #define RHIEnable ANCIRHIENABLE
+typedef RHIID (*ANCI_RHI_GET_TEXTURE_ID)(RHITexture);
+ANCIAPI ANCI_RHI_GET_TEXTURE_ID ANCIRHIGETTEXTUREID;
+#define RHIGetTextureId ANCIRHIGETTEXTUREID
+typedef RHITexture (*ANCI_RHI_CREATE_TEXTURE_CUBE_MAP)(RHITextureCubeCreateInfo *);
+ANCIAPI ANCI_RHI_CREATE_TEXTURE_CUBE_MAP ANCIRHICREATETEXTURECUBEMAP;
+#define RHIGenTextureCubeMap ANCIRHICREATETEXTURECUBEMAP
+typedef void (*ANCI_RHI_BIND_TEXTURE_CUBE_MAP)(RHITexture);
+ANCIAPI ANCI_RHI_BIND_TEXTURE_CUBE_MAP ANCIRHIBINDTEXTURECUBEMAP;
+#define RHIBindTextureCubeMap ANCIRHIBINDTEXTURECUBEMAP
+typedef void (*ANCI_RHI_DEPTH_OPTION)(RHIDepthOptionBits);
+ANCIAPI ANCI_RHI_DEPTH_OPTION ANCIRHIDEPTHOPTION;
+#define RHIDepthOption ANCIRHIDEPTHOPTION
 
 ////////////////////////////////////////////////////////////////////////////////////
 //////                              设备输入                                   //////
@@ -391,7 +439,6 @@ ANCIAPI ANCI_RHI_WINDOW_SET_CURSOR_CALLBACK ANCIRHIWINDOWSETCURSORCALLBACK;
 typedef void (*ANCI_RHI_DELETE_WINDOW)(RHIWindow);
 ANCIAPI ANCI_RHI_DELETE_WINDOW ANCIRHIDELETWINDOW;
 #define RHIDeleteWindow ANCIRHIDELETWINDOW
-
 typedef void (*ANCI_RHI_TERMINATE)();
 ANCIAPI ANCI_RHI_TERMINATE ANCIRHITERMINATE;
 #define RHITerminate ANCIRHITERMINATE
