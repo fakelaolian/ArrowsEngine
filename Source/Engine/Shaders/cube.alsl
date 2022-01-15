@@ -1,0 +1,30 @@
+// 统一设置Shader版本
+#version 330 core
+
+#vtx
+    layout (location = 0) in vec3 aPos;
+    layout (location = 1) in vec2 aUv;
+
+    layout (location = 0) out vec2 outUv;
+
+    uniform mat4 model;
+    uniform mat4 view;
+    uniform mat4 projection;
+
+    void main()
+    {
+        outUv = aUv;
+        gl_Position = projection * view * model * vec4(aPos, 1.0);
+    }
+#end
+
+#frag
+    out vec4 FragColor;
+    layout (location = 0) in vec2 outUv;
+    uniform sampler2D cubeTexture;
+
+    void main()
+    {
+        FragColor = texture(cubeTexture, outUv);
+    }
+#end

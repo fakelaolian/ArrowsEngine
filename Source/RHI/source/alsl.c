@@ -64,7 +64,7 @@ void load_shader_source(const char *filename, ShaderSource *pSource)
                 }
 
                 if (stage == RD_VTX) {
-                        if (strlen(vtx) > vtx_alloclen) {
+                        if ((strlen(vtx) + strlen(line)) > vtx_alloclen) {
                                 vtx_alloclen += vtx_alloclen;
                                 vtx = vrealloc(vtx, vtx_alloclen);
                         }
@@ -74,7 +74,7 @@ void load_shader_source(const char *filename, ShaderSource *pSource)
                 }
 
                 if (stage == RD_FRAG) {
-                        if (strlen(frag) > frag_alloclen) {
+                        if ((strlen(frag) + strlen(line)) > frag_alloclen) {
                                 frag_alloclen += frag_alloclen;
                                 frag = vrealloc(frag, frag_alloclen);
                         }
