@@ -33,10 +33,9 @@ ANCI_RHI_DELETE_SHADER                  ANCIRHIDELETESHADER               = NULL
 ANCI_RHI_CLEAR_COLOR_BUFFER             ANCIRHICLEARCOLORBUFFER           = NULL;
 ANCI_RHI_GEN_TEXTURE2D                  ANCIRHIGENTEXTURE2D               = NULL;
 ANCI_RHI_DELETE_TEXTURE                 ANCIRHIDELETETEXTURE              = NULL;
-ANCI_RHI_BIND_TEXTURE2D                 ANCIRHIBINDTEXTURE2D              = NULL;
 ANCI_RHI_ENABLE                         ANCIRHIENABLE                     = NULL;
 ANCI_RHI_GET_TEXTURE_ID                 ANCIRHIGETTEXTUREID               = NULL;
-ANCI_RHI_BIND_TEXTURE_CUBE_MAP          ANCIRHIBINDTEXTURECUBEMAP         = NULL;
+ANCI_RHI_BIND_TEXTURE                   ANCIRHIBINDTEXTURE                = NULL;
 ANCI_RHI_CREATE_TEXTURE_CUBE_MAP        ANCIRHICREATETEXTURECUBEMAP       = NULL;
 ANCI_RHI_DEPTH_OPTION                   ANCIRHIDEPTHOPTION                = NULL;
 
@@ -355,14 +354,6 @@ RHITexture _opengl_gen_texture2d(RHITexture2DCreateInfo *createInfo)
         return pTextureGL;
 }
 
-void _opengl_bind_texture(RHITexture texture)
-{
-        ITexture itexture = CONV_TEX(texture);
-        glActiveTexture(GL_TEXTURE0 + _activeTexture);
-        glBindTexture(GL_TEXTURE_2D, itexture->textureId);
-        _activeTexture++;
-}
-
 void _opengl_delete_texture(RHITexture texture)
 {
         ITexture itexture = CONV_TEX(texture);
@@ -396,7 +387,7 @@ RHIID _opengl_get_texture_id(RHITexture texture)
         return CONV_TEX(texture)->textureId;
 }
 
-RHITexture _opengl_create_texture_cube_map(RHITextureCubeCreateInfo *createInfo)
+RHITexture _opengl_gen_texture_cube_map(RHITextureCubeCreateInfo *createInfo)
 {
         anciu32 textureId;
         glGenTextures(1, &textureId);
@@ -452,6 +443,18 @@ void _opengl_depth_option(RHIDepthOptionBits bits)
         glDepthFunc(op);
 }
 
+void _opengl_bind_texture(RHITextureFormatBits bit, RHITexture texture)
+{
+        ITexture itexture = CONV_TEX(texture);
+        glActiveTexture(GL_TEXTURE0 + _activeTexture);
+        if (bit == RHI_TEXTURE_2D)
+                glBindTexture(GL_TEXTURE_2D, CONV_TEX(texture)->textureId);
+        if (bit == RHI_TEXTURE_CUBE_MAP)
+                glBindTexture(GL_TEXTURE_CUBE_MAP, CONV_TEX(texture)->textureId);
+
+        _activeTexture++;
+}
+
 void OpenGLRHIImpl()
 {
         _load_glfw_functions();
@@ -480,14 +483,11 @@ void OpenGLRHIImpl()
         ANCIRHIDELETESHADER                     = _opengl_delete_shader;
         ANCIRHICLEARCOLORBUFFER                 = _opengl_clear_color;
         ANCIRHIGENTEXTURE2D                     = _opengl_gen_texture2d;
+        ANCIRHICREATETEXTURECUBEMAP             = _opengl_gen_texture_cube_map;
         ANCIRHIDELETETEXTURE                    = _opengl_delete_texture;
-        ANCIRHIBINDTEXTURE2D                    = _opengl_bind_texture;
-        ANCIRHIENABLE                           = _opengl_enbale;
         ANCIRHIGETTEXTUREID                     = _opengl_get_texture_id;
-        ANCIRHICREATETEXTURECUBEMAP             = _opengl_create_texture_cube_map;
-        ANCIRHIBINDTEXTURECUBEMAP               = _opengl_bind_texture_cube_map;
-        ANCIRHIBINDTEXTURECUBEMAP               = _opengl_bind_texture_cube_map;
-        ANCIRHIBINDTEXTURECUBEMAP               = _opengl_bind_texture_cube_map;
+        ANCIRHIBINDTEXTURE                      = _opengl_bind_texture;
+        ANCIRHIENABLE                           = _opengl_enbale;
         ANCIRHIDEPTHOPTION                      = _opengl_depth_option;
 }
 

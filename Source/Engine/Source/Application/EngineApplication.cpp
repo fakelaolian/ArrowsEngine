@@ -111,7 +111,6 @@ void UpdateCamera(EngineWindow &window, Camera& camera, float deltaTime)
         }
 }
 
-clock_t renderTime;
 void BeginImGui()
 {
         // Start the Dear ImGui frame
@@ -309,6 +308,9 @@ void EngineApplication::StartEngine()
         float skyboxScalefv = 1.0f;
         float skyBoxRotate = -55.0f;
 
+        clock_t renderTime;
+        clock_t beginTime;
+
         RHIEnable(RHI_DEPTH_TEST, RHI_TRUE);
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
@@ -317,6 +319,7 @@ void EngineApplication::StartEngine()
                 float currentFrame = RHIGetTime();
                 deltaTime = currentFrame - lastTime;
                 lastTime = currentFrame;
+                beginTime = clock();
 
                 UpdateCamera(*_window, camera, deltaTime);
 
@@ -334,7 +337,7 @@ void EngineApplication::StartEngine()
                 RHIUniformMatrix4fv(cubeShader, "model", glm::value_ptr(model));
                 RHIUniformMatrix4fv(cubeShader, "view", glm::value_ptr(viewMatrix));
                 RHIUniformMatrix4fv(cubeShader, "projection", glm::value_ptr(projection));
-                RHIBindTexture2D(cubeTexture);
+                RHIBindTexture(RHI_TEXTURE_2D, cubeTexture);
                 RHIBindVtxBuffer(cubeVtxBuffer);
                 RHIDrawVtx(0, 36);
 
@@ -343,10 +346,12 @@ void EngineApplication::StartEngine()
                 ancimat4 skyboxView = ancimat4(ancimat3(viewMatrix));
                 RHIUniformMatrix4fv(cubeShader, "view", glm::value_ptr(skyboxView));
                 RHIUniformMatrix4fv(cubeShader, "projection", glm::value_ptr(projection));
-                RHIBindTextureCubeMap(skyboxTexture);
+                RHIBindTexture(RHI_TEXTURE_CUBE_MAP, skyboxTexture);
                 RHIBindVtxBuffer(skyboxBufArray);
                 RHIDrawVtx(0, 36);
                 RHIDepthOption(RHI_DEPTH_OPTION_LT);
+
+                renderTime = clock() - beginTime;
 
                 BeginImGui();
                 {
@@ -354,6 +359,10 @@ void EngineApplication::StartEngine()
                                 ImGui::DragFloat("skyboxScale", &skyboxScalefv, 1.0f);
                                 skyboxScale.x = skyboxScale.y = skyboxScale.z = skyboxScalefv;
                                 ImGui::DragFloat("skyBoxRotate", &skyBoxRotate, 1.0f);
+
+                                if (ImGui::Begin("Preference")) {
+                                        ImGui::Text("RenderTime: %ldms", renderTime);
+                                } ImGui::End();
                         } ImGui::End();
                 } EndImGui();
 
