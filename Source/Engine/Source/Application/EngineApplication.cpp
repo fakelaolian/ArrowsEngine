@@ -92,8 +92,8 @@ void UpdateCamera(EngineWindow &window, Camera& camera, float deltaTime)
 
         if (isEnableMouseMove) {
                 RHIDimension2f cursor = window.GetCursor();
-                float xpos = static_cast<float>(cursor.x);
-                float ypos = static_cast<float>(cursor.y);
+                auto xpos = static_cast<float>(cursor.x);
+                auto ypos = static_cast<float>(cursor.y);
 
                 if (firstMouse) {
                         lastX = xpos;
