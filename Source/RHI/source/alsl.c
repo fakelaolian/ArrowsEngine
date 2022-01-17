@@ -94,6 +94,6 @@ void load_shader_source(const char *filename, ShaderSource *pSource)
 
 void free_shader_source(ShaderSource *pSource)
 {
-        vfree(pSource->vtx);
-        vfree(pSource->frag);
+        vfree((void *) pSource->vtx);
+        vfree((void *) pSource->frag);
 }
