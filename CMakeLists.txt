@@ -5,4 +5,5 @@ INCLUDE_DIRECTORIES(SYSTEM Source/RHI/include Source/RHi/third)
 
 ADD_SUBDIRECTORY(Source/RHI)
 ADD_SUBDIRECTORY(Source/Engine)
+ADD_SUBDIRECTORY(Source/JModelLoader)
 

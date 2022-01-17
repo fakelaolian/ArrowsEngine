@@ -353,18 +353,18 @@ void EngineApplication::StartEngine()
 
                 renderTime = clock() - beginTime;
 
-                BeginImGui();
-                {
-                        if (ImGui::Begin("Debug")) {
-                                ImGui::DragFloat("skyboxScale", &skyboxScalefv, 1.0f);
-                                skyboxScale.x = skyboxScale.y = skyboxScale.z = skyboxScalefv;
-                                ImGui::DragFloat("skyBoxRotate", &skyBoxRotate, 1.0f);
-
-                                if (ImGui::Begin("Preference")) {
-                                        ImGui::Text("RenderTime: %ldms", renderTime);
-                                } ImGui::End();
-                        } ImGui::End();
-                } EndImGui();
+//                BeginImGui();
+//                {
+//                        if (ImGui::Begin("Debug")) {
+//                                ImGui::DragFloat("skyboxScale", &skyboxScalefv, 1.0f);
+//                                skyboxScale.x = skyboxScale.y = skyboxScale.z = skyboxScalefv;
+//                                ImGui::DragFloat("skyBoxRotate", &skyBoxRotate, 1.0f);
+//
+//                                if (ImGui::Begin("Preference")) {
+//                                        ImGui::Text("RenderTime: %ldms", renderTime);
+//                                } ImGui::End();
+//                        } ImGui::End();
+//                } EndImGui();
 
                 RHISwapBuffers(_window->GetHandle());
         }

@@ -12,4 +12,6 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC
         source/alsl.c
         source/glfw.c
         source/load_proc_functions.c
-        source/impl_opengl.c)
+        source/impl_opengl.c
+        source/format/anci_load_model.c
+)
