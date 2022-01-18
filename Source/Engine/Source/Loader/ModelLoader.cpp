@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "Tools/StringUtils.h"
+#include <unordered_map>
 
 #include "Format/obj.h"
 #include "Format/fbx.h"
@@ -17,8 +18,8 @@ namespace anci {
                 }
         }
 
-        void free_model(const char *file)
+        void free_model(attribute_t * attribute)
         {
-
+                free_model_obj(attribute);
         }
 }

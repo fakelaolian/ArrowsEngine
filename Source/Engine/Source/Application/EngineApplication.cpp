@@ -47,14 +47,7 @@ void SetUpImGui(RHIWindow h)
 
 EngineApplication::EngineApplication()
 {
-        anci::attribute_t *attribute = anci::load_model("C:/Users/procf/Desktop/untitled.obj", anci::ANCI_MODEL_FORMAT_OBJ_BIT);
-        for(int i = 0; i < attribute->vertices.size(); i++) {
-                printf("x=%f, y=%f, z=%f\n",
-                attribute->vertices[i + 0],
-                attribute->vertices[i + 1],
-                attribute->vertices[i + 2]);
-                i += 2;
-        }
+        anci::load_model("C:/Users/procf/Desktop/untitled.obj", anci::ANCI_MODEL_FORMAT_OBJ_BIT);
 
         /* 初始化RHI函数 */
         RHIProcAddressInit(OpenGL);
