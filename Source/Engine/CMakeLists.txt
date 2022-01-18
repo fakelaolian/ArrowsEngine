@@ -18,6 +18,8 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         # --* Application *-- #
         Source/Application/EngineWindow.cpp
         Source/Application/EngineApplication.cpp
+        # --* Loader *-- #
+        Source/Loader/ModelLoader.cpp
         # --* ThirdParty/glad *-- #
         ThirdParty/glad/src/glad.c
         # --* ThirdParty/ImGui *-- #
@@ -27,6 +29,8 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         ThirdParty/imgui/imgui_draw.cpp
         ThirdParty/imgui/imgui_widgets.cpp
         ThirdParty/imgui/backends/imgui_impl_opengl3.cpp
-        ThirdParty/imgui/backends/imgui_impl_glfw.cpp)
+        ThirdParty/imgui/backends/imgui_impl_glfw.cpp
+
+)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} glfw3 RHI)
