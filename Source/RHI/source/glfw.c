@@ -21,14 +21,15 @@ ANCI_RHI_GET_USER_POINTER               ANCIRHIGETUSERPOINTER                   
 F_RHI_WINDOW_RESIZE_CALLBACK            _window_resize_callback                  = NULL;
 F_RHI_WINDOW_CURSOR_CALLBACK            _window_cursor_callback                  = NULL;
 
-RHIWindow _glfw_create_window(const char *title, int width, int height)
+void _glfw_create_window(const char *title, int width, int height, RHIWindow *rhiWindow)
 {
         /* 初始化窗口 */
         GLFWwindow *_window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (_window == NULL) {
                 verror("创建窗口失败");
                 glfwTerminate();
-                return NULL;
+                *rhiWindow = NULL;
+                return;
         }
 
         /* 初始化GLAD */
@@ -38,10 +39,11 @@ RHIWindow _glfw_create_window(const char *title, int width, int height)
                 glfwTerminate();
 
                 verror("加载GLAD失败");
-                return NULL;
+                *rhiWindow = NULL;
+                return;
         }
 
-        return _window;
+        *rhiWindow = _window;
 }
 
 ancibool _glfw_should_clsoe(RHIWindow window)

@@ -5,8 +5,7 @@
 #  define ANCIAPI extern
 #endif
 
-#include <AnciMath.h>
-
+#include <anci_math.h>
 #include <memory>
 
 #define anciptr             std::shared_ptr

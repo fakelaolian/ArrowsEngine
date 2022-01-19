@@ -1,4 +1,5 @@
-#include "Application/EngineApplication.h"
+#include <iostream>
+#include "Application/anci_application.h"
 
 int main()
 {
@@ -6,8 +7,8 @@ int main()
         system("chcp 65001");
 #endif
 
-        EngineApplication application {};
-        application.StartEngine();
+        anci_application app{600, 800, "ANCI"};
+        app.Run();
 
         return 0;
 }

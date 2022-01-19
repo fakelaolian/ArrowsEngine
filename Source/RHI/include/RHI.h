@@ -279,18 +279,18 @@ typedef enum RHIDepthOptionBits {
  *      void            RHISwapBuffers          (RHIWindow h)
  *      void            RHIGenVtxBuffer         (const void *pVertices, RHIVtxBufferMemLayoutInfo *createInfo)
  *      void            RHIGenIdxBuffer         (anciu32 *indices, anciu32 count)
- *      void            RHIDeleteVtxBuffer      (RHIVtxBuffer)
- *      void            RHIDeleteIdxBuffer      (RHIIdxBuffer)
+ *      void            RHIDestroyVtxBuffer      (RHIVtxBuffer)
+ *      void            RHIDestroyIdxBuffer      (RHIIdxBuffer)
  *      void            RHIBindVtxBuffer        (RHIVtxBuffer)
  *      void            RHIDrawVtx              (void)
  *      void            RHIDrawIdx              (RHIIdxBuffer)
  *      void            RHIPolygonMode          (RHIPolygonModeBits)
  *      RHIShader       RHICreateShader         (const char *alslFile)
- *      void            RHIDeleteShader         (RHIShader)
+ *      void            RHIDestroyShader         (RHIShader)
  *      void            RHIClearColorBuffer     (float r, float g, float b, float a)
  *      RHITexture      RHIGenTexture           (RHIFormat format, anciu32 width, anciu32 height, anciuc *pixels)
  *      void            RHIBindTexture          (RHITexture)
- *      void            RHIDeleteTexture        (RHITexture)
+ *      void            RHIDestroyTexture        (RHITexture)
  */
 typedef float (*ANCI_RHI_GET_TIME)(void);
 ANCIAPI ANCI_RHI_GET_TIME ANCIRHIGETTIME;
@@ -308,11 +308,11 @@ typedef void (*ANCI_RHI_GEN_IDXBUFFER)(anciu32 *indices, anciu32 count, RHIIdxBu
 ANCIAPI ANCI_RHI_GEN_IDXBUFFER ANCIRHIGENIDXBUFFER;
 #define RHIGenIdxBuffer ANCIRHIGENIDXBUFFER
 typedef void (*ANCI_RHI_DESTROY_VTX_BUFFER)(RHIVtxBuffer);
-ANCIAPI ANCI_RHI_DESTROY_VTX_BUFFER ANCIRHIDELETEVTXBUFFER;
-#define RHIDeleteVtxBuffer ANCIRHIDELETEVTXBUFFER
+ANCIAPI ANCI_RHI_DESTROY_VTX_BUFFER ANCIRHIDESTROYVTXBUFFER;
+#define RHIDestroyVtxBuffer ANCIRHIDESTROYVTXBUFFER
 typedef void (*ANCI_RHI_DESTROY_IDX_BUFFER)(RHIIdxBuffer);
-ANCIAPI ANCI_RHI_DESTROY_IDX_BUFFER ANCIRHIDELETEIDXBUFFER;
-#define RHIDeleteIdxBuffer ANCIRHIDELETEIDXBUFFER
+ANCIAPI ANCI_RHI_DESTROY_IDX_BUFFER ANCIRHIDESTROYIDXBUFFER;
+#define RHIDestroyIdxBuffer ANCIRHIDESTROYIDXBUFFER
 typedef void (*ANCI_RHI_BIND_VTX)(RHIVtxBuffer);
 ANCIAPI ANCI_RHI_BIND_VTX ANCIRHIBINDVTX;
 #define RHIBindVtxBuffer ANCIRHIBINDVTX
@@ -359,8 +359,8 @@ typedef void (*ANCI_RHI_UNIFORM_MATRIX4FV)(RHIShader shader, const char *name, f
 ANCIAPI ANCI_RHI_UNIFORM_MATRIX4FV ANCIRHIUNIFORMMATRIX4FV;
 #define RHIUniformMatrix4fv ANCIRHIUNIFORMMATRIX4FV
 typedef void (*ANCI_RHI_DELETE_SHADER)(RHIShader);
-ANCIAPI ANCI_RHI_DELETE_SHADER ANCIRHIDELETESHADER;
-#define RHIDeleteShader ANCIRHIDELETESHADER
+ANCIAPI ANCI_RHI_DELETE_SHADER ANCIRHIDESTROYSHADER;
+#define RHIDestroyShader ANCIRHIDESTROYSHADER
 typedef void (*ANCI_RHI_CLEAR_COLOR_BUFFER)(float r, float g, float b, float a);
 ANCIAPI ANCI_RHI_CLEAR_COLOR_BUFFER ANCIRHICLEARCOLORBUFFER;
 #define RHIClearColorBuffer ANCIRHICLEARCOLORBUFFER
@@ -368,8 +368,8 @@ typedef RHITexture (*ANCI_RHI_GEN_TEXTURE2D)(RHITexture2DCreateInfo *);
 ANCIAPI ANCI_RHI_GEN_TEXTURE2D ANCIRHIGENTEXTURE2D;
 #define RHIGenTexture2D ANCIRHIGENTEXTURE2D
 typedef void (*ANCI_RHI_DELETE_TEXTURE)(RHITexture);
-ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDELETETEXTURE;
-#define RHIDeleteTexture ANCIRHIDELETETEXTURE
+ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDESTROYTEXTURE;
+#define RHIDestroyTexture ANCIRHIDESTROYTEXTURE
 typedef void (*ANCI_RHI_ENABLE)(RHIEnableBits, ancibool);
 ANCIAPI ANCI_RHI_ENABLE ANCIRHIENABLE;
 #define RHIEnable ANCIRHIENABLE
@@ -412,7 +412,7 @@ ANCIAPI ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT ANCIRHIOPENGLMAKECONTEXTCURRENT;
 typedef void (*F_RHI_WINDOW_RESIZE_CALLBACK)(RHIWindow, int, int);
 typedef void (*F_RHI_WINDOW_CURSOR_CALLBACK)(RHIWindow, double, double);
 
-typedef RHIWindow (*ANCI_RHI_CREATE_WINDOW)(const char *title, int width, int height);
+typedef void (*ANCI_RHI_CREATE_WINDOW)(const char *title, int width, int height, RHIWindow *);
 ANCIAPI ANCI_RHI_CREATE_WINDOW ANCIRHICREATEWIDNOW;
 #define RHICreateWindow ANCIRHICREATEWIDNOW
 typedef void (*ANCI_RHI_WINDOW_POLL_EVENTS)();
@@ -435,7 +435,7 @@ ANCIAPI ANCI_RHI_WINDOW_SET_CURSOR_CALLBACK ANCIRHIWINDOWSETCURSORCALLBACK;
 #define RHISetWindowCursorCallback ANCIRHIWINDOWSETCURSORCALLBACK
 typedef void (*ANCI_RHI_DELETE_WINDOW)(RHIWindow);
 ANCIAPI ANCI_RHI_DELETE_WINDOW ANCIRHIDELETWINDOW;
-#define RHIDeleteWindow ANCIRHIDELETWINDOW
+#define RHIDestroyWindow ANCIRHIDELETWINDOW
 typedef void (*ANCI_RHI_TERMINATE)();
 ANCIAPI ANCI_RHI_TERMINATE ANCIRHITERMINATE;
 #define RHITerminate ANCIRHITERMINATE
