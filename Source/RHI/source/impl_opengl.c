@@ -154,16 +154,15 @@ void _opengl_bind_vtx_buffer(RHIVtxBuffer vtxBuffer)
         glBindVertexArray(CONV_VTX(vtxBuffer)->vao);
 }
 
-void _opengl_draw_vtx(anciu32 index, anciu32 offset)
+void _opengl_draw_vtx(anciu32 size, anciu32 offset)
 {
-        glDrawArrays(GL_TRIANGLES, index, offset);
+        glDrawArrays(GL_TRIANGLES, size, offset);
         _activeTexture = 0;
 }
 
 void _opengl_draw_idx(RHIIdxBuffer idxBuffer)
 {
         IIdxBuffer buffer = CONV_IDX(idxBuffer);
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->ebo);
         glDrawElements(GL_TRIANGLES, buffer->count, GL_UNSIGNED_INT, 0);
         _activeTexture = 0;

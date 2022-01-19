@@ -18,7 +18,6 @@ public:
         void Draw();
 
 private:
-        anciu32      _vtx_count;
         RHIVtxBuffer _vtx_buffer;
         RHIIdxBuffer _idx_buffer;
         RHITexture   _texture;

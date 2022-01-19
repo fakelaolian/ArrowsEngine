@@ -312,7 +312,6 @@ void EngineApplication::StartEngine()
 
         // 加载模型
         std::vector<loader::mesh_t> meshs = loader::load_model("C:/Users/procf/Desktop/untitled.obj");
-        RenderMesh mesh{meshs[0]};
 
         RHIEnable(RHI_DEPTH_TEST, RHI_TRUE);
         while (!_window->ShouldClose()) {
@@ -343,11 +342,6 @@ void EngineApplication::StartEngine()
                 RHIBindTexture(RHI_TEXTURE_2D, cubeTexture);
                 RHIBindVtxBuffer(cubeVtxBuffer);
                 RHIDrawVtx(0, 36);
-
-                model = glm::translate(model, {3.0f, 1.0f, 1.0f});
-                RHIUniformMatrix4fv(cubeShader, "model", glm::value_ptr(model));
-                RHIBindTexture(RHI_TEXTURE_2D, cubeTexture);
-                mesh.Draw();
 
                 RHIDepthOption(RHI_DEPTH_OPTION_LE);
                 RHIBindShader(skyboxShader);
