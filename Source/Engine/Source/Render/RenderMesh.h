@@ -4,15 +4,17 @@
 #include <AnciCore.h>
 #include <RHI.h>
 
+#include "Loader/Loader.h"
+
 struct Vertex {
         ancivec3 pos;
-        ancivec2 uv;
         ancivec3 normal;
+        ancivec2 uv;
 };
 
 class RenderMesh {
 public:
-        RenderMesh();
+        RenderMesh(loader::mesh_t& mesh);
         void Draw();
 
 private:

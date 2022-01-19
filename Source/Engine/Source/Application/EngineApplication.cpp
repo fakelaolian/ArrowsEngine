@@ -9,6 +9,7 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include <ctime>
 #include <vector>
+#include "Loader/Loader.h"
 #include "Render/RenderMesh.h"
 
 #include "Camera/Camera.hpp"
@@ -53,9 +54,8 @@ EngineApplication::EngineApplication()
 
 struct RHIVtxBufferArray {
         ancivec3 pos;
-        ancivec2 uv;
         ancivec3 normal;
-        ancivec3 color;
+        ancivec2 uv;
 };
 
 bool isShowCursor = true;
@@ -174,49 +174,48 @@ void LoadCubeMap(RHITexture *cubeTexture)
 void EngineApplication::StartEngine()
 {
         RHIVtxBufferArray vertices[] = {
-                {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f},  {0.0f,  0.0f,  -1.0f}},
-                {{0.5f,  -0.5f, -0.5f}, {1.0f, 0.0f,}, {0.0f,  0.0f,  -1.0f}},
-                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f,}, {0.0f,  0.0f,  -1.0f}},
-                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f,}, {0.0f,  0.0f,  -1.0f}},
-                {{-0.5f, 0.5f,  -0.5f}, {0.0f, 1.0f,}, {0.0f,  0.0f,  -1.0f}},
-                {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f,}, {0.0f,  0.0f,  -1.0f}},
-                {{-0.5f, -0.5f, 0.5f},  {0.0f, 0.0f,}, {0.0f,  0.0f,  1.0f}},
-                {{0.5f,  -0.5f, 0.5f},  {1.0f, 0.0f,}, {0.0f,  0.0f,  1.0f}},
-                {{0.5f,  0.5f,  0.5f},  {1.0f, 1.0f,}, {0.0f,  0.0f,  1.0f}},
-                {{0.5f,  0.5f,  0.5f},  {1.0f, 1.0f,}, {0.0f,  0.0f,  1.0f}},
-                {{-0.5f, 0.5f,  0.5f},  {0.0f, 1.0f,}, {0.0f,  0.0f,  1.0f}},
-                {{-0.5f, -0.5f, 0.5f},  {0.0f, 0.0f,}, {0.0f,  0.0f,  1.0f}},
-                {{-0.5f, 0.5f,  0.5f},  {1.0f, 0.0f,}, {-1.0f, 0.0f,  0.0f}},
-                {{-0.5f, 0.5f,  -0.5f}, {1.0f, 1.0f,}, {-1.0f, 0.0f,  0.0f}},
-                {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f,}, {-1.0f, 0.0f,  0.0f}},
-                {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f,}, {-1.0f, 0.0f,  0.0f}},
-                {{-0.5f, -0.5f, 0.5f},  {0.0f, 0.0f,}, {-1.0f, 0.0f,  0.0f}},
-                {{-0.5f, 0.5f,  0.5f},  {1.0f, 0.0f,}, {-1.0f, 0.0f,  0.0f}},
-                {{0.5f,  0.5f,  0.5f},  {1.0f, 0.0f,}, {1.0f,  0.0f,  0.0f}},
-                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f,}, {1.0f,  0.0f,  0.0f}},
-                {{0.5f,  -0.5f, -0.5f}, {0.0f, 1.0f,}, {1.0f,  0.0f,  0.0f}},
-                {{0.5f,  -0.5f, -0.5f}, {0.0f, 1.0f,}, {1.0f,  0.0f,  0.0f}},
-                {{0.5f,  -0.5f, 0.5f},  {0.0f, 0.0f,}, {1.0f,  0.0f,  0.0f}},
-                {{0.5f,  0.5f,  0.5f},  {1.0f, 0.0f,}, {1.0f,  0.0f,  0.0f}},
-                {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f,}, {0.0f,  -1.0f, 0.0f}},
-                {{0.5f,  -0.5f, -0.5f}, {1.0f, 1.0f,}, {0.0f,  -1.0f, 0.0f}},
-                {{0.5f,  -0.5f, 0.5f},  {1.0f, 0.0f,}, {0.0f,  -1.0f, 0.0f}},
-                {{0.5f,  -0.5f, 0.5f},  {1.0f, 0.0f,}, {0.0f,  -1.0f, 0.0f}},
-                {{-0.5f, -0.5f, 0.5f},  {0.0f, 0.0f,}, {0.0f,  -1.0f, 0.0f}},
-                {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f,}, {0.0f,  -1.0f, 0.0f}},
-                {{-0.5f, 0.5f,  -0.5f}, {0.0f, 1.0f,}, {0.0f,  1.0f,  0.0f}},
-                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f,}, {0.0f,  1.0f,  0.0f}},
-                {{0.5f,  0.5f,  0.5f},  {1.0f, 0.0f,}, {0.0f,  1.0f,  0.0f}},
-                {{0.5f,  0.5f,  0.5f},  {1.0f, 0.0f,}, {0.0f,  1.0f,  0.0f}},
-                {{-0.5f, 0.5f,  0.5f},  {0.0f, 0.0f,}, {0.0f,  1.0f,  0.0f}},
-                {{-0.5f, 0.5f,  -0.5f}, {0.0f, 1.0f,}, {0.0f,  1.0f,  0.0f}}
+                {{-0.5f, -0.5f, -0.5f},  {0.0f,  0.0f,  -1.0f},  {0.0f, 0.0f}},
+                {{0.5f,  -0.5f, -0.5f}, {0.0f,  0.0f,  -1.0f},  {1.0f, 0.0f}},
+                {{0.5f,  0.5f,  -0.5f}, {0.0f,  0.0f,  -1.0f},  {1.0f, 1.0f}},
+                {{0.5f,  0.5f,  -0.5f}, {0.0f,  0.0f,  -1.0f},  {1.0f, 1.0f}},
+                {{-0.5f, 0.5f,  -0.5f}, {0.0f,  0.0f,  -1.0f},  {0.0f, 1.0f}},
+                {{-0.5f, -0.5f, -0.5f}, {0.0f,  0.0f,  -1.0f},  {0.0f, 0.0f}},
+                {{-0.5f, -0.5f, 0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f, 0.0f}},
+                {{0.5f,  -0.5f, 0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 0.0f}},
+                {{0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 1.0f}},
+                {{0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 1.0f}},
+                {{-0.5f, 0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f, 1.0f}},
+                {{-0.5f, -0.5f, 0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f, 0.0f}},
+                {{-0.5f, 0.5f,  0.5f},  {-1.0f, 0.0f,  0.0f},  {1.0f, 0.0f}},
+                {{-0.5f, 0.5f,  -0.5f}, {-1.0f, 0.0f,  0.0f},  {1.0f, 1.0f}},
+                {{-0.5f, -0.5f, -0.5f}, {-1.0f, 0.0f,  0.0f},  {0.0f, 1.0f}},
+                {{-0.5f, -0.5f, -0.5f}, {-1.0f, 0.0f,  0.0f},  {0.0f, 1.0f}},
+                {{-0.5f, -0.5f, 0.5f},  {-1.0f, 0.0f,  0.0f},  {0.0f, 0.0f}},
+                {{-0.5f, 0.5f,  0.5f},  {-1.0f, 0.0f,  0.0f},  {1.0f, 0.0f}},
+                {{0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f, 0.0f}},
+                {{0.5f,  0.5f,  -0.5f}, {1.0f,  0.0f,  0.0f},  {1.0f, 1.0f}},
+                {{0.5f,  -0.5f, -0.5f}, {1.0f,  0.0f,  0.0f},  {0.0f, 1.0f}},
+                {{0.5f,  -0.5f, -0.5f}, {1.0f,  0.0f,  0.0f},  {0.0f, 1.0f}},
+                {{0.5f,  -0.5f, 0.5f},  {1.0f,  0.0f,  0.0f},  {0.0f, 0.0f}},
+                {{0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f, 0.0f}},
+                {{-0.5f, -0.5f, -0.5f}, {0.0f,  -1.0f, 0.0f},  {0.0f, 1.0f}},
+                {{0.5f,  -0.5f, -0.5f}, {0.0f,  -1.0f, 0.0f},  {1.0f, 1.0f}},
+                {{0.5f,  -0.5f, 0.5f},  {0.0f,  -1.0f, 0.0f},  {1.0f, 0.0f}},
+                {{0.5f,  -0.5f, 0.5f},  {0.0f,  -1.0f, 0.0f},  {1.0f, 0.0f}},
+                {{-0.5f, -0.5f, 0.5f},  {0.0f,  -1.0f, 0.0f},  {0.0f, 0.0f}},
+                {{-0.5f, -0.5f, -0.5f}, {0.0f,  -1.0f, 0.0f},  {0.0f, 1.0f}},
+                {{-0.5f, 0.5f,  -0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 1.0f}},
+                {{0.5f,  0.5f,  -0.5f}, {0.0f,  1.0f,  0.0f},  {1.0f, 1.0f}},
+                {{0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 0.0f}},
+                {{0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 0.0f}},
+                {{-0.5f, 0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f, 0.0f}},
+                {{-0.5f, 0.5f,  -0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 1.0f}}
         };
 
         RHIVtxBufferLayout layouts[] = {
                 {0, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, pos)},
-                {1, 2, RHI_FLOAT, offsetof(RHIVtxBufferArray, uv)},
-                {2, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, normal)},
-                {3, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, color)},
+                {1, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, normal)},
+                {2, 2, RHI_FLOAT, offsetof(RHIVtxBufferArray, uv)},
         };
 
         RHIVtxBufferMemLayoutInfo vtxBufferCreateInfo = {};
@@ -312,6 +311,9 @@ void EngineApplication::StartEngine()
         clock_t beginTime;
 
         // 加载模型
+        std::vector<loader::mesh_t> meshs = loader::load_model("C:/Users/procf/Desktop/untitled.obj");
+        RenderMesh mesh{meshs[0]};
+
         RHIEnable(RHI_DEPTH_TEST, RHI_TRUE);
         while (!_window->ShouldClose()) {
                 _window->PollEvents();
@@ -341,6 +343,11 @@ void EngineApplication::StartEngine()
                 RHIBindTexture(RHI_TEXTURE_2D, cubeTexture);
                 RHIBindVtxBuffer(cubeVtxBuffer);
                 RHIDrawVtx(0, 36);
+
+                model = glm::translate(model, {3.0f, 1.0f, 1.0f});
+                RHIUniformMatrix4fv(cubeShader, "model", glm::value_ptr(model));
+                RHIBindTexture(RHI_TEXTURE_2D, cubeTexture);
+                mesh.Draw();
 
                 RHIDepthOption(RHI_DEPTH_OPTION_LE);
                 RHIBindShader(skyboxShader);

@@ -21,6 +21,8 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         # --* Render *-- #
         Source/Render/RenderMesh.cpp
         Source/Render/RenderModel.cpp
+        # --* Loader *-- #
+        Source/Loader/Loader.cpp
         # --* ThirdParty/glad *-- #
         ThirdParty/glad/src/glad.c
         # --* ThirdParty/ImGui *-- #
