@@ -187,12 +187,12 @@ typedef struct RHIVtxBufferLayout {
         anciu32 offset;
 } RHIVtxBufferLayout;
 
-typedef struct RHIVtxBufferCreateInfo {
+typedef struct RHIVtxBufferMemLayoutInfo {
         anciu32 vertexCount;
         RHIVtxBufferLayout *pBufferLayout;
         anciu32 bufferLayoutCount;
         anciu32 stride;
-} RHIVtxBufferCreateInfo;
+} RHIVtxBufferMemLayoutInfo;
 
 typedef enum RHITextureWrapModeBits {
         RHI_TEXTURE_WRAP_REPEAT,
@@ -277,7 +277,7 @@ typedef enum RHIDepthOptionBits {
  *      float           RHIGetTime              (void)
  *      void            RHIViewport             (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
  *      void            RHISwapBuffers          (RHIWindow h)
- *      void            RHIGenVtxBuffer         (const void *pVertices, RHIVtxBufferCreateInfo *createInfo)
+ *      void            RHIGenVtxBuffer         (const void *pVertices, RHIVtxBufferMemLayoutInfo *createInfo)
  *      void            RHIGenIdxBuffer         (anciu32 *indices, anciu32 count)
  *      void            RHIDeleteVtxBuffer      (RHIVtxBuffer)
  *      void            RHIDeleteIdxBuffer      (RHIIdxBuffer)
@@ -301,10 +301,10 @@ ANCIAPI ANCI_RHI_VIEWPORT ANCIRHIVIEWPORT;
 typedef void (*ANCI_RHI_SWAP_BUFFERS)(RHIWindow h);
 ANCIAPI ANCI_RHI_SWAP_BUFFERS ANCIRHISWAPBUFFERS;
 #define RHISwapBuffers ANCIRHISWAPBUFFERS
-typedef RHIVtxBuffer (*ANCI_RHI_GEN_VTXBUFFER)(const void *pVertices, RHIVtxBufferCreateInfo *);
+typedef void (*ANCI_RHI_GEN_VTXBUFFER)(const void *pVertices, RHIVtxBufferMemLayoutInfo *, RHIVtxBuffer *);
 ANCIAPI ANCI_RHI_GEN_VTXBUFFER ANCIRHIGENVTXBUFFER;
 #define RHIGenVtxBuffer ANCIRHIGENVTXBUFFER
-typedef RHIIdxBuffer (*ANCI_RHI_GEN_IDXBUFFER)(anciu32 *indices, anciu32 count);
+typedef void (*ANCI_RHI_GEN_IDXBUFFER)(anciu32 *indices, anciu32 count, RHIIdxBuffer *);
 ANCIAPI ANCI_RHI_GEN_IDXBUFFER ANCIRHIGENIDXBUFFER;
 #define RHIGenIdxBuffer ANCIRHIGENIDXBUFFER
 typedef void (*ANCI_RHI_DESTROY_VTX_BUFFER)(RHIVtxBuffer);

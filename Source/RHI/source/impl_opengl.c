@@ -80,7 +80,7 @@ float _glfw_get_time () { return glfwGetTime(); }
 void _opengl_viewport (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
 void _opengl_swap_buffers (RHIWindow h) { glfwSwapBuffers((GLFWwindow *) h); }
 
-RHIVtxBuffer _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferCreateInfo *createInfo)
+void _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferMemLayoutInfo *memLayoutInfo, RHIVtxBuffer *vtxBuffer)
 {
         anciu32 vao;
         anciu32 vbo;
@@ -91,10 +91,10 @@ RHIVtxBuffer _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferCreateInf
 
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, createInfo->vertexCount * createInfo->stride, pVertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, memLayoutInfo->vertexCount * memLayoutInfo->stride, pVertices, GL_STATIC_DRAW);
 
-        for (i = 0; i < createInfo->bufferLayoutCount; i++) {
-                RHIVtxBufferLayout layout = createInfo->pBufferLayout[i];
+        for (i = 0; i < memLayoutInfo->bufferLayoutCount; i++) {
+                RHIVtxBufferLayout layout = memLayoutInfo->pBufferLayout[i];
 
                 GLenum type = GL_FLOAT;
                 switch (layout.format) {
@@ -103,7 +103,7 @@ RHIVtxBuffer _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferCreateInf
                 }
 
                 glEnableVertexAttribArray(layout.location);
-                glVertexAttribPointer(layout.location, (int) layout.size, type, GL_FALSE, (int) createInfo->stride, (void*) (size_t) layout.offset);
+                glVertexAttribPointer(layout.location, (int) layout.size, type, GL_FALSE, (int) memLayoutInfo->stride, (void*) (size_t) layout.offset);
         }
 
         /* 解除绑定 */
@@ -113,12 +113,12 @@ RHIVtxBuffer _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferCreateInf
         RHIVtxBufferGL *pVtxBuffer = vmalloc(sizeof(RHIVtxBufferGL));
         pVtxBuffer->vao = vao;
         pVtxBuffer->vbo = vbo;
-        pVtxBuffer->count = createInfo->vertexCount / createInfo->stride;
+        pVtxBuffer->count = memLayoutInfo->vertexCount / memLayoutInfo->stride;
 
-        return pVtxBuffer;
+        *vtxBuffer = pVtxBuffer;
 }
 
-RHIIdxBuffer _opengl_gen_idx_buffer(anciu32 *indices, anciu32 count)
+void _opengl_gen_idx_buffer(anciu32 *indices, anciu32 count, RHIIdxBuffer *idxBuffer)
 {
         unsigned int ebo;
         glGenBuffers(1, &ebo);
@@ -129,7 +129,7 @@ RHIIdxBuffer _opengl_gen_idx_buffer(anciu32 *indices, anciu32 count)
         pIdxBuffer->ebo = ebo;
         pIdxBuffer->count = count;
 
-        return pIdxBuffer;
+        *idxBuffer = pIdxBuffer;
 }
 
 void _opengl_delete_vtx_buffer(RHIVtxBuffer vtxBuffer)

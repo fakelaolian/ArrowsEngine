@@ -9,9 +9,7 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include <ctime>
 #include <vector>
-#include "Loader/ModelLoader.h"
-
-#include <glad/glad.h>
+#include "Render/RenderMesh.h"
 
 #include "Camera/Camera.hpp"
 
@@ -47,13 +45,9 @@ void SetUpImGui(RHIWindow h)
 
 EngineApplication::EngineApplication()
 {
-        anci::load_model("C:/Users/procf/Desktop/untitled.obj", anci::ANCI_MODEL_FORMAT_OBJ_BIT);
-
         /* 初始化RHI函数 */
         RHIProcAddressInit(OpenGL);
-
         _window = make_anciptr<EngineWindow>("暗刺引擎", 800, 800);
-
         SetUpImGui(_window->GetHandle());
 }
 
@@ -225,13 +219,14 @@ void EngineApplication::StartEngine()
                 {3, 3, RHI_FLOAT, offsetof(RHIVtxBufferArray, color)},
         };
 
-        RHIVtxBufferCreateInfo vtxBufferCreateInfo = {};
+        RHIVtxBufferMemLayoutInfo vtxBufferCreateInfo = {};
         vtxBufferCreateInfo.vertexCount = ARRAY_SIZE(vertices);
         vtxBufferCreateInfo.stride = sizeof(RHIVtxBufferArray);
         vtxBufferCreateInfo.pBufferLayout = layouts;
         vtxBufferCreateInfo.bufferLayoutCount = ARRAY_SIZE(layouts);
 
-        RHIVtxBuffer cubeVtxBuffer = RHIGenVtxBuffer(vertices, &vtxBufferCreateInfo);
+        RHIVtxBuffer cubeVtxBuffer;
+        RHIGenVtxBuffer(vertices, &vtxBufferCreateInfo, &cubeVtxBuffer);
 
         RHIShader cubeShader = RHICreateShader("../../../Source/Engine/Shaders/cube.alsl");
         RHIShader skyboxShader = RHICreateShader("../../../Source/Engine/Shaders/skyboxs.alsl");
@@ -292,7 +287,9 @@ void EngineApplication::StartEngine()
                 {{-1.0f, -1.0f,  1.0f}},
                 {{1.0f, -1.0f,  1.0f}}
         };
-        RHIVtxBuffer skyboxBufArray = RHIGenVtxBuffer(skyboxArray, &vtxBufferCreateInfo);
+
+        RHIVtxBuffer skyboxBufArray;
+        RHIGenVtxBuffer(skyboxArray, &vtxBufferCreateInfo, &skyboxBufArray);
 
         RHITexture skyboxTexture;
         LoadCubeMap(&skyboxTexture);
@@ -314,6 +311,7 @@ void EngineApplication::StartEngine()
         clock_t renderTime;
         clock_t beginTime;
 
+        // 加载模型
         RHIEnable(RHI_DEPTH_TEST, RHI_TRUE);
         while (!_window->ShouldClose()) {
                 _window->PollEvents();

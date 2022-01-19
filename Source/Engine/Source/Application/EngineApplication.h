@@ -3,6 +3,7 @@
 
 #include <AnciCore.h>
 #include "EngineWindow.h"
+#include <RHI.h>
 
 /**
  * 引擎应用程序，负责启动引擎
