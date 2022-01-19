@@ -30,10 +30,13 @@ public:
         RenderObject();
         ~RenderObject();
 
-
         inline void
-        BLUEPRINT_NODE(SetPosition)(ancivec3 pos)
-        { _pos = pos; }
+        BLUEPRINT_NODE(SetPosition)(ancivec3 position)
+        { _position = position; }
+
+        /* 模型矩阵 */
+        inline ancimat4 GetModelMatrix()
+        { return _model_matrix; }
 
         inline void Draw()
         {
@@ -42,6 +45,7 @@ public:
         }
 
 private:
-        ancivec3                _pos;
         std::vector<RenderMesh> _meshs;
+        ancivec3                _position;
+        ancimat4                _model_matrix;
 };
