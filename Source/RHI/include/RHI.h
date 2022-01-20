@@ -277,8 +277,8 @@ typedef enum RHIDepthOptionBits {
  *      float           RHIGetTime              (void)
  *      void            RHIViewport             (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
  *      void            RHISwapBuffers          (RHIWindow h)
- *      void            RHIGenVtxBuffer         (const void *pVertices, RHIVtxBufferMemLayoutInfo *createInfo)
- *      void            RHIGenIdxBuffer         (anciu32 *indices, anciu32 count)
+ *      void            RHICreateVtxBuffer         (const void *pVertices, RHIVtxBufferMemLayoutInfo *createInfo)
+ *      void            RHICreateIdxBuffer         (anciu32 *indices, anciu32 count)
  *      void            RHIDestroyVtxBuffer      (RHIVtxBuffer)
  *      void            RHIDestroyIdxBuffer      (RHIIdxBuffer)
  *      void            RHIBindVtxBuffer        (RHIVtxBuffer)
@@ -288,7 +288,7 @@ typedef enum RHIDepthOptionBits {
  *      RHIShader       RHICreateShader         (const char *alslFile)
  *      void            RHIDestroyShader         (RHIShader)
  *      void            RHIClearColorBuffer     (float r, float g, float b, float a)
- *      RHITexture      RHIGenTexture           (RHIFormat format, anciu32 width, anciu32 height, anciuc *pixels)
+ *      RHITexture      RHICreateTexture           (RHIFormat format, anciu32 width, anciu32 height, anciuc *pixels)
  *      void            RHIBindTexture          (RHITexture)
  *      void            RHIDestroyTexture        (RHITexture)
  */
@@ -302,11 +302,11 @@ typedef void (*ANCI_RHI_SWAP_BUFFERS)(RHIWindow h);
 ANCIAPI ANCI_RHI_SWAP_BUFFERS ANCIRHISWAPBUFFERS;
 #define RHISwapBuffers ANCIRHISWAPBUFFERS
 typedef void (*ANCI_RHI_GEN_VTXBUFFER)(const void *pVertices, RHIVtxBufferMemLayoutInfo *, RHIVtxBuffer *);
-ANCIAPI ANCI_RHI_GEN_VTXBUFFER ANCIRHIGENVTXBUFFER;
-#define RHIGenVtxBuffer ANCIRHIGENVTXBUFFER
+ANCIAPI ANCI_RHI_GEN_VTXBUFFER ANCIRHICREATEVTXBUFFER;
+#define RHICreateVtxBuffer ANCIRHICREATEVTXBUFFER
 typedef void (*ANCI_RHI_GEN_IDXBUFFER)(anciu32 *indices, anciu32 count, RHIIdxBuffer *);
-ANCIAPI ANCI_RHI_GEN_IDXBUFFER ANCIRHIGENIDXBUFFER;
-#define RHIGenIdxBuffer ANCIRHIGENIDXBUFFER
+ANCIAPI ANCI_RHI_GEN_IDXBUFFER ANCIRHICREATEIDXBUFFER;
+#define RHICreateIdxBuffer ANCIRHICREATEIDXBUFFER
 typedef void (*ANCI_RHI_DESTROY_VTX_BUFFER)(RHIVtxBuffer);
 ANCIAPI ANCI_RHI_DESTROY_VTX_BUFFER ANCIRHIDESTROYVTXBUFFER;
 #define RHIDestroyVtxBuffer ANCIRHIDESTROYVTXBUFFER
@@ -365,8 +365,8 @@ typedef void (*ANCI_RHI_CLEAR_COLOR_BUFFER)(float r, float g, float b, float a);
 ANCIAPI ANCI_RHI_CLEAR_COLOR_BUFFER ANCIRHICLEARCOLORBUFFER;
 #define RHIClearColorBuffer ANCIRHICLEARCOLORBUFFER
 typedef RHITexture (*ANCI_RHI_GEN_TEXTURE2D)(RHITexture2DCreateInfo *);
-ANCIAPI ANCI_RHI_GEN_TEXTURE2D ANCIRHIGENTEXTURE2D;
-#define RHIGenTexture2D ANCIRHIGENTEXTURE2D
+ANCIAPI ANCI_RHI_GEN_TEXTURE2D ANCIRHICREATETEXTURE2D;
+#define RHICreateTexture2D ANCIRHICREATETEXTURE2D
 typedef void (*ANCI_RHI_DELETE_TEXTURE)(RHITexture);
 ANCIAPI ANCI_RHI_DELETE_TEXTURE ANCIRHIDESTROYTEXTURE;
 #define RHIDestroyTexture ANCIRHIDESTROYTEXTURE
@@ -381,7 +381,7 @@ ANCIAPI ANCI_RHI_BIND_TEXTURE ANCIRHIBINDTEXTURE;
 #define RHIBindTexture ANCIRHIBINDTEXTURE
 typedef RHITexture (*ANCI_RHI_CREATE_TEXTURE_CUBE_MAP)(RHITextureCubeCreateInfo *);
 ANCIAPI ANCI_RHI_CREATE_TEXTURE_CUBE_MAP ANCIRHICREATETEXTURECUBEMAP;
-#define RHIGenTextureCubeMap ANCIRHICREATETEXTURECUBEMAP
+#define RHICreateTextureCubeMap ANCIRHICREATETEXTURECUBEMAP
 typedef void (*ANCI_RHI_DEPTH_OPTION)(RHIDepthOptionBits);
 ANCIAPI ANCI_RHI_DEPTH_OPTION ANCIRHIDEPTHOPTION;
 #define RHIDepthOption ANCIRHIDEPTHOPTION
