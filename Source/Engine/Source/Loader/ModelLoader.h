@@ -15,6 +15,7 @@ struct vertex_t {
 struct mesh_t {
         std::vector<vertex_t> vertices;
         std::vector<uint32_t> indices;
+        const char *          texture;
 };
 
 /** 加载模型 */

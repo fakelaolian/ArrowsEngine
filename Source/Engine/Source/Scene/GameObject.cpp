@@ -1,6 +1,9 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/19 */
 #include "GameObject.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 Mesh::Mesh(mloader::mesh_t &mesh)
 {
         /* 创建顶点缓冲区 */
@@ -27,11 +30,28 @@ Mesh::Mesh(mloader::mesh_t &mesh)
 
         /* 创建索引缓冲区 */
         RHICreateIndicesBuffer(mesh.indices.data(), mesh.indices.size(), &_idx_buffer);
+
+        /* 创建纹理 */
+        RHITexture2DCreateInfo textureCreateInfo{};
+        textureCreateInfo.format = RHI_IMAGE_FORMAT_RGBA;
+        textureCreateInfo.textureFilterMin = RHI_TEXTURE_FILTER_NEAREST;
+        textureCreateInfo.textureFilterMag = RHI_TEXTURE_FILTER_NEAREST;
+        textureCreateInfo.textureWrapS = RHI_TEXTURE_WRAP_MIRRORED_REPEAT;
+        textureCreateInfo.textureWrapT = RHI_TEXTURE_WRAP_MIRRORED_REPEAT;
+
+        int w, h, nc;
+        anciuc *pixels = stbi_load(mesh.texture, &w, &h, &nc, 0);
+        textureCreateInfo.width = w;
+        textureCreateInfo.height = h;
+        textureCreateInfo.pPixels = pixels;
+        RHICreateTexture2D(&textureCreateInfo, &_texture);
+
+        stbi_image_free(pixels);
 }
 
 Mesh::~Mesh()
 {
-//        RHIDestroyTexture(_texture);
+        RHIDestroyTexture(_texture);
         RHIDestroyVertexBuffer(_vtx_buffer);
         RHIDestroyIndicesBuffer(_idx_buffer);
 }
@@ -39,7 +59,7 @@ Mesh::~Mesh()
 void Mesh::Draw()
 {
         RHIBindVertexBuffer(_vtx_buffer);
-//        RHIBindTexture(RHI_TEXTURE_2D, _texture);
+        RHIBindTexture(RHI_TEXTURE_2D, _texture);
         RHIDrawIndices(_idx_buffer);
 }
 

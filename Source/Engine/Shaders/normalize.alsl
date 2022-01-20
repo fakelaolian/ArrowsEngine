@@ -7,23 +7,23 @@
     layout (location = 2) in vec2 aUv;
 
     layout (location = 0) out vec2 outUv;
-    layout (location = 1) out vec3 outPos;
+    layout (location = 1) out vec3 outNormal;
 
-    void main()
-    {
+    void main() {
         outUv = aUv;
-        outPos = aPos;
+        outNormal = aNormal;
         gl_Position = vec4(aPos, 1.0);
     }
 #end
 
 #frag
     out vec4 FragColor;
-    layout (location = 0) in vec2 outUv;
-    layout (location = 1) in vec3 outPos;
 
-    void main()
-    {
-        FragColor = vec4(1.0f);
+    layout (location = 0) in vec2 inUv;
+    layout (location = 1) in vec3 inNormal;
+    uniform sampler2D inTexture;
+
+    void main() {
+        FragColor = texture(inTexture, inUv);
     }
 #end

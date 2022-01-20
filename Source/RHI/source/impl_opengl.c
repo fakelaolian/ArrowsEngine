@@ -329,7 +329,7 @@ GLint _opengl_get_texture_filter_value(RHITextureFilterModeBits mode)
         return 0;
 }
 
-RHITexture _opengl_gen_texture2d(RHITexture2DCreateInfo *createInfo)
+void _opengl_gen_texture2d(RHITexture2DCreateInfo *createInfo, RHITexture *p_texture)
 {
         anciu32 textureId;
 
@@ -350,7 +350,7 @@ RHITexture _opengl_gen_texture2d(RHITexture2DCreateInfo *createInfo)
         pTextureGL->width = createInfo->width;
         pTextureGL->height = createInfo->height;
 
-        return pTextureGL;
+        *p_texture = pTextureGL;
 }
 
 void _opengl_delete_texture(RHITexture texture)
@@ -444,7 +444,6 @@ void _opengl_depth_option(RHIDepthOptionBits bits)
 
 void _opengl_bind_texture(RHITextureFormatBits bit, RHITexture texture)
 {
-        ITexture itexture = CONV_TEX(texture);
         glActiveTexture(GL_TEXTURE0 + _activeTexture);
         if (bit == RHI_TEXTURE_2D)
                 glBindTexture(GL_TEXTURE_2D, CONV_TEX(texture)->textureId);
