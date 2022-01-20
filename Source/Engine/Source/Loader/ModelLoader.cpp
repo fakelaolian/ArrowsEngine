@@ -1,9 +1,9 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/19 */
-#include "loader.h"
+#include "ModelLoader.h"
 
 #include "ObjLoader/OBJLoader.h"
 
-namespace loader {
+namespace mloader {
 
 std::vector<mesh_t> load_model(const char *filename)
 {

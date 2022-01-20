@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Application/anci_application.h"
+#include "Application/AnciApplication.h"
 
 int main()
 {
@@ -7,7 +7,7 @@ int main()
         system("chcp 65001");
 #endif
 
-        anci_application app{600, 800, "ANCI"};
+        AnciApplication app{600, 800, "ANCI"};
         app.Run();
 
         return 0;

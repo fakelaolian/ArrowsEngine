@@ -2,22 +2,25 @@
 #pragma once
 
 #include <RHI.h>
-#include <anci_math.h>
 #include <blueprint.h>
+#include <anci_core.h>
+#include "Loader/ModelLoader.h"
+
+// std
 #include <vector>
 
 /** 顶点布局 */
-struct RenderVertex {
+struct Vertex {
         ancivec3 position;
         ancivec3 normal;
         ancivec2 texcoord;
 };
 
 /** 网格对象 */
-class RenderMesh {
+class Mesh {
 public:
-        RenderMesh();
-        ~RenderMesh();
+        Mesh(mloader::mesh_t &meshs);
+        ~Mesh();
 
         void Draw();
 
@@ -28,10 +31,10 @@ private:
 };
 
 /** 渲染对象 */
-class RenderObject {
+class GameObject {
 public:
-        RenderObject();
-        ~RenderObject();
+        GameObject(std::vector<mloader::mesh_t> &meshs);
+        ~GameObject() = default;
 
         /* 设置模型位置 */
         inline void SetPosition (ancivec3 position)
@@ -49,14 +52,16 @@ public:
         inline ancimat4 GetModelMatrix()
         { return _model_matrix; }
 
+        /* 渲染 */
         inline void Draw()
         {
-                for (RenderMesh &mesh : _meshs)
-                        mesh.Draw();
+                for (Mesh *mesh : _meshs) {
+                        mesh->Draw();
+                }
         }
 
 private:
-        std::vector<RenderMesh> _meshs;
+        std::vector<Mesh*>      _meshs;
         ancivec3                _position;
         ancivec3                _scale;
         ancivec3                _rotation;

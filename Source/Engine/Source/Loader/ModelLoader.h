@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstdint>
 
-namespace loader {
+namespace mloader {
 
 struct vertex_t {
         float vertex[3];
@@ -17,6 +17,7 @@ struct mesh_t {
         std::vector<uint32_t> indices;
 };
 
+/** 加载模型 */
 std::vector<mesh_t> load_model(const char *filename);
 
 }

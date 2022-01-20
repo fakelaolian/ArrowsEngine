@@ -4,10 +4,10 @@
 #include <RHI.h>
 #include <anci_core.h>
 
-class anci_application {
+class AnciApplication {
 public:
-        anci_application(uint32_t w, uint32_t h, const char *title);
-        ~anci_application() = default;
+        AnciApplication(uint32_t w, uint32_t h, const char *title);
+        ~AnciApplication() = default;
 
         void Run();
 

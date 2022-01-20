@@ -16,11 +16,11 @@ LINK_DIRECTORIES(${PROJECT_NAME} ThirdParty/glfw3/lib-mingw-w64)
 ADD_EXECUTABLE(${PROJECT_NAME}
         Source/Main/main.cpp
         # --* Application *-- #
-        Source/Application/anci_application.cpp
+        Source/Application/AnciApplication.cpp
         # --* Render *-- #
-        Source/Render/render_object.cpp
+        Source/Render/GameObject.cpp
         # --* Loader *-- #
-        Source/Loader/loader.cpp
+        Source/Loader/ModelLoader.cpp
         # --* ThirdParty/glad *-- #
         ThirdParty/glad/src/glad.c
         # --* ThirdParty/ImGui *-- #

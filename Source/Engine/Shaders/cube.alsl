@@ -7,25 +7,23 @@
     layout (location = 2) in vec2 aUv;
 
     layout (location = 0) out vec2 outUv;
-
-    uniform mat4 model;
-    uniform mat4 view;
-    uniform mat4 projection;
+    layout (location = 1) out vec3 outPos;
 
     void main()
     {
         outUv = aUv;
-        gl_Position = projection * view * model * vec4(aPos, 1.0);
+        outPos = aPos;
+        gl_Position = vec4(aPos, 1.0);
     }
 #end
 
 #frag
     out vec4 FragColor;
     layout (location = 0) in vec2 outUv;
-    uniform sampler2D cubeTexture;
+    layout (location = 1) in vec3 outPos;
 
     void main()
     {
-        FragColor = texture(cubeTexture, outUv);
+        FragColor = vec4(1.0f);
     }
 #end

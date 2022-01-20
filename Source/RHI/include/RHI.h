@@ -272,25 +272,24 @@ typedef enum RHIDepthOptionBits {
  *      ANCIAPI ANCI_RHI_TEST ANCIRHITEST;
  *      #define RHITest ANCIRHITEST
  *
- *
  *  列表：
- *      float           RHIGetTime              (void)
- *      void            RHIViewport             (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
- *      void            RHISwapBuffers          (RHIWindow h)
- *      void            RHICreateVtxBuffer         (const void *pVertices, RHIVtxBufferMemLayoutInfo *createInfo)
- *      void            RHICreateIdxBuffer         (anciu32 *indices, anciu32 count)
- *      void            RHIDestroyVtxBuffer      (RHIVtxBuffer)
- *      void            RHIDestroyIdxBuffer      (RHIIdxBuffer)
- *      void            RHIBindVtxBuffer        (RHIVtxBuffer)
- *      void            RHIDrawVtx              (void)
- *      void            RHIDrawIdx              (RHIIdxBuffer)
- *      void            RHIPolygonMode          (RHIPolygonModeBits)
- *      RHIShader       RHICreateShader         (const char *alslFile)
- *      void            RHIDestroyShader         (RHIShader)
- *      void            RHIClearColorBuffer     (float r, float g, float b, float a)
+ *      float           RHIGetTime                 (void)
+ *      void            RHIViewport                (anciu32 x, anciu32 y, anciu32 w, anciu32 h)
+ *      void            RHISwapBuffers             (RHIWindow h)
+ *      void            RHICreateVertexBuffer         (const void *pVertices, RHIVtxBufferMemLayoutInfo *createInfo)
+ *      void            RHICreateIndicesBuffer         (anciu32 *indices, anciu32 count)
+ *      void            RHIDestroyVertexBuffer     (RHIVtxBuffer)
+ *      void            RHIDestroyIndicesBuffer    (RHIIdxBuffer)
+ *      void            RHIBindVertexBuffer        (RHIVtxBuffer)
+ *      void            RHIDrawVtx                 (void)
+ *      void            RHIDrawIndices             (RHIIdxBuffer)
+ *      void            RHIPolygonMode             (RHIPolygonModeBits)
+ *      RHIShader       RHICreateShader            (const char *alslFile)
+ *      void            RHIDestroyShader           (RHIShader)
+ *      void            RHIClearColorBuffer        (float r, float g, float b, float a)
  *      RHITexture      RHICreateTexture           (RHIFormat format, anciu32 width, anciu32 height, anciuc *pixels)
- *      void            RHIBindTexture          (RHITexture)
- *      void            RHIDestroyTexture        (RHITexture)
+ *      void            RHIBindTexture             (RHITexture)
+ *      void            RHIDestroyTexture          (RHITexture)
  */
 typedef float (*ANCI_RHI_GET_TIME)(void);
 ANCIAPI ANCI_RHI_GET_TIME ANCIRHIGETTIME;
@@ -303,25 +302,25 @@ ANCIAPI ANCI_RHI_SWAP_BUFFERS ANCIRHISWAPBUFFERS;
 #define RHISwapBuffers ANCIRHISWAPBUFFERS
 typedef void (*ANCI_RHI_GEN_VTXBUFFER)(const void *pVertices, RHIVtxBufferMemLayoutInfo *, RHIVtxBuffer *);
 ANCIAPI ANCI_RHI_GEN_VTXBUFFER ANCIRHICREATEVTXBUFFER;
-#define RHICreateVtxBuffer ANCIRHICREATEVTXBUFFER
+#define RHICreateVertexBuffer ANCIRHICREATEVTXBUFFER
 typedef void (*ANCI_RHI_GEN_IDXBUFFER)(anciu32 *indices, anciu32 count, RHIIdxBuffer *);
 ANCIAPI ANCI_RHI_GEN_IDXBUFFER ANCIRHICREATEIDXBUFFER;
-#define RHICreateIdxBuffer ANCIRHICREATEIDXBUFFER
+#define RHICreateIndicesBuffer ANCIRHICREATEIDXBUFFER
 typedef void (*ANCI_RHI_DESTROY_VTX_BUFFER)(RHIVtxBuffer);
 ANCIAPI ANCI_RHI_DESTROY_VTX_BUFFER ANCIRHIDESTROYVTXBUFFER;
-#define RHIDestroyVtxBuffer ANCIRHIDESTROYVTXBUFFER
+#define RHIDestroyVertexBuffer ANCIRHIDESTROYVTXBUFFER
 typedef void (*ANCI_RHI_DESTROY_IDX_BUFFER)(RHIIdxBuffer);
 ANCIAPI ANCI_RHI_DESTROY_IDX_BUFFER ANCIRHIDESTROYIDXBUFFER;
-#define RHIDestroyIdxBuffer ANCIRHIDESTROYIDXBUFFER
+#define RHIDestroyIndicesBuffer ANCIRHIDESTROYIDXBUFFER
 typedef void (*ANCI_RHI_BIND_VTX)(RHIVtxBuffer);
 ANCIAPI ANCI_RHI_BIND_VTX ANCIRHIBINDVTX;
-#define RHIBindVtxBuffer ANCIRHIBINDVTX
+#define RHIBindVertexBuffer ANCIRHIBINDVTX
 typedef void (*ANCI_RHI_DRAW_VTX)(anciu32 index, anciu32 offset);
 ANCIAPI ANCI_RHI_DRAW_VTX ANCIRHIDRAWVTX;
 #define RHIDrawVtx ANCIRHIDRAWVTX
 typedef void (*ANCI_RHI_DRAW_IDX)(RHIIdxBuffer);
 ANCIAPI ANCI_RHI_DRAW_IDX ANCIRHIDRAWIDX;
-#define RHIDrawIdx ANCIRHIDRAWIDX
+#define RHIDrawIndices ANCIRHIDRAWIDX
 typedef void (*ANCI_RHI_POLYGON_MODE)(RHIPolygonModeBits);
 ANCIAPI ANCI_RHI_POLYGON_MODE ANCIRHIPOLYGONMODE;
 #define RHIPolygonMode ANCIRHIPOLYGONMODE
