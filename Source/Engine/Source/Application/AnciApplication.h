@@ -3,25 +3,16 @@
 
 #include <RHI.h>
 #include <anci_core.h>
+#include "AnciWindow.h"
 
 class AnciApplication {
 public:
-        AnciApplication(uint32_t w, uint32_t h, const char *title);
+        AnciApplication(const char *title, uint32_t w, uint32_t h);
         ~AnciApplication() = default;
-
-        inline void SetDimension(uint32_t w, uint32_t h)
-        {
-                _width = w;
-                _height = h;
-                _aspect = (float) _width / _height;
-        }
 
         void Run();
 
 private:
-        RHIWindow _window;
-        uint32_t  _width;
-        uint32_t  _height;
-        float     _aspect;
+        anciptr<AnciWindow> _window;
 
 };

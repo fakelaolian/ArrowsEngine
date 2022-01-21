@@ -5,7 +5,21 @@
 
 class Camera {
 public:
-        Camera(ancivec3 pos) : _position(pos) {}
+        enum CameraMovement {
+                CAMERA_MOVE_FRONT,
+                CAMERA_MOVE_BACK,
+                CAMERA_MOVE_RIGHT,
+                CAMERA_MOVE_LEFT,
+        };
+
+        Camera(ancivec3 position, ancivec3 target, ancivec3 wordUp)
+        {
+                _position = position;
+                _world_up = wordUp;
+                _forward  = glm::normalize(target - position);
+                _right    = glm::normalize(glm::cross(_forward, _world_up));
+                _up       = glm::normalize(glm::cross(_forward, _right));
+        }
 
         virtual void Update(float aspect) = 0;
 
@@ -26,13 +40,13 @@ protected:
         ancimat4 _projection_matrix{1.0f};
 
         /* 变换要计算的数据 */
-        ancivec3 _position;
-        ancivec3 _front;
+        ancivec3 _position{0.0f, 0.0f, -5.0f};
         ancivec3 _up;
         ancivec3 _right;
+        ancivec3 _forward;
         ancivec3 _world_up;
 
         /* 相机属性 */
-        float _move_speed = 1.0f;
+        float _move_speed = 2.5f;
         float _sensitive  = 1.0f;
 };

@@ -151,10 +151,21 @@ typedef enum RHIKeyCodeBits {
         RHI_KEY_MENU               = 348,
 } RHIKeyCodeBits;
 
-typedef enum RHIGetKeyMode {
-        RHI_PRESS                  = 0,
-        RHI_RELEASE                = 1
-} RHIGetKeyMode;
+typedef enum RHIMouseButtonBits {
+        RHI_MOUSE_BUTTON_1 = 0,
+        RHI_MOUSE_BUTTON_2 = 1,
+        RHI_MOUSE_BUTTON_3 = 2,
+        RHI_MOUSE_BUTTON_4 = 3,
+        RHI_MOUSE_BUTTON_5 = 4,
+        RHI_MOUSE_BUTTON_6 = 5,
+        RHI_MOUSE_BUTTON_7 = 6,
+        RHI_MOUSE_BUTTON_8 = 7,
+} RHIMouseButtonBits;
+
+typedef enum RHIKeyModeBits {
+        RHI_RELEASE                = 0,
+        RHI_PRESS                  = 1,
+} RHIKeyModeBits;
 
 /* 图形API选择枚举 */
 typedef enum RHIGraphAPIBits {
@@ -388,9 +399,12 @@ ANCIAPI ANCI_RHI_DEPTH_OPTION ANCIRHIDEPTHOPTION;
 ////////////////////////////////////////////////////////////////////////////////////
 //////                              设备输入                                   //////
 ////////////////////////////////////////////////////////////////////////////////////
-typedef RHIGetKeyMode (*ANCI_RHI_GET_KEY)(RHIWindow, RHIKeyCodeBits);
+typedef RHIKeyModeBits (*ANCI_RHI_GET_KEY)(RHIWindow, RHIKeyCodeBits);
 ANCIAPI ANCI_RHI_GET_KEY ANCIRHIGETKEY;
 #define RHIGetKey ANCIRHIGETKEY
+typedef RHIKeyModeBits (*ANCI_RHI_GET_MOUSE_BUTTON)(RHIWindow, RHIMouseButtonBits);
+ANCIAPI ANCI_RHI_GET_MOUSE_BUTTON ANCIRHIGETMOUSEBUTTON;
+#define RHIGetMouseButton ANCIRHIGETMOUSEBUTTON
 typedef void (*ANCI_RHI_SET_CURSOR_INPUT_MODE)(RHIWindow, RHIInputCursorModeBits);
 ANCIAPI ANCI_RHI_SET_CURSOR_INPUT_MODE ANCIRHISETCURSORINPUTMODE;
 #define RHISetCursorMode ANCIRHISETCURSORINPUTMODE
@@ -438,6 +452,9 @@ ANCIAPI ANCI_RHI_DELETE_WINDOW ANCIRHIDELETWINDOW;
 typedef void (*ANCI_RHI_TERMINATE)();
 ANCIAPI ANCI_RHI_TERMINATE ANCIRHITERMINATE;
 #define RHITerminate ANCIRHITERMINATE
+typedef float (*ANCI_RHI_GET_ASPECT)();
+ANCIAPI ANCI_RHI_GET_ASPECT ANCIRHIGETASPECT;
+#define RHIGetAspect ANCIRHIGETASPECT
 
 /**
  * 加载对应的API函数

@@ -16,8 +16,10 @@ LINK_DIRECTORIES(${PROJECT_NAME} ThirdParty/glfw3/lib-mingw-w64)
 ADD_EXECUTABLE(${PROJECT_NAME}
         Source/Main/main.cpp
         # --* Application *-- #
+        Source/Application/AnciWindow.cpp
         Source/Application/AnciApplication.cpp
         # --* Scene *-- #
+        Source/Scene/Scene.cpp
         Source/Scene/GameObject.cpp
         Source/Scene/SceneCamera.cpp
         # --* Loader *-- #

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 ANCI_RHI_CREATE_WINDOW                  ANCIRHICREATEWIDNOW                      = NULL;
+ANCI_RHI_GET_ASPECT                     ANCIRHIGETASPECT                         = NULL;
 ANCI_RHI_WINDOW_SHOULD_CLOSE            ANCIRHIWINDOWSHOULDCLOSE                 = NULL;
 ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK     ANCIRHIWINDOWSETRESIZECALLBACK           = NULL;
 ANCI_RHI_WINDOW_SET_CURSOR_CALLBACK     ANCIRHIWINDOWSETCURSORCALLBACK           = NULL;
@@ -14,6 +15,7 @@ ANCI_RHI_TERMINATE                      ANCIRHITERMINATE                        
 ANCI_RHI_OPENGL_GET_CURRENT_CONTEXT     ANCIRHIOPENGLGETCURRENTCONTEXT           = NULL;
 ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT    ANCIRHIOPENGLMAKECONTEXTCURRENT          = NULL;
 ANCI_RHI_GET_KEY                        ANCIRHIGETKEY                            = NULL;
+ANCI_RHI_GET_MOUSE_BUTTON               ANCIRHIGETMOUSEBUTTON                    = NULL;
 ANCI_RHI_SET_CURSOR_INPUT_MODE          ANCIRHISETCURSORINPUTMODE                = NULL;
 ANCI_RHI_SET_USER_POINTER               ANCIRHISETUSERPOINTER                    = NULL;
 ANCI_RHI_GET_USER_POINTER               ANCIRHIGETUSERPOINTER                    = NULL;
@@ -83,7 +85,7 @@ void _glfw_make_context_current(RHIWindow h)
 { glfwMakeContextCurrent((GLFWwindow *) h); }
 
 ancibool _glfw_get_key(RHIWindow window, RHIKeyCodeBits keycode)
-{ return (glfwGetKey((GLFWwindow *) window, keycode) == GLFW_PRESS) ? RHI_PRESS : RHI_RELEASE; }
+{ return glfwGetKey((GLFWwindow *) window, keycode); }
 
 void _glfw_set_user_pointer(RHIWindow window, void *any)
 { glfwSetWindowUserPointer(window, any); }
@@ -100,6 +102,9 @@ void _glfw_set_cursor_mode(RHIWindow window, RHIInputCursorModeBits bit)
                 case RHI_CURSOR_DISABLE: glfwSetInputMode((GLFWwindow *) window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); break;
         }
 }
+
+RHIKeyModeBits _glfw_get_mouse_button(RHIWindow window, RHIMouseButtonBits bit)
+{ return glfwGetMouseButton(window, bit); }
 
 void _load_glfw_functions()
 {
@@ -125,4 +130,5 @@ void _load_glfw_functions()
         ANCIRHISETUSERPOINTER           = _glfw_set_user_pointer;
         ANCIRHIGETUSERPOINTER           = _glfw_get_user_pointer;
         ANCIRHIWINDOWSETCURSORCALLBACK  = _glfw_set_window_cursor_callback;
+        ANCIRHIGETMOUSEBUTTON           = _glfw_get_mouse_button;
 }
