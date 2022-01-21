@@ -7,7 +7,7 @@ int main()
         system("chcp 65001");
 #endif
 
-        AnciApplication app{600, 800, "ANCI"};
+        AnciApplication app{1000, 800, "ANCI"};
         app.Run();
 
         return 0;

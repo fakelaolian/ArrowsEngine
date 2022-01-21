@@ -19,6 +19,7 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         Source/Application/AnciApplication.cpp
         # --* Scene *-- #
         Source/Scene/GameObject.cpp
+        Source/Scene/SceneCamera.cpp
         # --* Loader *-- #
         Source/Loader/ModelLoader.cpp
         # --* ThirdParty/glad *-- #

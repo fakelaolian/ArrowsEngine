@@ -44,21 +44,21 @@ ancibool                                _gl_depth_test_enable_state       = RHI_
 anciu32                                 _activeTexture                    = 0;
 
 /** OpenGL的Vertex Buffer实现 */
-typedef struct RHIVtxBufferGL {
+typedef struct RHIVertexBufferGL {
         anciu32 vao;
         anciu32 vbo;
         anciu32 count;
-} RHIVtxBufferGL;
-#define IVtxBuffer RHIVtxBufferGL *
-#define CONV_VTX(ptr) ((RHIVtxBufferGL *) (ptr))
+} RHIVertexBufferGL;
+#define IVtxBuffer RHIVertexBufferGL *
+#define CONV_VTX(ptr) ((RHIVertexBufferGL *) (ptr))
 
 /** OpenGL的Index Buffer实现 */
-typedef struct RHIIdxBufferGL {
+typedef struct RHIIndicesBufferGL {
         anciu32 ebo;
         anciu32 count;
-} RHIIdxBufferGL;
-#define IIdxBuffer RHIIdxBufferGL *
-#define CONV_IDX(ptr) ((RHIIdxBufferGL *) (ptr))
+} RHIIndicesBufferGL;
+#define IIdxBuffer RHIIndicesBufferGL *
+#define CONV_IDX(ptr) ((RHIIndicesBufferGL *) (ptr))
 
 /** OpenGL的Texture实现 */
 typedef struct RHITextureGL {
@@ -80,7 +80,7 @@ float _glfw_get_time () { return glfwGetTime(); }
 void _opengl_viewport (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
 void _opengl_swap_buffers (RHIWindow h) { glfwSwapBuffers((GLFWwindow *) h); }
 
-void _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferMemLayoutInfo *memLayoutInfo, RHIVtxBuffer *vtxBuffer)
+void _opengl_gen_vtx_buffer(const void *pVertices, RHIVertexBufferMemLayoutInfo *memLayoutInfo, RHIVertexBuffer *vtxBuffer)
 {
         anciu32 vao;
         anciu32 vbo;
@@ -94,7 +94,7 @@ void _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferMemLayoutInfo *me
         glBufferData(GL_ARRAY_BUFFER, memLayoutInfo->vertexCount * memLayoutInfo->stride, pVertices, GL_STATIC_DRAW);
 
         for (i = 0; i < memLayoutInfo->bufferLayoutCount; i++) {
-                RHIVtxBufferLayout layout = memLayoutInfo->pBufferLayout[i];
+                RHIVertexBufferLayout layout = memLayoutInfo->pBufferLayout[i];
 
                 GLenum type = GL_FLOAT;
                 switch (layout.format) {
@@ -110,7 +110,7 @@ void _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferMemLayoutInfo *me
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        RHIVtxBufferGL *pVtxBuffer = vmalloc(sizeof(RHIVtxBufferGL));
+        RHIVertexBufferGL *pVtxBuffer = vmalloc(sizeof(RHIVertexBufferGL));
         pVtxBuffer->vao = vao;
         pVtxBuffer->vbo = vbo;
         pVtxBuffer->count = memLayoutInfo->vertexCount / memLayoutInfo->stride;
@@ -118,21 +118,21 @@ void _opengl_gen_vtx_buffer(const void *pVertices, RHIVtxBufferMemLayoutInfo *me
         *vtxBuffer = pVtxBuffer;
 }
 
-void _opengl_gen_idx_buffer(anciu32 *indices, anciu32 count, RHIIdxBuffer *idxBuffer)
+void _opengl_gen_idx_buffer(anciu32 *indices, anciu32 count, RHIIndicesBuffer *idxBuffer)
 {
         unsigned int ebo;
         glGenBuffers(1, &ebo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(anciu32), indices, GL_STATIC_DRAW);
 
-        RHIIdxBufferGL *pIdxBuffer = vmalloc(sizeof(RHIIdxBufferGL));
+        RHIIndicesBufferGL *pIdxBuffer = vmalloc(sizeof(RHIIndicesBufferGL));
         pIdxBuffer->ebo = ebo;
         pIdxBuffer->count = count;
 
         *idxBuffer = pIdxBuffer;
 }
 
-void _opengl_delete_vtx_buffer(RHIVtxBuffer vtxBuffer)
+void _opengl_delete_vtx_buffer(RHIVertexBuffer vtxBuffer)
 {
         IVtxBuffer buffer = CONV_VTX(vtxBuffer);
         glDeleteVertexArrays(1, &buffer->vao);
@@ -141,7 +141,7 @@ void _opengl_delete_vtx_buffer(RHIVtxBuffer vtxBuffer)
         vfree(buffer);
 }
 
-void _opengl_delete_idx_buffer(RHIIdxBuffer idxBuffer)
+void _opengl_delete_idx_buffer(RHIIndicesBuffer idxBuffer)
 {
         IIdxBuffer buffer = CONV_IDX(idxBuffer);
         glDeleteBuffers(1, &buffer->ebo);
@@ -149,7 +149,7 @@ void _opengl_delete_idx_buffer(RHIIdxBuffer idxBuffer)
         vfree(buffer);
 }
 
-void _opengl_bind_vtx_buffer(RHIVtxBuffer vtxBuffer)
+void _opengl_bind_vtx_buffer(RHIVertexBuffer vtxBuffer)
 {
         glBindVertexArray(CONV_VTX(vtxBuffer)->vao);
 }
@@ -160,7 +160,7 @@ void _opengl_draw_vtx(anciu32 size, anciu32 offset)
         _activeTexture = 0;
 }
 
-void _opengl_draw_idx(RHIIdxBuffer idxBuffer)
+void _opengl_draw_idx(RHIIndicesBuffer idxBuffer)
 {
         IIdxBuffer buffer = CONV_IDX(idxBuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->ebo);

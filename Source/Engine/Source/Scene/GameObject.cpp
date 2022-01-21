@@ -4,7 +4,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-Mesh::Mesh(mloader::mesh_t &mesh)
+GameObject::GameObject(mloader::mesh_t &mesh)
 {
         /* 创建顶点缓冲区 */
         std::vector<Vertex> vertices;
@@ -14,22 +14,22 @@ Mesh::Mesh(mloader::mesh_t &mesh)
         void *dst = vertices.data();
         memcpy(dst, src, mesh.vertices.size() * sizeof(mloader::vertex_t));
 
-        RHIVtxBufferLayout layouts[] = {
+        RHIVertexBufferLayout layouts[] = {
                 {0, 3, RHI_FLOAT, offsetof(Vertex, position)},
                 {1, 3, RHI_FLOAT, offsetof(Vertex, normal)},
                 {2, 2, RHI_FLOAT, offsetof(Vertex, texcoord)},
         };
 
-        RHIVtxBufferMemLayoutInfo memLayoutInfo{};
+        RHIVertexBufferMemLayoutInfo memLayoutInfo{};
         memLayoutInfo.bufferLayoutCount = ARRAY_SIZE(layouts);
         memLayoutInfo.pBufferLayout = layouts;
         memLayoutInfo.stride = sizeof(Vertex);
         memLayoutInfo.vertexCount = mesh.vertices.size();
 
-        RHICreateVertexBuffer(dst, &memLayoutInfo, &_vtx_buffer);
+        RHICreateVertexBuffer(vertices.data(), &memLayoutInfo, &_vtxbuf);
 
         /* 创建索引缓冲区 */
-        RHICreateIndicesBuffer(mesh.indices.data(), mesh.indices.size(), &_idx_buffer);
+        RHICreateIndicesBuffer(mesh.indices.data(), mesh.indices.size(), &_idxbuf);
 
         /* 创建纹理 */
         RHITexture2DCreateInfo textureCreateInfo{};
@@ -49,22 +49,16 @@ Mesh::Mesh(mloader::mesh_t &mesh)
         stbi_image_free(pixels);
 }
 
-Mesh::~Mesh()
+GameObject::~GameObject()
 {
         RHIDestroyTexture(_texture);
-        RHIDestroyVertexBuffer(_vtx_buffer);
-        RHIDestroyIndicesBuffer(_idx_buffer);
+        RHIDestroyVertexBuffer(_vtxbuf);
+        RHIDestroyIndicesBuffer(_idxbuf);
 }
 
-void Mesh::Draw()
+void GameObject::Draw()
 {
-        RHIBindVertexBuffer(_vtx_buffer);
+        RHIBindVertexBuffer(_vtxbuf);
         RHIBindTexture(RHI_TEXTURE_2D, _texture);
-        RHIDrawIndices(_idx_buffer);
-}
-
-GameObject::GameObject(std::vector<mloader::mesh_t> &meshs)
-{
-        for (mloader::mesh_t &mesh : meshs)
-                _meshs.push_back(new Mesh(mesh));
+        RHIDrawIndices(_idxbuf);
 }

@@ -9,10 +9,14 @@
     layout (location = 0) out vec2 outUv;
     layout (location = 1) out vec3 outNormal;
 
+    uniform mat4 proj;
+    uniform mat4 view;
+    uniform mat4 model;
+
     void main() {
         outUv = aUv;
         outNormal = aNormal;
-        gl_Position = vec4(aPos, 1.0);
+        gl_Position = proj * view * model * vec4(aPos, 1.0);
     }
 #end
 
