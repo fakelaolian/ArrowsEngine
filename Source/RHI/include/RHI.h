@@ -203,6 +203,7 @@ typedef struct RHIVertexBufferMemLayoutInfo {
         RHIVertexBufferLayout *pBufferLayout;
         anciu32 bufferLayoutCount;
         anciu32 stride;
+        const void *pVertices;
 } RHIVertexBufferMemLayoutInfo;
 
 typedef enum RHITextureWrapModeBits {
@@ -311,7 +312,7 @@ ANCIAPI ANCI_RHI_VIEWPORT ANCIRHIVIEWPORT;
 typedef void (*ANCI_RHI_SWAP_BUFFERS)(RHIWindow h);
 ANCIAPI ANCI_RHI_SWAP_BUFFERS ANCIRHISWAPBUFFERS;
 #define RHISwapBuffers ANCIRHISWAPBUFFERS
-typedef void (*ANCI_RHI_GEN_VTXBUFFER)(const void *pVertices, RHIVertexBufferMemLayoutInfo *, RHIVertexBuffer *);
+typedef void (*ANCI_RHI_GEN_VTXBUFFER)(RHIVertexBufferMemLayoutInfo *, RHIVertexBuffer *);
 ANCIAPI ANCI_RHI_GEN_VTXBUFFER ANCIRHICREATEVTXBUFFER;
 #define RHICreateVertexBuffer ANCIRHICREATEVTXBUFFER
 typedef void (*ANCI_RHI_GEN_IDXBUFFER)(anciu32 *indices, anciu32 count, RHIIndicesBuffer *);
@@ -389,7 +390,7 @@ ANCIAPI ANCI_RHI_GET_TEXTURE_ID ANCIRHIGETTEXTUREID;
 typedef void (*ANCI_RHI_BIND_TEXTURE)(RHITextureFormatBits, RHITexture);
 ANCIAPI ANCI_RHI_BIND_TEXTURE ANCIRHIBINDTEXTURE;
 #define RHIBindTexture ANCIRHIBINDTEXTURE
-typedef RHITexture (*ANCI_RHI_CREATE_TEXTURE_CUBE_MAP)(RHITextureCubeCreateInfo *);
+typedef void (*ANCI_RHI_CREATE_TEXTURE_CUBE_MAP)(RHITextureCubeCreateInfo *, RHITexture *);
 ANCIAPI ANCI_RHI_CREATE_TEXTURE_CUBE_MAP ANCIRHICREATETEXTURECUBEMAP;
 #define RHICreateTextureCubeMap ANCIRHICREATETEXTURECUBEMAP
 typedef void (*ANCI_RHI_DEPTH_OPTION)(RHIDepthOptionBits);

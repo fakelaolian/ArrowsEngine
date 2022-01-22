@@ -80,7 +80,7 @@ float _glfw_get_time () { return glfwGetTime(); }
 void _opengl_viewport (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
 void _opengl_swap_buffers (RHIWindow h) { glfwSwapBuffers((GLFWwindow *) h); }
 
-void _opengl_gen_vtx_buffer(const void *pVertices, RHIVertexBufferMemLayoutInfo *memLayoutInfo, RHIVertexBuffer *vtxBuffer)
+void _opengl_gen_vtx_buffer(RHIVertexBufferMemLayoutInfo *memLayoutInfo, RHIVertexBuffer *vtxBuffer)
 {
         anciu32 vao;
         anciu32 vbo;
@@ -91,7 +91,7 @@ void _opengl_gen_vtx_buffer(const void *pVertices, RHIVertexBufferMemLayoutInfo 
 
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, memLayoutInfo->vertexCount * memLayoutInfo->stride, pVertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, memLayoutInfo->vertexCount * memLayoutInfo->stride, memLayoutInfo->pVertices, GL_STATIC_DRAW);
 
         for (i = 0; i < memLayoutInfo->bufferLayoutCount; i++) {
                 RHIVertexBufferLayout layout = memLayoutInfo->pBufferLayout[i];
@@ -386,7 +386,7 @@ RHIID _opengl_get_texture_id(RHITexture texture)
         return CONV_TEX(texture)->textureId;
 }
 
-RHITexture _opengl_gen_texture_cube_map(RHITextureCubeCreateInfo *createInfo)
+void _opengl_gen_texture_cube_map(RHITextureCubeCreateInfo *createInfo, RHITexture *texture)
 {
         anciu32 textureId;
         glGenTextures(1, &textureId);
@@ -414,7 +414,7 @@ RHITexture _opengl_gen_texture_cube_map(RHITextureCubeCreateInfo *createInfo)
         RHITextureGL *pTextureGL = vmalloc(sizeof(RHITextureGL));
         pTextureGL->textureId = textureId;
 
-        return pTextureGL;
+        *texture = pTextureGL;
 }
 
 void _opengl_bind_texture_cube_map(RHITexture texture)
