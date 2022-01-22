@@ -6,19 +6,32 @@
 class Camera {
 public:
         enum CameraMovement {
-                CAMERA_MOVE_FRONT,
+                CAMERA_MOVE_FORWARD,
                 CAMERA_MOVE_BACK,
                 CAMERA_MOVE_RIGHT,
                 CAMERA_MOVE_LEFT,
         };
 
-        Camera(ancivec3 position, ancivec3 target, ancivec3 wordUp)
+        Camera(ancivec3 position, float pitch, float yaw, ancivec3 wordUp)
         {
-                _position = position;
-                _world_up = wordUp;
-                _forward  = glm::normalize(target - position);
+                _position  = position;
+                _world_up  = wordUp;
+                _pitch     = pitch;
+                _yaw       = yaw;
+
+                UpdateVectors();
+        }
+
+        inline void UpdateVectors()
+        {
+                ancivec3 forward;
+                forward.x = cos(_yaw) * cos(_pitch);
+                forward.y = sin(_pitch);
+                forward.z = sin(_yaw) * cos(_pitch);
+                _forward  = normalize(forward);
+
                 _right    = glm::normalize(glm::cross(_forward, _world_up));
-                _up       = glm::normalize(glm::cross(_forward, _right));
+                _up       = glm::normalize(glm::cross(_right, _forward));
         }
 
         virtual void Update(float aspect) = 0;
@@ -45,8 +58,12 @@ protected:
         ancivec3 _right;
         ancivec3 _forward;
         ancivec3 _world_up;
+        float    _pitch;
+        float    _yaw;
+        float    _last_mouse_x;
+        float    _last_mouse_y;
 
         /* 相机属性 */
         float _move_speed = 2.5f;
-        float _sensitive  = 1.0f;
+        float _sensitive  = 0.001f;
 };

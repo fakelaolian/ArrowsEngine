@@ -7,18 +7,48 @@
 /** 场景相机 */
 class SceneCamera : public Camera {
 public:
-        SceneCamera(ancivec3 position, ancivec3 target, ancivec3 wordUp) : Camera(position, target, wordUp) {}
+        SceneCamera(ancivec3 position, float pitch, float yaw, ancivec3 wordUp) : Camera(position, pitch, yaw, wordUp) {}
 
-        inline void Move(CameraMovement movement, float deltaTime)
+        /* 移动相机 */
+        inline void Move(CameraMovement movement, float deltaTime, float incremental = 0.0f)
         {
-                if (movement == CAMERA_MOVE_FRONT)
-                        _position.z += _move_speed * deltaTime;
+                float vspeed = (_move_speed + incremental) * deltaTime;
+                if (movement == CAMERA_MOVE_FORWARD)
+                        _position += _forward * vspeed;
                 if (movement == CAMERA_MOVE_BACK)
-                        _position.z -= _move_speed * deltaTime;
+                        _position -= _forward * vspeed;
                 if (movement == CAMERA_MOVE_RIGHT)
-                        _position.x += _move_speed * deltaTime;
+                        _position -= _right * vspeed;
                 if (movement == CAMERA_MOVE_LEFT)
-                        _position.x -= _move_speed * deltaTime;
+                        _position += _right * vspeed;
+
+                UpdateVectors();
+        }
+
+        /* 旋转相机 */
+        inline void Rotate(float x, float y)
+        {
+                if(_first_mouse_bit) {
+                        _last_mouse_x = x;
+                        _last_mouse_y = y;
+                        _first_mouse_bit = false;
+                }
+
+                float xoffset = (x - _last_mouse_x) * _sensitive;
+                float yoffset = (_last_mouse_y - y) * _sensitive;
+
+                _last_mouse_x = x;
+                _last_mouse_y = y;
+
+                _yaw   += xoffset;
+                _pitch += yoffset;
+
+                if (_pitch > 89.0f)
+                        _pitch = 89.0f;
+                if (_pitch < -89.0f)
+                        _pitch = -89.0f;
+
+                UpdateVectors();
         }
 
         inline void Update(float aspect) override
@@ -28,4 +58,11 @@ public:
 
                 _view_matrix = glm::lookAt(_position, _position + _forward, _world_up);
         }
+
+        inline void ResetFirstMouseBit()
+        { _first_mouse_bit = true; }
+
+private:
+        bool _first_mouse_bit = true;
+
 };

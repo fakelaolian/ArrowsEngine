@@ -7,7 +7,6 @@ Scene::Scene(AnciWindow& window) : _window(window)
         meshs[0].texture = "D:\\projects\\AnciEngine\\Assets\\container2.png";
 
         _objects.emplace_back(meshs[0]);
-
         _normalize_shader = RHICreateShader(GET_SHADER(normalize.alsl));
 }
 
@@ -18,17 +17,25 @@ Scene::~Scene()
 
 void Scene::Update(float deltaTime)
 {
-        /* 控制相机移动 */
-        if (RHIGetKey(_window.GetHandle(), RHI_KEY_W) == RHI_PRESS)
-                _camera.Move(Camera::CAMERA_MOVE_FRONT, deltaTime);
-        if (RHIGetKey(_window.GetHandle(), RHI_KEY_S) == RHI_PRESS)
-                _camera.Move(Camera::CAMERA_MOVE_BACK, deltaTime);
-        if (RHIGetKey(_window.GetHandle(), RHI_KEY_A) == RHI_PRESS)
-                _camera.Move(Camera::CAMERA_MOVE_RIGHT, deltaTime);
-        if (RHIGetKey(_window.GetHandle(), RHI_KEY_D) == RHI_PRESS)
-                _camera.Move(Camera::CAMERA_MOVE_LEFT, deltaTime);
+        if (RHIGetMouseButton(_window.GetHandle(), RHI_MOUSE_BUTTON_2) == RHI_PRESS) {
+                _window.DisableCursor();
 
-        // if (RHIGetMouseButton(_window.GetHandle(), RHI_MOUSE_BUTTON_2) == RHI_PRESS)
+                /* 控制相机移动 */
+                if (RHIGetKey(_window.GetHandle(), RHI_KEY_W) == RHI_PRESS)
+                        _camera.Move(Camera::CAMERA_MOVE_FORWARD, deltaTime);
+                if (RHIGetKey(_window.GetHandle(), RHI_KEY_S) == RHI_PRESS)
+                        _camera.Move(Camera::CAMERA_MOVE_BACK, deltaTime);
+                if (RHIGetKey(_window.GetHandle(), RHI_KEY_A) == RHI_PRESS)
+                        _camera.Move(Camera::CAMERA_MOVE_RIGHT, deltaTime);
+                if (RHIGetKey(_window.GetHandle(), RHI_KEY_D) == RHI_PRESS)
+                        _camera.Move(Camera::CAMERA_MOVE_LEFT, deltaTime);
+
+                _camera.Rotate(_window.GetMouseX(), _window.GetMouseY());
+
+        } else {
+                _window.NormalCursor();
+                _camera.ResetFirstMouseBit();
+        }
 
         _camera.Update(_window.GetAspect());
 

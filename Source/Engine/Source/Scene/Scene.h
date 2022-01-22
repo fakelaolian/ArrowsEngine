@@ -21,8 +21,8 @@ private:
         std::vector<GameObject> _objects;
         RHIShader               _normalize_shader;
         SceneCamera             _camera{
-                {0.0f, 0.0f, -3.0f},
-                {0.0f, 0.0f, 0.0f},
+                {0.0f, 0.0f, -8.0f},
+                0.0f, 0.0f,
                 {0.0f, 1.0f, 0.0f}
         };
 };
