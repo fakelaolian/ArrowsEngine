@@ -1,8 +1,6 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/19 */
 #include "GameObject.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "Loader/TextureLoader.h"
 
 GameObject::GameObject(mloader::mesh_t &mesh)
 {
@@ -25,8 +23,9 @@ GameObject::GameObject(mloader::mesh_t &mesh)
         memLayoutInfo.pBufferLayout = layouts;
         memLayoutInfo.stride = sizeof(Vertex);
         memLayoutInfo.vertexCount = mesh.vertices.size();
+        memLayoutInfo.pVertices = vertices.data();
 
-        RHICreateVertexBuffer(vertices.data(), &memLayoutInfo, &_vtxbuf);
+        RHICreateVertexBuffer(&memLayoutInfo, &_vtxbuf);
 
         /* 创建索引缓冲区 */
         RHICreateIndicesBuffer(mesh.indices.data(), mesh.indices.size(), &_idxbuf);
@@ -40,13 +39,13 @@ GameObject::GameObject(mloader::mesh_t &mesh)
         textureCreateInfo.textureWrapT = RHI_TEXTURE_WRAP_MIRRORED_REPEAT;
 
         int w, h, nc;
-        anciuc *pixels = stbi_load(mesh.texture, &w, &h, &nc, 0);
+        anciuc *pixels = _stbi_load(mesh.texture, &w, &h, &nc, 0);
         textureCreateInfo.width = w;
         textureCreateInfo.height = h;
         textureCreateInfo.pPixels = pixels;
         RHICreateTexture2D(&textureCreateInfo, &_texture);
 
-        stbi_image_free(pixels);
+        _stbi_image_free(pixels);
 }
 
 GameObject::~GameObject()

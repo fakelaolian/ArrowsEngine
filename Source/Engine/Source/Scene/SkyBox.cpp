@@ -1,10 +1,9 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/22 */
 #include "SkyBox.h"
 #include "SkyBoxArray.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "Loader/TextureLoader.h"
 
-SkyBox::SkyBox(const char ** skyboxs)
+SkyBox::SkyBox(const char ** faces)
 {
         /* 加载顶点数据 */
         RHIVertexBufferLayout layouts[] = {
@@ -30,7 +29,7 @@ SkyBox::SkyBox(const char ** skyboxs)
 
         int w, h, nc;
         for (int i = 0; i < 6; i++) {
-                anciuc *pixels = stbi_load(skyboxs[i], &w, &h, &nc, 0);
+                anciuc *pixels = _stbi_load(faces[i], &w, &h, &nc, 0);
 
                 createInfo.format[i]   = RHI_IMAGE_FORMAT_RGB;
                 createInfo.width[i]    = w;
@@ -41,7 +40,7 @@ SkyBox::SkyBox(const char ** skyboxs)
         RHICreateTextureCubeMap(&createInfo, &_skybox_texture);
 
         for (auto p_data : createInfo.pPixels) {
-                stbi_image_free(p_data);
+                _stbi_image_free(p_data);
         }
 
         /* 加载着色器 */
@@ -53,13 +52,13 @@ SkyBox::~SkyBox()
 
 }
 
-void SkyBox::Draw(ancimat4 viewMatrix)
+void SkyBox::Draw(RHIShader &currentShader, SceneCamera &camera)
 {
         RHIDepthOption(RHI_DEPTH_OPTION_LE);
         RHIBindShader(_skybox_shader);
-        ancimat4 skyboxView = ancimat4(ancimat3(viewMatrix));
-        RHIUniformMatrix4fv(cubeShader, "view", glm::value_ptr(skyboxView));
-        RHIUniformMatrix4fv(cubeShader, "projection", glm::value_ptr(projection));
+        ancimat4 skyboxView = ancimat4(ancimat3(camera.GetViewMatrix()));
+        RHIUniformMatrix4fv(currentShader, "view", glm::value_ptr(skyboxView));
+        RHIUniformMatrix4fv(currentShader, "proj", glm::value_ptr(camera.GetProjectionMatrix()));
         RHIBindTexture(RHI_TEXTURE_CUBE_MAP, _skybox_texture);
         RHIBindVertexBuffer(_vtx_buffer);
         RHIDrawVtx(0, 36);

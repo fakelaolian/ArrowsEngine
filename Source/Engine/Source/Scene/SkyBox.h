@@ -3,12 +3,13 @@
 
 #include <RHI.h>
 #include <anci_core.h>
+#include "SceneCamera.h"
 
 class SkyBox {
 public:
-        SkyBox(const char * skyboxs[6]);
+        SkyBox(const char * faces[6]);
         ~SkyBox();
-        void Draw(ancimat4 viewMatrix);
+        void Draw(RHIShader &currentShader, SceneCamera &camera);
 
 private:
         RHIShader _skybox_shader;

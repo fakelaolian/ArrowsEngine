@@ -1,7 +1,7 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/21 */
 #pragma once
 
-#include "SceneCamera.h"
+#include "SkyBox.h"
 #include "GameObject.h"
 #include "Application/AnciWindow.h"
 
@@ -20,6 +20,7 @@ private:
         AnciWindow&             _window;
         std::vector<GameObject> _objects;
         RHIShader               _normalize_shader;
+        anciptr<SkyBox>         _skybox;
         SceneCamera             _camera{
                 {0.0f, 0.0f, -8.0f},
                 0.0f, 0.0f,

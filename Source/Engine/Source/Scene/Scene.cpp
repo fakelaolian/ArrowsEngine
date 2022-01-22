@@ -8,6 +8,20 @@ Scene::Scene(AnciWindow& window) : _window(window)
 
         _objects.emplace_back(meshs[0]);
         _normalize_shader = RHICreateShader(GET_SHADER(normalize.alsl));
+
+        ////////////////////////////////////////////////////////////
+        ////////                   天空盒                    ////////
+        ////////////////////////////////////////////////////////////
+        std::vector<const char *> skyboxsImage = {
+                "../../../Assets/skyboxs/a/right.jpg",
+                "../../../Assets/skyboxs/a/left.jpg",
+                "../../../Assets/skyboxs/a/top.jpg",
+                "../../../Assets/skyboxs/a/bottom.jpg",
+                "../../../Assets/skyboxs/a/front.jpg",
+                "../../../Assets/skyboxs/a/back.jpg",
+        };
+
+        _skybox = make_anciptr<SkyBox>(skyboxsImage.data());
 }
 
 Scene::~Scene()
@@ -51,4 +65,6 @@ void Scene::Render()
                 RHIUniformMatrix4fv(_normalize_shader, "model", glm::value_ptr(object.GetModelMatrix()));
                 object.Draw();
         }
+
+        _skybox->Draw(_normalize_shader, _camera);
 }
