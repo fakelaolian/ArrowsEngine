@@ -49,7 +49,9 @@ SkyBox::SkyBox(const char ** faces)
 
 SkyBox::~SkyBox()
 {
-
+        RHIDestroyShader(_skybox_shader);
+        RHIDestroyVertexBuffer(_vtx_buffer);
+        RHIDestroyTexture(_skybox_texture);
 }
 
 void SkyBox::Draw(RHIShader &currentShader, SceneCamera &camera)

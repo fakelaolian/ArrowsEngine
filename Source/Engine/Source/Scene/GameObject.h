@@ -36,7 +36,10 @@ public:
 
         /* 模型矩阵 */
         inline ancimat4& GetModelMatrix()
-        { return _model_matrix; }
+        {
+                _model_matrix = glm::translate(_model_matrix, _position);
+                return _model_matrix;
+        }
 
         /* 渲染 */
         void Draw();

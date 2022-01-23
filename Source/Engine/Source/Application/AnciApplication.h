@@ -4,6 +4,7 @@
 #include <RHI.h>
 #include <anci_core.h>
 #include "AnciWindow.h"
+#include "ImGui/AnciGUI.h"
 
 class AnciApplication {
 public:
@@ -14,5 +15,6 @@ public:
 
 private:
         anciptr<AnciWindow> _window;
+        anciptr<AnciGUI>    _gui;
 
 };
