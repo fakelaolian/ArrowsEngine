@@ -11,8 +11,8 @@ SkyBox::SkyBox(const char ** faces)
         };
 
         RHIVertexBufferMemLayoutInfo memLayoutInfo = {};
-        memLayoutInfo.vertexCount = ARRAY_SIZE(_SkyBoxArray);
-        memLayoutInfo.stride = sizeof(float);
+        memLayoutInfo.vertexCount = ARRAY_SIZE(_SkyBoxArray) / 3;
+        memLayoutInfo.stride = sizeof(float) * 3;
         memLayoutInfo.pVertices = _SkyBoxArray;
         memLayoutInfo.bufferLayoutCount = ARRAY_SIZE(layouts);
         memLayoutInfo.pBufferLayout = layouts;
@@ -23,9 +23,9 @@ SkyBox::SkyBox(const char ** faces)
         RHITextureCubeCreateInfo createInfo ={};
         createInfo.textureFilterMin = RHI_TEXTURE_FILTER_LINEAR;
         createInfo.textureFilterMag = RHI_TEXTURE_FILTER_LINEAR;
-        createInfo.textureWrapS = RHI_TEXTURE_WRAP_REPEAT;
-        createInfo.textureWrapT = RHI_TEXTURE_WRAP_REPEAT;
-        createInfo.textureWrapR = RHI_TEXTURE_WRAP_REPEAT;
+        createInfo.textureWrapS = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
+        createInfo.textureWrapT = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
+        createInfo.textureWrapR = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
 
         int w, h, nc;
         for (int i = 0; i < 6; i++) {
