@@ -17,8 +17,8 @@ void MainApplication::Run()
 {
         Scene defaultScene{*_window};
 
-        float _delta_time = 0.0f, _current_time = 0.0f, _last_time = 0.0f;
-        clock_t _draw_time  = 0L;
+        float _delta_time, _current_time, _last_time = 0.0f;
+        clock_t _draw_time;
 
         RHIFramebuffer framebuffer;
         RHIFramebufferCreateInfo createInfo = {};

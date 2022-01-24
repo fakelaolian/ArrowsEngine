@@ -7,7 +7,13 @@
 
 void ApplyDefaultStyle()
 {
-        auto& colors = ImGui::GetStyle().Colors;
+        ImGuiStyle & style = ImGui::GetStyle();
+        ImVec4 * colors = style.Colors;
+
+        /// 0 = FLAT APPEARENCE
+        /// 1 = MORE "3D" LOOK
+        int is3D = 0;
+
         colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
 
         // Headers
@@ -36,6 +42,42 @@ void ApplyDefaultStyle()
         colors[ImGuiCol_TitleBg] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
         colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
         colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+        style.PopupRounding = 3;
+
+        style.WindowPadding = ImVec2(4, 4);
+        style.FramePadding  = ImVec2(6, 4);
+        style.ItemSpacing   = ImVec2(6, 2);
+
+        style.ScrollbarSize = 18;
+
+        style.WindowBorderSize = 1;
+        style.ChildBorderSize  = 1;
+        style.PopupBorderSize  = 1;
+        style.FrameBorderSize  = is3D;
+
+        style.WindowRounding    = 3;
+        style.ChildRounding     = 3;
+        style.FrameRounding     = 3;
+        style.ScrollbarRounding = 2;
+        style.GrabRounding      = 3;
+
+        style.TabBorderSize = is3D;
+        style.TabRounding   = 3;
+
+        colors[ImGuiCol_DockingEmptyBg]     = ImVec4(0.38f, 0.38f, 0.38f, 1.00f);
+        colors[ImGuiCol_Tab]                = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
+        colors[ImGuiCol_TabHovered]         = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
+        colors[ImGuiCol_TabActive]          = ImVec4(0.33f, 0.33f, 0.33f, 1.00f);
+        colors[ImGuiCol_TabUnfocused]       = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
+        colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.33f, 0.33f, 0.33f, 1.00f);
+        colors[ImGuiCol_DockingPreview]     = ImVec4(0.85f, 0.85f, 0.85f, 0.28f);
+
+        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+                style.WindowRounding = 0.0f;
+                style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+        }
 }
 
 APPGUI::APPGUI(RHIWindow h)
@@ -50,10 +92,6 @@ APPGUI::APPGUI(RHIWindow h)
         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
         //io.ConfigViewportsNoAutoMerge = true;
         //io.ConfigViewportsNoTaskBarIcon = true;
-
-        // Setup Dear ImGui style
-        ImGui::StyleColorsDark();
-        //ImGui::StyleColorsClassic();
 
         io.Fonts->AddFontFromFileTTF(
                 "../../../Source/Engine/ThirdParty/fonts/NotoSansTC/NotoSansTC-Medium.otf",
