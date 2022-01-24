@@ -90,6 +90,13 @@ AnciGUI::AnciGUI(RHIWindow h)
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsClassic();
 
+        io.Fonts->AddFontFromFileTTF(
+                "../../../Source/Engine/ThirdParty/fonts/NotoSansTC/NotoSansTC-Medium.otf",
+                18,
+                NULL,
+                io.Fonts->GetGlyphRangesChineseFull()
+        );
+
         // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
         ApplyDefaultStyle();
 
