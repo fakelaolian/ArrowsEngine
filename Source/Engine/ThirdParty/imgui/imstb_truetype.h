@@ -210,7 +210,7 @@
 //    then the character should be displayed in the rectangle from
 //    <current_point+SF*x0, baseline+SF*y0> to <current_point+SF*x1,baseline+SF*y1).
 //
-//  Advancing for the next character:
+//  Advarrong for the next character:
 //    Call GlyphHMetrics, and compute 'current_point += SF * advance'.
 //
 //

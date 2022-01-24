@@ -1,4 +1,5 @@
-#include "Application/EngineApplication.h"
+#include <iostream>
+#include "Application/MainApplication.h"
 
 int main()
 {
@@ -6,8 +7,8 @@ int main()
         system("chcp 65001");
 #endif
 
-        EngineApplication application {};
-        application.StartEngine();
+        MainApplication app{"ARROWS", 1000, 800};
+        app.Run();
 
         return 0;
 }

@@ -4,31 +4,34 @@
 #include "core.h"
 #include <stdlib.h>
 
-ANCI_RHI_CREATE_WINDOW                  ANCIRHICREATEWIDNOW                      = NULL;
-ANCI_RHI_WINDOW_SHOULD_CLOSE            ANCIRHIWINDOWSHOULDCLOSE                 = NULL;
-ANCI_RHI_WINDOW_SET_RESIZE_CALLBACK     ANCIRHIWINDOWSETRESIZECALLBACK           = NULL;
-ANCI_RHI_WINDOW_SET_CURSOR_CALLBACK     ANCIRHIWINDOWSETCURSORCALLBACK           = NULL;
-ANCI_RHI_WINDOW_POLL_EVENTS             ANCIRHIWINDOWPOLLEVENTS                  = NULL;
-ANCI_RHI_DELETE_WINDOW                  ANCIRHIDELETWINDOW                       = NULL;
-ANCI_RHI_TERMINATE                      ANCIRHITERMINATE                         = NULL;
-ANCI_RHI_OPENGL_GET_CURRENT_CONTEXT     ANCIRHIOPENGLGETCURRENTCONTEXT           = NULL;
-ANCI_RHI_OPENGL_MAKE_CONTEXT_CURRENT    ANCIRHIOPENGLMAKECONTEXTCURRENT          = NULL;
-ANCI_RHI_GET_KEY                        ANCIRHIGETKEY                            = NULL;
-ANCI_RHI_SET_CURSOR_INPUT_MODE          ANCIRHISETCURSORINPUTMODE                = NULL;
-ANCI_RHI_SET_USER_POINTER               ANCIRHISETUSERPOINTER                    = NULL;
-ANCI_RHI_GET_USER_POINTER               ANCIRHIGETUSERPOINTER                    = NULL;
+ARROWS_RHI_CREATE_WINDOW                  ARROWSRHICREATEWIDNOW                      = NULL;
+ARROWS_RHI_GET_ASPECT                     ARROWSRHIGETASPECT                         = NULL;
+ARROWS_RHI_WINDOW_SHOULD_CLOSE            ARROWSRHIWINDOWSHOULDCLOSE                 = NULL;
+ARROWS_RHI_WINDOW_SET_RESIZE_CALLBACK     ARROWSRHIWINDOWSETRESIZECALLBACK           = NULL;
+ARROWS_RHI_WINDOW_SET_CURSOR_CALLBACK     ARROWSRHIWINDOWSETCURSORCALLBACK           = NULL;
+ARROWS_RHI_WINDOW_POLL_EVENTS             ARROWSRHIWINDOWPOLLEVENTS                  = NULL;
+ARROWS_RHI_DELETE_WINDOW                  ARROWSRHIDELETWINDOW                       = NULL;
+ARROWS_RHI_TERMINATE                      ARROWSRHITERMINATE                         = NULL;
+ARROWS_RHI_OPENGL_GET_CURRENT_CONTEXT     ARROWSRHIOPENGLGETCURRENTCONTEXT           = NULL;
+ARROWS_RHI_OPENGL_MAKE_CONTEXT_CURRENT    ARROWSRHIOPENGLMAKECONTEXTCURRENT          = NULL;
+ARROWS_RHI_GET_KEY                        ARROWSRHIGETKEY                            = NULL;
+ARROWS_RHI_GET_MOUSE_BUTTON               ARROWSRHIGETMOUSEBUTTON                    = NULL;
+ARROWS_RHI_SET_CURSOR_INPUT_MODE          ARROWSRHISETCURSORINPUTMODE                = NULL;
+ARROWS_RHI_SET_USER_POINTER               ARROWSRHISETUSERPOINTER                    = NULL;
+ARROWS_RHI_GET_USER_POINTER               ARROWSRHIGETUSERPOINTER                    = NULL;
 
 F_RHI_WINDOW_RESIZE_CALLBACK            _window_resize_callback                  = NULL;
 F_RHI_WINDOW_CURSOR_CALLBACK            _window_cursor_callback                  = NULL;
 
-RHIWindow _glfw_create_window(const char *title, int width, int height)
+void _glfw_create_window(const char *title, int width, int height, RHIWindow *rhiWindow)
 {
         /* 初始化窗口 */
         GLFWwindow *_window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (_window == NULL) {
                 verror("创建窗口失败");
                 glfwTerminate();
-                return NULL;
+                *rhiWindow = NULL;
+                return;
         }
 
         /* 初始化GLAD */
@@ -38,13 +41,14 @@ RHIWindow _glfw_create_window(const char *title, int width, int height)
                 glfwTerminate();
 
                 verror("加载GLAD失败");
-                return NULL;
+                *rhiWindow = NULL;
+                return;
         }
 
-        return _window;
+        *rhiWindow = _window;
 }
 
-ancibool _glfw_should_clsoe(RHIWindow window)
+arrobool _glfw_should_clsoe(RHIWindow window)
 { return glfwWindowShouldClose((GLFWwindow *) window); }
 
 void _glfw_set_window_resize_callback0(GLFWwindow *window, int x, int y)
@@ -80,8 +84,8 @@ RHIWindow _glfw_get_current_context()
 void _glfw_make_context_current(RHIWindow h)
 { glfwMakeContextCurrent((GLFWwindow *) h); }
 
-ancibool _glfw_get_key(RHIWindow window, RHIKeyCodeBits keycode)
-{ return (glfwGetKey((GLFWwindow *) window, keycode) == GLFW_PRESS) ? RHI_PRESS : RHI_RELEASE; }
+arrobool _glfw_get_key(RHIWindow window, RHIKeyCodeBits keycode)
+{ return glfwGetKey((GLFWwindow *) window, keycode); }
 
 void _glfw_set_user_pointer(RHIWindow window, void *any)
 { glfwSetWindowUserPointer(window, any); }
@@ -99,6 +103,9 @@ void _glfw_set_cursor_mode(RHIWindow window, RHIInputCursorModeBits bit)
         }
 }
 
+RHIKeyModeBits _glfw_get_mouse_button(RHIWindow window, RHIMouseButtonBits bit)
+{ return glfwGetMouseButton(window, bit); }
+
 void _load_glfw_functions()
 {
         if(!glfwInit()) {
@@ -110,17 +117,18 @@ void _load_glfw_functions()
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        ANCIRHICREATEWIDNOW             = _glfw_create_window;
-        ANCIRHIWINDOWSHOULDCLOSE        = _glfw_should_clsoe;
-        ANCIRHIWINDOWSETRESIZECALLBACK  = _glfw_set_window_resize_callback;
-        ANCIRHIWINDOWPOLLEVENTS         = _glfw_poll_events;
-        ANCIRHIDELETWINDOW              = _glfw_destroy_window;
-        ANCIRHITERMINATE                = _glfw_terminate;
-        ANCIRHIOPENGLGETCURRENTCONTEXT  = _glfw_get_current_context;
-        ANCIRHIOPENGLMAKECONTEXTCURRENT = _glfw_make_context_current;
-        ANCIRHIGETKEY                   = _glfw_get_key;
-        ANCIRHISETCURSORINPUTMODE       = _glfw_set_cursor_mode;
-        ANCIRHISETUSERPOINTER           = _glfw_set_user_pointer;
-        ANCIRHIGETUSERPOINTER           = _glfw_get_user_pointer;
-        ANCIRHIWINDOWSETCURSORCALLBACK  = _glfw_set_window_cursor_callback;
+        ARROWSRHICREATEWIDNOW             = _glfw_create_window;
+        ARROWSRHIWINDOWSHOULDCLOSE        = _glfw_should_clsoe;
+        ARROWSRHIWINDOWSETRESIZECALLBACK  = _glfw_set_window_resize_callback;
+        ARROWSRHIWINDOWPOLLEVENTS         = _glfw_poll_events;
+        ARROWSRHIDELETWINDOW              = _glfw_destroy_window;
+        ARROWSRHITERMINATE                = _glfw_terminate;
+        ARROWSRHIOPENGLGETCURRENTCONTEXT  = _glfw_get_current_context;
+        ARROWSRHIOPENGLMAKECONTEXTCURRENT = _glfw_make_context_current;
+        ARROWSRHIGETKEY                   = _glfw_get_key;
+        ARROWSRHISETCURSORINPUTMODE       = _glfw_set_cursor_mode;
+        ARROWSRHISETUSERPOINTER           = _glfw_set_user_pointer;
+        ARROWSRHIGETUSERPOINTER           = _glfw_get_user_pointer;
+        ARROWSRHIWINDOWSETCURSORCALLBACK  = _glfw_set_window_cursor_callback;
+        ARROWSRHIGETMOUSEBUTTON           = _glfw_get_mouse_button;
 }
