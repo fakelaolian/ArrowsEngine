@@ -1,7 +1,7 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/21 */
-#include "AnciWindow.h"
+#include "MainWindow.h"
 
-AnciWindow::AnciWindow(const char *title, int w, int h)
+MainWindow::MainWindow(const char *title, int w, int h)
 {
         RHIProcAddressInit(OpenGL);
 
@@ -13,12 +13,12 @@ AnciWindow::AnciWindow(const char *title, int w, int h)
 
         /* 设置窗口回调函数 */
         RHISetWindowResizeCallback(_window_handle, [](RHIWindow window, int w, int h) {
-                AnciWindow *app = (AnciWindow *) RHIGetUserPointer(window);
+                MainWindow *app = (MainWindow *) RHIGetUserPointer(window);
                 app->SetDimension(w, h);
         });
 
         RHISetWindowCursorCallback(_window_handle, [](RHIWindow window, double x, double y){
-                AnciWindow *app = (AnciWindow *) RHIGetUserPointer(window);
+                MainWindow *app = (MainWindow *) RHIGetUserPointer(window);
                 app->SetMouseXY((float) x, (float) y);
         });
 
@@ -29,7 +29,7 @@ AnciWindow::AnciWindow(const char *title, int w, int h)
         _height = h;
 }
 
-AnciWindow::~AnciWindow()
+MainWindow::~MainWindow()
 {
         RHIDestroyWindow(_window_handle);
         RHITerminate();

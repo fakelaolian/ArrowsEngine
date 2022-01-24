@@ -29,7 +29,7 @@ SkyBox::SkyBox(const char ** faces)
 
         int w, h, nc;
         for (int i = 0; i < 6; i++) {
-                anciuc *pixels = _stbi_load(faces[i], &w, &h, &nc, 0);
+                arrouc *pixels = _stbi_load(faces[i], &w, &h, &nc, 0);
 
                 createInfo.format[i]   = RHI_IMAGE_FORMAT_RGB;
                 createInfo.width[i]    = w;
@@ -58,7 +58,7 @@ void SkyBox::Draw(RHIShader &currentShader, SceneCamera &camera)
 {
         RHIDepthOption(RHI_DEPTH_OPTION_LE);
         RHIBindShader(_skybox_shader);
-        ancimat4 skyboxView = ancimat4(ancimat3(camera.GetViewMatrix()));
+        arromat4 skyboxView = arromat4(arromat3(camera.GetViewMatrix()));
         RHIUniformMatrix4fv(currentShader, "view", glm::value_ptr(skyboxView));
         RHIUniformMatrix4fv(currentShader, "proj", glm::value_ptr(camera.GetProjectionMatrix()));
         RHIBindTexture(RHI_TEXTURE_CUBE_MAP, _skybox_texture);

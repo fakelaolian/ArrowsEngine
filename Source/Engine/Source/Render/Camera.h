@@ -1,7 +1,7 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/20 */
 #pragma once
 
-#include <anci_core.h>
+#include <arrows_core.h>
 
 class Camera {
 public:
@@ -12,7 +12,7 @@ public:
                 CAMERA_MOVE_LEFT,
         };
 
-        Camera(ancivec3 position, float pitch, float yaw, ancivec3 wordUp)
+        Camera(arrovec3 position, float pitch, float yaw, arrovec3 wordUp)
         {
                 _position  = position;
                 _world_up  = wordUp;
@@ -24,7 +24,7 @@ public:
 
         inline void UpdateVectors()
         {
-                ancivec3 forward;
+                arrovec3 forward;
                 forward.x = cos(_yaw) * cos(_pitch);
                 forward.y = sin(_pitch);
                 forward.z = sin(_yaw) * cos(_pitch);
@@ -42,22 +42,22 @@ public:
         inline void SetSensitive(float sensitive)
         { _sensitive = sensitive; }
 
-        inline ancimat4& GetProjectionMatrix()
+        inline arromat4& GetProjectionMatrix()
         { return _projection_matrix; }
 
-        inline ancimat4& GetViewMatrix()
+        inline arromat4& GetViewMatrix()
         { return _view_matrix; }
 
 protected:
-        ancimat4 _view_matrix{1.0f};
-        ancimat4 _projection_matrix{1.0f};
+        arromat4 _view_matrix{1.0f};
+        arromat4 _projection_matrix{1.0f};
 
         /* 变换要计算的数据 */
-        ancivec3 _position{0.0f, 0.0f, -5.0f};
-        ancivec3 _up;
-        ancivec3 _right;
-        ancivec3 _forward;
-        ancivec3 _world_up;
+        arrovec3 _position{0.0f, 0.0f, -5.0f};
+        arrovec3 _up;
+        arrovec3 _right;
+        arrovec3 _forward;
+        arrovec3 _world_up;
         float    _pitch;
         float    _yaw;
         float    _last_mouse_x;

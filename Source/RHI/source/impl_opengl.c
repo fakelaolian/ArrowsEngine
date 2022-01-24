@@ -8,76 +8,76 @@
 #include "glfw.h"
 #include "verror.h"
 
-ANCI_RHI_GET_TIME                       ANCIRHIGETTIME                    = NULL;
-ANCI_RHI_VIEWPORT                       ANCIRHIVIEWPORT                   = NULL;
-ANCI_RHI_SWAP_BUFFERS                   ANCIRHISWAPBUFFERS                = NULL;
-ANCI_RHI_GEN_IDXBUFFER                  ANCIRHICREATEIDXBUFFER            = NULL;
-ANCI_RHI_GEN_VTXBUFFER                  ANCIRHICREATEVTXBUFFER            = NULL;
-ANCI_RHI_DESTROY_VTX_BUFFER             ANCIRHIDESTROYVTXBUFFER           = NULL;
-ANCI_RHI_DESTROY_IDX_BUFFER             ANCIRHIDESTROYIDXBUFFER           = NULL;
-ANCI_RHI_BIND_VTX                       ANCIRHIBINDVTX                    = NULL;
-ANCI_RHI_DRAW_VTX                       ANCIRHIDRAWVTX                    = NULL;
-ANCI_RHI_DRAW_IDX                       ANCIRHIDRAWIDX                    = NULL;
-ANCI_RHI_POLYGON_MODE                   ANCIRHIPOLYGONMODE                = NULL;
-ANCI_RHI_CREATE_SHADER                  ANCIRHICREATESHADER               = NULL;
-ANCI_RHI_BIND_SHADER                    ANCIRHIBINDSHADER                 = NULL;
-ANCI_RHI_UNIFORM_FLOAT1                 ANCIRHIUNIFORMFLOAT1              = NULL;
-ANCI_RHI_UNIFORM_FLOAT2                 ANCIRHIUNIFORMFLOAT2              = NULL;
-ANCI_RHI_UNIFORM_INT                    ANCIRHIUNIFORMINT                 = NULL;
-ANCI_RHI_UNIFORM_FLOAT3                 ANCIRHIUNIFORMFLOAT3              = NULL;
-ANCI_RHI_UNIFORM_FLOAT3V                ANCIRHIUNIFORMFLOAT3V             = NULL;
-ANCI_RHI_UNIFORM_FLOAT4                 ANCIRHIUNIFORMFLOAT4              = NULL;
-ANCI_RHI_UNIFORM_MATRIX2FV              ANCIRHIUNIFORMMATRIX2FV           = NULL;
-ANCI_RHI_UNIFORM_MATRIX3FV              ANCIRHIUNIFORMMATRIX3FV           = NULL;
-ANCI_RHI_UNIFORM_MATRIX4FV              ANCIRHIUNIFORMMATRIX4FV           = NULL;
-ANCI_RHI_DELETE_SHADER                  ANCIRHIDESTROYSHADER              = NULL;
-ANCI_RHI_CLEAR_COLOR_BUFFER             ANCIRHICLEARCOLORBUFFER           = NULL;
-ANCI_RHI_GEN_TEXTURE2D                  ANCIRHICREATETEXTURE2D            = NULL;
-ANCI_RHI_DELETE_TEXTURE                 ANCIRHIDESTROYTEXTURE             = NULL;
-ANCI_RHI_ENABLE                         ANCIRHIENABLE                     = NULL;
-ANCI_RHI_GET_TEXTURE_ID                 ANCIRHIGETTEXTUREID               = NULL;
-ANCI_RHI_BIND_TEXTURE                   ANCIRHIBINDTEXTURE                = NULL;
-ANCI_RHI_CREATE_TEXTURE_CUBE_MAP        ANCIRHICREATETEXTURECUBEMAP       = NULL;
-ANCI_RHI_DEPTH_OPTION                   ANCIRHIDEPTHOPTION                = NULL;
-ANCI_RHI_CREATE_FRAMEBUFFER             ANCIRHICREATEFRAMEBUFFER          = NULL;
-ANCI_RHI_RECREATE_FRAMEBUFFER           ANCIRHIRECREATEFRAMEBUFFER        = NULL;
-ANCI_RHI_BIND_FRAMEBUFFER               ANCIRHIBINDFRAMEBUFFER            = NULL;
-ANCI_RHI_GET_FRAMEBUFFER_TEXTURE        ANCIRHIGETFRAMEBUFFERTEXTURE      = NULL;
-ANCI_RHI_DELETE_FRAMEBUFFER             ANCIRHIDELETEFRAMEBUFFER          = NULL;
+ARROWS_RHI_GET_TIME                       ARROWSRHIGETTIME                    = NULL;
+ARROWS_RHI_VIEWPORT                       ARROWSRHIVIEWPORT                   = NULL;
+ARROWS_RHI_SWAP_BUFFERS                   ARROWSRHISWAPBUFFERS                = NULL;
+ARROWS_RHI_GEN_IDXBUFFER                  ARROWSRHICREATEIDXBUFFER            = NULL;
+ARROWS_RHI_GEN_VTXBUFFER                  ARROWSRHICREATEVTXBUFFER            = NULL;
+ARROWS_RHI_DESTROY_VTX_BUFFER             ARROWSRHIDESTROYVTXBUFFER           = NULL;
+ARROWS_RHI_DESTROY_IDX_BUFFER             ARROWSRHIDESTROYIDXBUFFER           = NULL;
+ARROWS_RHI_BIND_VTX                       ARROWSRHIBINDVTX                    = NULL;
+ARROWS_RHI_DRAW_VTX                       ARROWSRHIDRAWVTX                    = NULL;
+ARROWS_RHI_DRAW_IDX                       ARROWSRHIDRAWIDX                    = NULL;
+ARROWS_RHI_POLYGON_MODE                   ARROWSRHIPOLYGONMODE                = NULL;
+ARROWS_RHI_CREATE_SHADER                  ARROWSRHICREATESHADER               = NULL;
+ARROWS_RHI_BIND_SHADER                    ARROWSRHIBINDSHADER                 = NULL;
+ARROWS_RHI_UNIFORM_FLOAT1                 ARROWSRHIUNIFORMFLOAT1              = NULL;
+ARROWS_RHI_UNIFORM_FLOAT2                 ARROWSRHIUNIFORMFLOAT2              = NULL;
+ARROWS_RHI_UNIFORM_INT                    ARROWSRHIUNIFORMINT                 = NULL;
+ARROWS_RHI_UNIFORM_FLOAT3                 ARROWSRHIUNIFORMFLOAT3              = NULL;
+ARROWS_RHI_UNIFORM_FLOAT3V                ARROWSRHIUNIFORMFLOAT3V             = NULL;
+ARROWS_RHI_UNIFORM_FLOAT4                 ARROWSRHIUNIFORMFLOAT4              = NULL;
+ARROWS_RHI_UNIFORM_MATRIX2FV              ARROWSRHIUNIFORMMATRIX2FV           = NULL;
+ARROWS_RHI_UNIFORM_MATRIX3FV              ARROWSRHIUNIFORMMATRIX3FV           = NULL;
+ARROWS_RHI_UNIFORM_MATRIX4FV              ARROWSRHIUNIFORMMATRIX4FV           = NULL;
+ARROWS_RHI_DELETE_SHADER                  ARROWSRHIDESTROYSHADER              = NULL;
+ARROWS_RHI_CLEAR_COLOR_BUFFER             ARROWSRHICLEARCOLORBUFFER           = NULL;
+ARROWS_RHI_GEN_TEXTURE2D                  ARROWSRHICREATETEXTURE2D            = NULL;
+ARROWS_RHI_DELETE_TEXTURE                 ARROWSRHIDESTROYTEXTURE             = NULL;
+ARROWS_RHI_ENABLE                         ARROWSRHIENABLE                     = NULL;
+ARROWS_RHI_GET_TEXTURE_ID                 ARROWSRHIGETTEXTUREID               = NULL;
+ARROWS_RHI_BIND_TEXTURE                   ARROWSRHIBINDTEXTURE                = NULL;
+ARROWS_RHI_CREATE_TEXTURE_CUBE_MAP        ARROWSRHICREATETEXTURECUBEMAP       = NULL;
+ARROWS_RHI_DEPTH_OPTION                   ARROWSRHIDEPTHOPTION                = NULL;
+ARROWS_RHI_CREATE_FRAMEBUFFER             ARROWSRHICREATEFRAMEBUFFER          = NULL;
+ARROWS_RHI_RECREATE_FRAMEBUFFER           ARROWSRHIRECREATEFRAMEBUFFER        = NULL;
+ARROWS_RHI_BIND_FRAMEBUFFER               ARROWSRHIBINDFRAMEBUFFER            = NULL;
+ARROWS_RHI_GET_FRAMEBUFFER_TEXTURE        ARROWSRHIGETFRAMEBUFFERTEXTURE      = NULL;
+ARROWS_RHI_DELETE_FRAMEBUFFER             ARROWSRHIDELETEFRAMEBUFFER          = NULL;
 
 GLbitfield                              _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
-ancibool                                _gl_depth_test_enable_state       = RHI_FALSE;
-anciu32                                 _activeTexture                    = 0;
+arrobool                                _gl_depth_test_enable_state       = RHI_FALSE;
+arrou32                                 _activeTexture                    = 0;
 
 /** OpenGL的Vertex Buffer实现 */
 typedef struct RHIVertexBufferGL {
-        anciu32 vao;
-        anciu32 vbo;
-        anciu32 count;
+        arrou32 vao;
+        arrou32 vbo;
+        arrou32 count;
 } RHIVertexBufferGL;
 #define IVtxBuffer RHIVertexBufferGL *
 #define CONV_VTX(ptr) ((RHIVertexBufferGL *) (ptr))
 
 /** OpenGL的Index Buffer实现 */
 typedef struct RHIIndicesBufferGL {
-        anciu32 ebo;
-        anciu32 count;
+        arrou32 ebo;
+        arrou32 count;
 } RHIIndicesBufferGL;
 #define IIdxBuffer RHIIndicesBufferGL *
 #define CONV_IDX(ptr) ((RHIIndicesBufferGL *) (ptr))
 
 /** OpenGL的Texture实现 */
 typedef struct RHITextureGL {
-        anciu32 textureId;
-        anciu32 width;
-        anciu32 height;
+        arrou32 textureId;
+        arrou32 width;
+        arrou32 height;
 } RHITextureGL;
 #define ITexture RHITextureGL *
 #define CONV_TEX(ptr) ((RHITextureGL *) (ptr))
 
 /** OpenGL的Shader实现 */
 typedef struct RHIShaderGL {
-        anciu32 program;
+        arrou32 program;
 } RHIShaderGL;
 #define IShader RHIShaderGL *
 #define CONV_SHADER(ptr) ((RHIShaderGL *) (ptr))
@@ -90,14 +90,14 @@ typedef struct RHIFramebufferGL {
 #define CONV_FRAMEBUF(ptr) ((RHIFramebufferGL *) (ptr))
 
 float _glfw_get_time () { return glfwGetTime(); }
-void _opengl_viewport (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
+void _opengl_viewport (arrou32 x, arrou32 y, arrou32 w, arrou32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
 void _opengl_swap_buffers (RHIWindow h) { glfwSwapBuffers((GLFWwindow *) h); }
 
 void _opengl_create_vtx_buffer(RHIVertexBufferMemLayoutInfo *memLayoutInfo, RHIVertexBuffer *vtxBuffer)
 {
-        anciu32 vao;
-        anciu32 vbo;
-        anciu32 i;
+        arrou32 vao;
+        arrou32 vbo;
+        arrou32 i;
 
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
@@ -131,12 +131,12 @@ void _opengl_create_vtx_buffer(RHIVertexBufferMemLayoutInfo *memLayoutInfo, RHIV
         *vtxBuffer = pVtxBuffer;
 }
 
-void _opengl_create_idx_buffer(anciu32 *indices, anciu32 count, RHIIndicesBuffer *idxBuffer)
+void _opengl_create_idx_buffer(arrou32 *indices, arrou32 count, RHIIndicesBuffer *idxBuffer)
 {
         unsigned int ebo;
         glGenBuffers(1, &ebo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(anciu32), indices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(arrou32), indices, GL_STATIC_DRAW);
 
         RHIIndicesBufferGL *pIdxBuffer = vmalloc(sizeof(RHIIndicesBufferGL));
         pIdxBuffer->ebo = ebo;
@@ -167,7 +167,7 @@ void _opengl_bind_vtx_buffer(RHIVertexBuffer vtxBuffer)
         glBindVertexArray(CONV_VTX(vtxBuffer)->vao);
 }
 
-void _opengl_draw_vtx(anciu32 size, anciu32 offset)
+void _opengl_draw_vtx(arrou32 size, arrou32 offset)
 {
         glDrawArrays(GL_TRIANGLES, size, offset);
         _activeTexture = 0;
@@ -192,9 +192,9 @@ void _opengl_polygon_mode(RHIPolygonModeBits mode)
 
 RHIShader _opengl_create_shader(const char* file)
 {
-        anciu32         program;
-        anciu32         vertex;
-        anciu32         fragment;
+        arrou32         program;
+        arrou32         vertex;
+        arrou32         fragment;
         int             success;
         char            infoLog[512];
         ShaderSource    source;
@@ -344,7 +344,7 @@ GLint _opengl_get_texture_filter_value(RHITextureFilterModeBits mode)
 
 void _opengl_create_texture2d(RHITexture2DCreateInfo *createInfo, RHITexture *p_texture)
 {
-        anciu32 textureId;
+        arrou32 textureId;
 
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_2D, textureId);
@@ -386,7 +386,7 @@ void _opengl_delete_texture(RHITexture texture)
         vfree(itexture);
 }
 
-void _opengl_enbale(RHIEnableBits enable, ancibool is_enable)
+void _opengl_enbale(RHIEnableBits enable, arrobool is_enable)
 {
         switch (enable) {
                 case RHI_DEPTH_TEST: {
@@ -413,7 +413,7 @@ RHIID _opengl_get_texture_id(RHITexture texture)
 
 void _opengl_create_texture_cube_map(RHITextureCubeCreateInfo *createInfo, RHITexture *texture)
 {
-        anciu32 textureId;
+        arrou32 textureId;
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
 
@@ -470,7 +470,7 @@ void _opengl_bind_texture(RHITextureFormatBits bit, RHITexture texture)
         _activeTexture++;
 }
 
-ancibool _opengl_create_framebuffer(RHIFramebufferCreateInfo *createFramebuffer, RHIFramebuffer *buffer)
+arrobool _opengl_create_framebuffer(RHIFramebufferCreateInfo *createFramebuffer, RHIFramebuffer *buffer)
 {
         glViewport(0, 0, createFramebuffer->width, createFramebuffer->height);
 
@@ -554,41 +554,41 @@ RHITexture _opengl_get_framebuffer_texture(RHIFramebuffer framebuffer)
 void OpenGLRHIImpl()
 {
         _load_glfw_functions();
-        ANCIRHIGETTIME                          = _glfw_get_time;
-        ANCIRHIVIEWPORT                         = _opengl_viewport;
-        ANCIRHISWAPBUFFERS                      = _opengl_swap_buffers;
-        ANCIRHICREATEVTXBUFFER                  = _opengl_create_vtx_buffer;
-        ANCIRHICREATEIDXBUFFER                  = _opengl_create_idx_buffer;
-        ANCIRHIDESTROYVTXBUFFER                 = _opengl_delete_vtx_buffer;
-        ANCIRHIDESTROYIDXBUFFER                 = _opengl_delete_idx_buffer;
-        ANCIRHIBINDVTX                          = _opengl_bind_vtx_buffer;
-        ANCIRHIDRAWVTX                          = _opengl_draw_vtx;
-        ANCIRHIDRAWIDX                          = _opengl_draw_idx;
-        ANCIRHIPOLYGONMODE                      = _opengl_polygon_mode;
-        ANCIRHICREATESHADER                     = _opengl_create_shader;
-        ANCIRHIBINDSHADER                       = _opengl_bind_shader;
-        ANCIRHIUNIFORMINT                       = _opengl_uniform1i;
-        ANCIRHIUNIFORMFLOAT1                    = _opengl_uniform1f;
-        ANCIRHIUNIFORMFLOAT2                    = _opengl_uniform2f;
-        ANCIRHIUNIFORMFLOAT3                    = _opengl_uniform3f;
-        ANCIRHIUNIFORMFLOAT3V                   = _opengl_uniform3fv;
-        ANCIRHIUNIFORMFLOAT4                    = _opengl_uniform4f;
-        ANCIRHIUNIFORMMATRIX2FV                 = _opengl_uniform_matrix2fv;
-        ANCIRHIUNIFORMMATRIX3FV                 = _opengl_uniform_matrix3fv;
-        ANCIRHIUNIFORMMATRIX4FV                 = _opengl_uniform_matrix4fv;
-        ANCIRHIDESTROYSHADER                    = _opengl_delete_shader;
-        ANCIRHICLEARCOLORBUFFER                 = _opengl_clear_color;
-        ANCIRHICREATETEXTURE2D                  = _opengl_create_texture2d;
-        ANCIRHICREATETEXTURECUBEMAP             = _opengl_create_texture_cube_map;
-        ANCIRHIDESTROYTEXTURE                   = _opengl_delete_texture;
-        ANCIRHIGETTEXTUREID                     = _opengl_get_texture_id;
-        ANCIRHIBINDTEXTURE                      = _opengl_bind_texture;
-        ANCIRHIENABLE                           = _opengl_enbale;
-        ANCIRHIDEPTHOPTION                      = _opengl_depth_option;
-        ANCIRHICREATEFRAMEBUFFER                = _opengl_create_framebuffer;
-        ANCIRHIRECREATEFRAMEBUFFER              = _opengl_recreate_framebuffer;
-        ANCIRHIBINDFRAMEBUFFER                  = _opengl_bind_framebuffer;
-        ANCIRHIGETFRAMEBUFFERTEXTURE            = _opengl_get_framebuffer_texture;
-        ANCIRHIDELETEFRAMEBUFFER                = _opengl_delete_framebuffer;
+        ARROWSRHIGETTIME                          = _glfw_get_time;
+        ARROWSRHIVIEWPORT                         = _opengl_viewport;
+        ARROWSRHISWAPBUFFERS                      = _opengl_swap_buffers;
+        ARROWSRHICREATEVTXBUFFER                  = _opengl_create_vtx_buffer;
+        ARROWSRHICREATEIDXBUFFER                  = _opengl_create_idx_buffer;
+        ARROWSRHIDESTROYVTXBUFFER                 = _opengl_delete_vtx_buffer;
+        ARROWSRHIDESTROYIDXBUFFER                 = _opengl_delete_idx_buffer;
+        ARROWSRHIBINDVTX                          = _opengl_bind_vtx_buffer;
+        ARROWSRHIDRAWVTX                          = _opengl_draw_vtx;
+        ARROWSRHIDRAWIDX                          = _opengl_draw_idx;
+        ARROWSRHIPOLYGONMODE                      = _opengl_polygon_mode;
+        ARROWSRHICREATESHADER                     = _opengl_create_shader;
+        ARROWSRHIBINDSHADER                       = _opengl_bind_shader;
+        ARROWSRHIUNIFORMINT                       = _opengl_uniform1i;
+        ARROWSRHIUNIFORMFLOAT1                    = _opengl_uniform1f;
+        ARROWSRHIUNIFORMFLOAT2                    = _opengl_uniform2f;
+        ARROWSRHIUNIFORMFLOAT3                    = _opengl_uniform3f;
+        ARROWSRHIUNIFORMFLOAT3V                   = _opengl_uniform3fv;
+        ARROWSRHIUNIFORMFLOAT4                    = _opengl_uniform4f;
+        ARROWSRHIUNIFORMMATRIX2FV                 = _opengl_uniform_matrix2fv;
+        ARROWSRHIUNIFORMMATRIX3FV                 = _opengl_uniform_matrix3fv;
+        ARROWSRHIUNIFORMMATRIX4FV                 = _opengl_uniform_matrix4fv;
+        ARROWSRHIDESTROYSHADER                    = _opengl_delete_shader;
+        ARROWSRHICLEARCOLORBUFFER                 = _opengl_clear_color;
+        ARROWSRHICREATETEXTURE2D                  = _opengl_create_texture2d;
+        ARROWSRHICREATETEXTURECUBEMAP             = _opengl_create_texture_cube_map;
+        ARROWSRHIDESTROYTEXTURE                   = _opengl_delete_texture;
+        ARROWSRHIGETTEXTUREID                     = _opengl_get_texture_id;
+        ARROWSRHIBINDTEXTURE                      = _opengl_bind_texture;
+        ARROWSRHIENABLE                           = _opengl_enbale;
+        ARROWSRHIDEPTHOPTION                      = _opengl_depth_option;
+        ARROWSRHICREATEFRAMEBUFFER                = _opengl_create_framebuffer;
+        ARROWSRHIRECREATEFRAMEBUFFER              = _opengl_recreate_framebuffer;
+        ARROWSRHIBINDFRAMEBUFFER                  = _opengl_bind_framebuffer;
+        ARROWSRHIGETFRAMEBUFFERTEXTURE            = _opengl_get_framebuffer_texture;
+        ARROWSRHIDELETEFRAMEBUFFER                = _opengl_delete_framebuffer;
 }
 

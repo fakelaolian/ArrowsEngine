@@ -3,10 +3,10 @@
 
 #include <RHI.h>
 
-class AnciGUI {
+class APPGUI {
 public:
-        AnciGUI(RHIWindow h);
-        ~AnciGUI();
+        APPGUI(RHIWindow h);
+        ~APPGUI();
 
         void BeginRender();
         void EndRender();

@@ -1,13 +1,13 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/21 */
 #pragma once
 
-#include <anci_core.h>
+#include <arrows_core.h>
 #include <RHI.h>
 
-class AnciWindow {
+class MainWindow {
 public:
-        AnciWindow(const char *title, int w, int h);
-        ~AnciWindow();
+        MainWindow(const char *title, int w, int h);
+        ~MainWindow();
 
         enum CursorDirection { F, B, R, L };
 

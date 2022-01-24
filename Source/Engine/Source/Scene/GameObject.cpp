@@ -39,7 +39,7 @@ GameObject::GameObject(mloader::mesh_t &mesh)
         textureCreateInfo.textureWrapT = RHI_TEXTURE_WRAP_MIRRORED_REPEAT;
 
         int w, h, nc;
-        anciuc *pixels = _stbi_load(mesh.texture, &w, &h, &nc, 0);
+        arrouc *pixels = _stbi_load(mesh.texture, &w, &h, &nc, 0);
         textureCreateInfo.width = w;
         textureCreateInfo.height = h;
         textureCreateInfo.pPixels = pixels;

@@ -1,10 +1,10 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/21 */
 #include "Scene.h"
 
-Scene::Scene(AnciWindow& window) : _window(window)
+Scene::Scene(MainWindow& window) : _window(window)
 {
         std::vector<mloader::mesh_t> meshs = mloader::load_model("C:/Users/procf/Desktop/untitled.obj");
-        meshs[0].texture = "D:\\projects\\AnciEngine\\Assets\\container2.png";
+        meshs[0].texture = "../../../Assets/container2.png";
 
         _objects.emplace_back(meshs[0]);
         _normalize_shader = RHICreateShader(GET_SHADER(normalize.alsl));
@@ -21,7 +21,7 @@ Scene::Scene(AnciWindow& window) : _window(window)
                 "../../../Assets/skyboxs/a/back.jpg",
         };
 
-        _skybox = make_anciptr<SkyBox>(skyboxsImage.data());
+        _skybox = make_arroptr<SkyBox>(skyboxsImage.data());
 }
 
 Scene::~Scene()

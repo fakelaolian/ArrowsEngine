@@ -9,17 +9,18 @@ INCLUDE_DIRECTORIES(${PROJECT_NAME} SYSTEM
         ThirdParty
         ThirdParty/glfw3/include
         ThirdParty/glad/include
-        ThirdParty/imgui)
+        ThirdParty/imgui
+)
 
 LINK_LIBRARIES(imm32)
 LINK_DIRECTORIES(${PROJECT_NAME} ThirdParty/glfw3/lib-mingw-w64)
 ADD_EXECUTABLE(${PROJECT_NAME}
         Source/Main/main.cpp
         # --* Application *-- #
-        Source/Application/AnciWindow.cpp
-        Source/Application/AnciApplication.cpp
+        Source/Application/MainWindow.cpp
+        Source/Application/MainApplication.cpp
         # --* GUI *-- #
-        Source/ImGui/AnciGUI.cpp
+        Source/ImGui/APPGUI.cpp
         Source/ImGui/GUIKIT.cpp
         # --* Scene *-- #
         Source/Scene/Scene.cpp

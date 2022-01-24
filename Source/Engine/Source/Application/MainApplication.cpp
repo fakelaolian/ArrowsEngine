@@ -1,5 +1,5 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/19 */
-#include "AnciApplication.h"
+#include "MainApplication.h"
 
 #include "Scene/Scene.h"
 #include "ImGui/GUIKIT.h"
@@ -7,13 +7,13 @@
 // std
 #include <time.h>
 
-AnciApplication::AnciApplication(const char *title, uint32_t w, uint32_t h)
+MainApplication::MainApplication(const char *title, uint32_t w, uint32_t h)
 {
-        _window = make_anciptr<AnciWindow>(title, w, h);
-        _gui    = make_anciptr<AnciGUI>(_window->GetHandle());
+        _window = make_arroptr<MainWindow>(title, w, h);
+        _gui    = make_arroptr<APPGUI>(_window->GetHandle());
 }
 
-void AnciApplication::Run()
+void MainApplication::Run()
 {
         Scene defaultScene{*_window};
 

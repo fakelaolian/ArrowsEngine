@@ -3,24 +3,24 @@
 
 #include "SkyBox.h"
 #include "GameObject.h"
-#include "Application/AnciWindow.h"
+#include "Application/MainWindow.h"
 
 // std
 #include <vector>
 
 class Scene {
 public:
-        Scene(AnciWindow& window);
+        Scene(MainWindow& window);
         ~Scene();
 
         void Update(float deltaTime, float aspect);
         void Render();
 
 private:
-        AnciWindow&             _window;
+        MainWindow&             _window;
         std::vector<GameObject> _objects;
         RHIShader               _normalize_shader;
-        anciptr<SkyBox>         _skybox;
+        arroptr<SkyBox>         _skybox;
         SceneCamera             _camera{
                 {0.0f, 0.0f, -8.0f},
                 0.0f, 0.0f,
