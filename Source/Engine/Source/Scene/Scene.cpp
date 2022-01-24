@@ -29,7 +29,7 @@ Scene::~Scene()
 
 }
 
-void Scene::Update(float deltaTime)
+void Scene::Update(float deltaTime, float aspect)
 {
         if (RHIGetMouseButton(_window.GetHandle(), RHI_MOUSE_BUTTON_2) == RHI_PRESS) {
                 _window.DisableCursor();
@@ -51,7 +51,7 @@ void Scene::Update(float deltaTime)
                 _camera.ResetFirstMouseBit();
         }
 
-        _camera.Update(_window.GetAspect());
+        _camera.Update(aspect);
 
         /* 更新着色器 */
         RHIBindShader(_normalize_shader);

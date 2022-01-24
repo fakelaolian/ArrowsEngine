@@ -2,7 +2,7 @@
 #include "AnciApplication.h"
 
 #include "Scene/Scene.h"
-#include "ImGui/ImGui_Performance.h"
+#include "ImGui/GUIKIT.h"
 
 // std
 #include <time.h>
@@ -20,10 +20,17 @@ void AnciApplication::Run()
         float _delta_time = 0.0f, _current_time = 0.0f, _last_time = 0.0f;
         clock_t _draw_time  = 0L;
 
+        RHIFramebuffer framebuffer;
+        RHIFramebufferCreateInfo createInfo = {};
+        createInfo.width = _window->GetWidth();
+        createInfo.height = _window->GetHeight();
+
+        RHICreateFramebuffer(&createInfo, &framebuffer);
+
         /* 游戏主循环 */
         RHIEnable(RHI_DEPTH_TEST, RHI_TRUE);
         while(!_window->ShouldClose()) {
-                RHIPollEvents();
+                RHIBindFramebuffer(framebuffer);
                 RHIClearColorBuffer(0.2f, 0.2f, 0.2f, 0.2f);
 
                 /* deltaTime */
@@ -32,20 +39,21 @@ void AnciApplication::Run()
                 _last_time    = _current_time;
 
                 _draw_time = clock();
-                defaultScene.Update(_delta_time);
+                defaultScene.Update(_delta_time, GUIKit::ASPECT);
                 defaultScene.Render();
                 _draw_time = clock() - _draw_time;
 
+                RHIBindFramebuffer(RHI_FRAMEBUFFER0);
+                RHIClearColorBuffer(0.2f, 0.2f, 0.2f, 0.2f);
                 _gui->BeginRender(); {
-                        bool show = true;
-                        ImGui::ShowDemoWindow(&show);
-                        /* 性能面板 */
-                        COMP_ImGUI_Performance_Data performance_data;
-                        performance_data.DeltaTime = _delta_time;
-                        performance_data.DrawTime  = _draw_time;
-                        COMP_ImGUI_Performance_Draw(&performance_data);
+                        GUIKitData guiKitData;
+                        guiKitData.deltaTime    = _delta_time;
+                        guiKitData.drawTime     = _draw_time;
+                        guiKitData.framebuffer  = framebuffer;
+                        GUIKit::Render(&guiKitData);
                 } _gui->EndRender();
 
                 RHISwapBuffers(_window->GetHandle());
+                RHIPollEvents();
         }
 }

@@ -7,7 +7,7 @@ SkyBox::SkyBox(const char ** faces)
 {
         /* 加载顶点数据 */
         RHIVertexBufferLayout layouts[] = {
-                {0, 3, RHI_FLOAT, 0}
+                {0, 3, RHI_TYPE_FORMAT_FLOAT, 0}
         };
 
         RHIVertexBufferMemLayoutInfo memLayoutInfo = {};

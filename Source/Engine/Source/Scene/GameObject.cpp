@@ -13,9 +13,9 @@ GameObject::GameObject(mloader::mesh_t &mesh)
         memcpy(dst, src, mesh.vertices.size() * sizeof(mloader::vertex_t));
 
         RHIVertexBufferLayout layouts[] = {
-                {0, 3, RHI_FLOAT, offsetof(Vertex, position)},
-                {1, 3, RHI_FLOAT, offsetof(Vertex, normal)},
-                {2, 2, RHI_FLOAT, offsetof(Vertex, texcoord)},
+                {0, 3, RHI_TYPE_FORMAT_FLOAT, offsetof(Vertex, position)},
+                {1, 3, RHI_TYPE_FORMAT_FLOAT, offsetof(Vertex, normal)},
+                {2, 2, RHI_TYPE_FORMAT_FLOAT, offsetof(Vertex, texcoord)},
         };
 
         RHIVertexBufferMemLayoutInfo memLayoutInfo{};

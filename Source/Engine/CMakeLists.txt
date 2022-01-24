@@ -20,6 +20,7 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         Source/Application/AnciApplication.cpp
         # --* GUI *-- #
         Source/ImGui/AnciGUI.cpp
+        Source/ImGui/GUIKIT.cpp
         # --* Scene *-- #
         Source/Scene/Scene.cpp
         Source/Scene/GameObject.cpp

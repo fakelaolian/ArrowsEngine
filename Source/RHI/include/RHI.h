@@ -16,6 +16,7 @@ typedef void *          RHIVertexBuffer;
 typedef void *          RHIIndicesBuffer;
 typedef void *          RHITexture;
 typedef void *          RHIShader;
+typedef void *          RHIFramebuffer;
 typedef anciu32         RHIID;
 
 #define RHI_TRUE        1U
@@ -184,7 +185,7 @@ typedef enum RHIFormat {
         RHI_IMAGE_FORMAT_RGB,
         RHI_IMAGE_FORMAT_RGBA,
         RHI_IMAGE_FORMAT_RED,
-        RHI_FLOAT,
+        RHI_TYPE_FORMAT_FLOAT,
 } RHIFormat;
 
 typedef enum RHIEnableBits {
@@ -207,6 +208,7 @@ typedef struct RHIVertexBufferMemLayoutInfo {
 } RHIVertexBufferMemLayoutInfo;
 
 typedef enum RHITextureWrapModeBits {
+        RHI_TEXTURE_WRAP_NONE,
         RHI_TEXTURE_WRAP_REPEAT,
         RHI_TEXTURE_WRAP_MIRRORED_REPEAT,
         RHI_TEXTURE_WRAP_CLAMP_TO_EDGE,
@@ -272,6 +274,13 @@ typedef enum RHIDepthOptionBits {
         RHI_DEPTH_OPTION_GT,
         RHI_DEPTH_OPTION_GE,
 } RHIDepthOptionBits;
+
+typedef struct RHIFramebufferCreateInfo {
+        anciu32 width;
+        anciu32 height;
+} RHIFramebufferCreateInfo;
+
+#define RHI_FRAMEBUFFER0 NULL
 
 /**
  * RHI函数指针，命名规范：
@@ -396,6 +405,21 @@ ANCIAPI ANCI_RHI_CREATE_TEXTURE_CUBE_MAP ANCIRHICREATETEXTURECUBEMAP;
 typedef void (*ANCI_RHI_DEPTH_OPTION)(RHIDepthOptionBits);
 ANCIAPI ANCI_RHI_DEPTH_OPTION ANCIRHIDEPTHOPTION;
 #define RHIDepthOption ANCIRHIDEPTHOPTION
+typedef ancibool (*ANCI_RHI_CREATE_FRAMEBUFFER)(RHIFramebufferCreateInfo *createInfo, RHIFramebuffer *buffer);
+ANCIAPI ANCI_RHI_CREATE_FRAMEBUFFER ANCIRHICREATEFRAMEBUFFER;
+#define RHICreateFramebuffer ANCIRHICREATEFRAMEBUFFER
+typedef void (*ANCI_RHI_RECREATE_FRAMEBUFFER)(RHIFramebufferCreateInfo *createInfo, RHIFramebuffer *buffer);
+ANCIAPI ANCI_RHI_RECREATE_FRAMEBUFFER ANCIRHIRECREATEFRAMEBUFFER;
+#define RHIRecreateFramebuffer ANCIRHIRECREATEFRAMEBUFFER
+typedef void (*ANCI_RHI_BIND_FRAMEBUFFER)(RHIFramebuffer);
+ANCIAPI ANCI_RHI_BIND_FRAMEBUFFER ANCIRHIBINDFRAMEBUFFER;
+#define RHIBindFramebuffer ANCIRHIBINDFRAMEBUFFER
+typedef RHITexture (*ANCI_RHI_GET_FRAMEBUFFER_TEXTURE)(RHIFramebuffer);
+ANCIAPI ANCI_RHI_GET_FRAMEBUFFER_TEXTURE ANCIRHIGETFRAMEBUFFERTEXTURE;
+#define RHIGetFramebufferTexture ANCIRHIGETFRAMEBUFFERTEXTURE
+typedef void (*ANCI_RHI_DELETE_FRAMEBUFFER)(RHIFramebuffer);
+ANCIAPI ANCI_RHI_DELETE_FRAMEBUFFER ANCIRHIDELETEFRAMEBUFFER;
+#define RHIDeleteFramebuffer ANCIRHIDELETEFRAMEBUFFER
 
 ////////////////////////////////////////////////////////////////////////////////////
 //////                              设备输入                                   //////

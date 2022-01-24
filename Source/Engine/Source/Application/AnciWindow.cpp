@@ -13,7 +13,6 @@ AnciWindow::AnciWindow(const char *title, int w, int h)
 
         /* 设置窗口回调函数 */
         RHISetWindowResizeCallback(_window_handle, [](RHIWindow window, int w, int h) {
-                RHIViewport(0, 0, w, h);
                 AnciWindow *app = (AnciWindow *) RHIGetUserPointer(window);
                 app->SetDimension(w, h);
         });
@@ -25,6 +24,9 @@ AnciWindow::AnciWindow(const char *title, int w, int h)
 
         if (!_window_handle)
                 throw std::runtime_error("创建窗口失败。");
+
+        _width  = w;
+        _height = h;
 }
 
 AnciWindow::~AnciWindow()

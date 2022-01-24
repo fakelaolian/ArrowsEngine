@@ -6,6 +6,7 @@
 
 #include "alsl.h"
 #include "glfw.h"
+#include "verror.h"
 
 ANCI_RHI_GET_TIME                       ANCIRHIGETTIME                    = NULL;
 ANCI_RHI_VIEWPORT                       ANCIRHIVIEWPORT                   = NULL;
@@ -38,6 +39,11 @@ ANCI_RHI_GET_TEXTURE_ID                 ANCIRHIGETTEXTUREID               = NULL
 ANCI_RHI_BIND_TEXTURE                   ANCIRHIBINDTEXTURE                = NULL;
 ANCI_RHI_CREATE_TEXTURE_CUBE_MAP        ANCIRHICREATETEXTURECUBEMAP       = NULL;
 ANCI_RHI_DEPTH_OPTION                   ANCIRHIDEPTHOPTION                = NULL;
+ANCI_RHI_CREATE_FRAMEBUFFER             ANCIRHICREATEFRAMEBUFFER          = NULL;
+ANCI_RHI_RECREATE_FRAMEBUFFER           ANCIRHIRECREATEFRAMEBUFFER        = NULL;
+ANCI_RHI_BIND_FRAMEBUFFER               ANCIRHIBINDFRAMEBUFFER            = NULL;
+ANCI_RHI_GET_FRAMEBUFFER_TEXTURE        ANCIRHIGETFRAMEBUFFERTEXTURE      = NULL;
+ANCI_RHI_DELETE_FRAMEBUFFER             ANCIRHIDELETEFRAMEBUFFER          = NULL;
 
 GLbitfield                              _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
 ancibool                                _gl_depth_test_enable_state       = RHI_FALSE;
@@ -76,11 +82,18 @@ typedef struct RHIShaderGL {
 #define IShader RHIShaderGL *
 #define CONV_SHADER(ptr) ((RHIShaderGL *) (ptr))
 
+typedef struct RHIFramebufferGL {
+        unsigned int framebuffer;
+        RHITexture   texture;
+} RHIFramebufferGL;
+#define IFramebuffer RHIFramebufferGL *
+#define CONV_FRAMEBUF(ptr) ((RHIFramebufferGL *) (ptr))
+
 float _glfw_get_time () { return glfwGetTime(); }
 void _opengl_viewport (anciu32 x, anciu32 y, anciu32 w, anciu32 h) { glViewport((GLint) x, (GLint) y, (GLsizei) w, (GLsizei) h); }
 void _opengl_swap_buffers (RHIWindow h) { glfwSwapBuffers((GLFWwindow *) h); }
 
-void _opengl_gen_vtx_buffer(RHIVertexBufferMemLayoutInfo *memLayoutInfo, RHIVertexBuffer *vtxBuffer)
+void _opengl_create_vtx_buffer(RHIVertexBufferMemLayoutInfo *memLayoutInfo, RHIVertexBuffer *vtxBuffer)
 {
         anciu32 vao;
         anciu32 vbo;
@@ -98,7 +111,7 @@ void _opengl_gen_vtx_buffer(RHIVertexBufferMemLayoutInfo *memLayoutInfo, RHIVert
 
                 GLenum type = GL_FLOAT;
                 switch (layout.format) {
-                        case RHI_FLOAT: type = GL_FLOAT; break;
+                        case RHI_TYPE_FORMAT_FLOAT: type = GL_FLOAT; break;
                         default: printf("ERROR - 不支持的格式。");
                 }
 
@@ -118,7 +131,7 @@ void _opengl_gen_vtx_buffer(RHIVertexBufferMemLayoutInfo *memLayoutInfo, RHIVert
         *vtxBuffer = pVtxBuffer;
 }
 
-void _opengl_gen_idx_buffer(anciu32 *indices, anciu32 count, RHIIndicesBuffer *idxBuffer)
+void _opengl_create_idx_buffer(anciu32 *indices, anciu32 count, RHIIndicesBuffer *idxBuffer)
 {
         unsigned int ebo;
         glGenBuffers(1, &ebo);
@@ -329,19 +342,31 @@ GLint _opengl_get_texture_filter_value(RHITextureFilterModeBits mode)
         return 0;
 }
 
-void _opengl_gen_texture2d(RHITexture2DCreateInfo *createInfo, RHITexture *p_texture)
+void _opengl_create_texture2d(RHITexture2DCreateInfo *createInfo, RHITexture *p_texture)
 {
         anciu32 textureId;
 
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_2D, textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, _opengl_get_format(createInfo->format),
-                     createInfo->width, createInfo->height, 0, _opengl_get_format(createInfo->format), GL_UNSIGNED_BYTE, createInfo->pPixels);
+        glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                _opengl_get_format(createInfo->format),
+                createInfo->width,
+                createInfo->height,
+                0,
+                _opengl_get_format(createInfo->format),
+                GL_UNSIGNED_BYTE,
+                createInfo->pPixels
+        );
         glGenerateMipmap(GL_TEXTURE_2D);
 
         // 为当前绑定的纹理对象设置环绕、过滤方式
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _opengl_get_texture_wrap_value(createInfo->textureWrapS));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _opengl_get_texture_wrap_value(createInfo->textureWrapT));
+        if (createInfo->textureWrapS != RHI_TEXTURE_WRAP_NONE)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _opengl_get_texture_wrap_value(createInfo->textureWrapS));
+        if (createInfo->textureWrapT != RHI_TEXTURE_WRAP_NONE)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _opengl_get_texture_wrap_value(createInfo->textureWrapT));
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMin));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _opengl_get_texture_filter_value(createInfo->textureFilterMag));
 
@@ -386,7 +411,7 @@ RHIID _opengl_get_texture_id(RHITexture texture)
         return CONV_TEX(texture)->textureId;
 }
 
-void _opengl_gen_texture_cube_map(RHITextureCubeCreateInfo *createInfo, RHITexture *texture)
+void _opengl_create_texture_cube_map(RHITextureCubeCreateInfo *createInfo, RHITexture *texture)
 {
         anciu32 textureId;
         glGenTextures(1, &textureId);
@@ -417,14 +442,6 @@ void _opengl_gen_texture_cube_map(RHITextureCubeCreateInfo *createInfo, RHITextu
         *texture = pTextureGL;
 }
 
-void _opengl_bind_texture_cube_map(RHITexture texture)
-{
-        ITexture itexture = CONV_TEX(texture);
-        glActiveTexture(GL_TEXTURE0 + _activeTexture);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, itexture->textureId);
-        _activeTexture++;
-}
-
 void _opengl_depth_option(RHIDepthOptionBits bits)
 {
         GLenum op;
@@ -453,14 +470,95 @@ void _opengl_bind_texture(RHITextureFormatBits bit, RHITexture texture)
         _activeTexture++;
 }
 
+ancibool _opengl_create_framebuffer(RHIFramebufferCreateInfo *createFramebuffer, RHIFramebuffer *buffer)
+{
+        glViewport(0, 0, createFramebuffer->width, createFramebuffer->height);
+
+        unsigned int fbo;
+        glGenFramebuffers(1, &fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+        /* 创建帧缓冲区纹理 */
+        RHITexture2DCreateInfo createInfo;
+        createInfo.width  = createFramebuffer->width;
+        createInfo.height = createFramebuffer->height;
+        createInfo.format = RHI_IMAGE_FORMAT_RGBA;
+        createInfo.textureWrapS = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
+        createInfo.textureWrapT = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
+        createInfo.textureFilterMin = RHI_TEXTURE_FILTER_LINEAR;
+        createInfo.textureFilterMag = RHI_TEXTURE_FILTER_LINEAR;
+        createInfo.pPixels = NULL;
+
+        RHITexture framebufferTexture;
+        _opengl_create_texture2d(&createInfo, &framebufferTexture);
+
+        /* 将纹理绑定到帧缓冲区 */
+        glFramebufferTexture2D(
+                GL_FRAMEBUFFER,
+                GL_COLOR_ATTACHMENT0,
+                GL_TEXTURE_2D,
+                CONV_TEX(framebufferTexture)->textureId,
+                0
+        );
+
+        unsigned int rbo;
+        glGenRenderbuffers(1, &rbo);
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+        glRenderbufferStorage(
+                GL_RENDERBUFFER,
+                GL_DEPTH24_STENCIL8,
+                createFramebuffer->width,
+                createFramebuffer->height
+        );
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+        /* 检查帧缓冲是否完整 */
+        GLenum _checkret = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if (_checkret != GL_FRAMEBUFFER_COMPLETE) {
+                VERROR("ERROR - 帧缓冲区不完整。");
+                return RHI_FALSE;
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        RHIFramebufferGL *p_framebuffer = malloc(sizeof(RHIFramebufferGL));
+        p_framebuffer->framebuffer = fbo;
+        p_framebuffer->texture     = framebufferTexture;
+        *buffer = p_framebuffer;
+
+        return RHI_TRUE;
+}
+
+void _opengl_delete_framebuffer(RHIFramebuffer framebuffer)
+{
+        IFramebuffer framebufferGl = CONV_FRAMEBUF(framebuffer);
+        glDeleteFramebuffers(1, &framebufferGl->framebuffer);
+        _opengl_delete_texture(framebufferGl->texture);
+}
+
+void _opengl_recreate_framebuffer(RHIFramebufferCreateInfo *createFramebuffer, RHIFramebuffer *buffer)
+{
+        _opengl_delete_framebuffer(*buffer);
+        _opengl_create_framebuffer(createFramebuffer, buffer);
+}
+
+void _opengl_bind_framebuffer(RHIFramebuffer framebuffer)
+{
+        framebuffer == NULL ? glBindFramebuffer(GL_FRAMEBUFFER, 0) :
+        glBindFramebuffer(GL_FRAMEBUFFER, CONV_FRAMEBUF(framebuffer)->framebuffer);
+}
+
+RHITexture _opengl_get_framebuffer_texture(RHIFramebuffer framebuffer)
+{ return CONV_FRAMEBUF(framebuffer)->texture; }
+
 void OpenGLRHIImpl()
 {
         _load_glfw_functions();
         ANCIRHIGETTIME                          = _glfw_get_time;
         ANCIRHIVIEWPORT                         = _opengl_viewport;
         ANCIRHISWAPBUFFERS                      = _opengl_swap_buffers;
-        ANCIRHICREATEVTXBUFFER                  = _opengl_gen_vtx_buffer;
-        ANCIRHICREATEIDXBUFFER                  = _opengl_gen_idx_buffer;
+        ANCIRHICREATEVTXBUFFER                  = _opengl_create_vtx_buffer;
+        ANCIRHICREATEIDXBUFFER                  = _opengl_create_idx_buffer;
         ANCIRHIDESTROYVTXBUFFER                 = _opengl_delete_vtx_buffer;
         ANCIRHIDESTROYIDXBUFFER                 = _opengl_delete_idx_buffer;
         ANCIRHIBINDVTX                          = _opengl_bind_vtx_buffer;
@@ -480,12 +578,17 @@ void OpenGLRHIImpl()
         ANCIRHIUNIFORMMATRIX4FV                 = _opengl_uniform_matrix4fv;
         ANCIRHIDESTROYSHADER                    = _opengl_delete_shader;
         ANCIRHICLEARCOLORBUFFER                 = _opengl_clear_color;
-        ANCIRHICREATETEXTURE2D                  = _opengl_gen_texture2d;
-        ANCIRHICREATETEXTURECUBEMAP             = _opengl_gen_texture_cube_map;
+        ANCIRHICREATETEXTURE2D                  = _opengl_create_texture2d;
+        ANCIRHICREATETEXTURECUBEMAP             = _opengl_create_texture_cube_map;
         ANCIRHIDESTROYTEXTURE                   = _opengl_delete_texture;
         ANCIRHIGETTEXTUREID                     = _opengl_get_texture_id;
         ANCIRHIBINDTEXTURE                      = _opengl_bind_texture;
         ANCIRHIENABLE                           = _opengl_enbale;
         ANCIRHIDEPTHOPTION                      = _opengl_depth_option;
+        ANCIRHICREATEFRAMEBUFFER                = _opengl_create_framebuffer;
+        ANCIRHIRECREATEFRAMEBUFFER              = _opengl_recreate_framebuffer;
+        ANCIRHIBINDFRAMEBUFFER                  = _opengl_bind_framebuffer;
+        ANCIRHIGETFRAMEBUFFERTEXTURE            = _opengl_get_framebuffer_texture;
+        ANCIRHIDELETEFRAMEBUFFER                = _opengl_delete_framebuffer;
 }
 

@@ -13,7 +13,7 @@ public:
         Scene(AnciWindow& window);
         ~Scene();
 
-        void Update(float deltaTime);
+        void Update(float deltaTime, float aspect);
         void Render();
 
 private:
