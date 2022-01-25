@@ -3,7 +3,7 @@
 #include "SkyBoxArray.h"
 #include "Loader/TextureLoader.h"
 
-SkyBox::SkyBox(const char *name, const char ** faces) : GameComponent(name)
+SkyBox::SkyBox(const char *name, const char ** faces) : GameComponent(name, this)
 {
         /* 加载顶点数据 */
         RHIVertexBufferLayout layouts[] = {

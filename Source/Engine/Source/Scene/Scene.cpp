@@ -24,8 +24,8 @@ Scene::Scene(MainWindow& window) : _window(window)
         _skybox = make_arroptr<SkyBox>("默认天空盒", skyboxsImage.data());
 
         /* 添加到组件列表 */
-        _component_list.PushComponent(_objects[0]);
-        _component_list.PushComponent(*_skybox);
+        _component_list.PutGameComponent(_objects[0]);
+//        _component_list.PushComponent(*_skybox);
 }
 
 Scene::~Scene()

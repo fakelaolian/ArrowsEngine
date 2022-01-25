@@ -2,7 +2,7 @@
 #include "Scene/Component/GameObject.h"
 #include "Loader/TextureLoader.h"
 
-GameObject::GameObject(const char *name, mloader::mesh_t &mesh) : GameComponent(name)
+GameObject::GameObject(const char *name, mloader::mesh_t &mesh) : GameComponent(name, this)
 {
         /* 创建顶点缓冲区 */
         std::vector<Vertex> vertices;

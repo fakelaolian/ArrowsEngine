@@ -31,11 +31,11 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
         ImGui::Begin("组件列表");
         {
                 auto *complist = p_data->componentList;
-                auto &comps    = complist->GetComponents();
+                auto &comps    = complist->GetGameComponents();
 
                 ImGuiTreeNodeFlags __ImGuiTreeNodeBaseFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
 
-                /* 场景中的组件列表 */
+                /* 场景中的游戏对象组件列表 */
                 for (auto iter = comps.begin(); iter != comps.end(); ++iter) {
                         auto    comp   = iter->second;
                         compid_t _compid = comp.GetId();
@@ -55,13 +55,12 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
                 }
 
                 if (_selected_id != -1) {
-                        arrovec3 a;
-                        arrovec3 b;
-                        arrovec3 c;
+                        auto gameComponent = comps.at(_selected_id);
+                        GameObject *gameObject = gameComponent.GetInstance();
                         GUIKitTransformData data{
-                                glm::value_ptr(a),
-                                glm::value_ptr(b),
-                                glm::value_ptr(c),
+                                glm::value_ptr(gameObject->GetPosition()),
+                                glm::value_ptr(gameObject->GetRotation()),
+                                glm::value_ptr(gameObject->GetScale()),
                         };
                         DrawTransformComponent(&data);
                 }

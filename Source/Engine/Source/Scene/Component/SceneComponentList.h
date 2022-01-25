@@ -13,12 +13,12 @@ public:
         SceneComponentList() {};
         ~SceneComponentList() = default;
 
-        inline void PushComponent(GameComponent& comp)
+        inline void PutGameComponent(GameComponent<GameObject>& comp)
         { _components.emplace(comp.GetId(), comp); }
 
-        inline std::unordered_map<compid_t, GameComponent&>& GetComponents()
+        inline std::unordered_map<compid_t, GameComponent<GameObject>&>& GetGameComponents()
         { return _components; }
 
 private:
-        std::unordered_map<compid_t, GameComponent&> _components;
+        std::unordered_map<compid_t, GameComponent<GameObject>&> _components;
 };

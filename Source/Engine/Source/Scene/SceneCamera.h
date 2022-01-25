@@ -26,6 +26,9 @@ public:
                 UpdateVectors();
         }
 
+        inline void SetPosition(arrovec3 position)
+        { _position = position; }
+
         /* 旋转相机 */
         inline void Rotate(float x, float y)
         {

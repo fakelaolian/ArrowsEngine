@@ -6,7 +6,7 @@
 #include "Scene/SceneCamera.h"
 #include "GameComponent.h"
 
-class SkyBox : public GameComponent {
+class SkyBox : public GameComponent<SkyBox> {
 public:
         SkyBox(const char *name, const char * faces[6]);
         ~SkyBox();
