@@ -1,9 +1,10 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/21 */
 #pragma once
 
-#include "SkyBox.h"
-#include "GameObject.h"
+#include "Scene/Component/SkyBox.h"
+#include "Scene/Component/GameObject.h"
 #include "Application/MainWindow.h"
+#include "Component/SceneComponentList.h"
 
 // std
 #include <vector>
@@ -12,6 +13,9 @@ class Scene {
 public:
         Scene(MainWindow& window);
         ~Scene();
+
+        inline SceneComponentList &GetComponentList()
+        { return _component_list; }
 
         void Update(float deltaTime, float aspect);
         void Render();
@@ -26,4 +30,6 @@ private:
                 0.0f, 0.0f,
                 {0.0f, 1.0f, 0.0f}
         };
+
+        SceneComponentList      _component_list{};
 };

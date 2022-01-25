@@ -11,6 +11,7 @@ MainApplication::MainApplication(const char *title, uint32_t w, uint32_t h)
 {
         _window = make_arroptr<MainWindow>(title, w, h);
         _gui    = make_arroptr<APPGUI>(_window->GetHandle());
+        _guikit = make_arroptr<GUIKit>();
 }
 
 void MainApplication::Run()
@@ -39,7 +40,7 @@ void MainApplication::Run()
                 _last_time    = _current_time;
 
                 _draw_time = clock();
-                defaultScene.Update(_delta_time, GUIKit::ASPECT);
+                defaultScene.Update(_delta_time, _guikit->ASPECT);
                 defaultScene.Render();
                 _draw_time = clock() - _draw_time;
 
@@ -50,7 +51,8 @@ void MainApplication::Run()
                         guiKitData.deltaTime    = _delta_time;
                         guiKitData.drawTime     = _draw_time;
                         guiKitData.framebuffer  = framebuffer;
-                        GUIKit::Render(&guiKitData);
+                        guiKitData.componentList= &defaultScene.GetComponentList();
+                        _guikit->Render(&guiKitData);
                 } _gui->EndRender();
 
                 RHISwapBuffers(_window->GetHandle());

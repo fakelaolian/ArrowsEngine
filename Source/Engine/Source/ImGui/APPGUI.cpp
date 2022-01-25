@@ -94,7 +94,7 @@ APPGUI::APPGUI(RHIWindow h)
         //io.ConfigViewportsNoTaskBarIcon = true;
 
         io.Fonts->AddFontFromFileTTF(
-                "../../../Source/Engine/ThirdParty/fonts/NotoSansTC/NotoSansTC-Medium.otf",
+                "../../../Source/Engine/ThirdParty/fonts/FangZhengHeiTiJianTi/FangZhengHeiTiJianTi-1.ttf",
                 18,
                 NULL,
                 io.Fonts->GetGlyphRangesChineseFull()

@@ -7,7 +7,8 @@
 /** 场景相机 */
 class SceneCamera : public Camera {
 public:
-        SceneCamera(arrovec3 position, float pitch, float yaw, arrovec3 wordUp) : Camera(position, pitch, yaw, wordUp) {}
+        SceneCamera(arrovec3 position, float pitch, float yaw, arrovec3 wordUp)
+                : Camera(position, pitch, yaw, wordUp) {}
 
         /* 移动相机 */
         inline void Move(CameraMovement movement, float deltaTime, float incremental = 0.0f)

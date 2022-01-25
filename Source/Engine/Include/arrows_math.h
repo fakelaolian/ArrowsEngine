@@ -4,9 +4,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-typedef glm::vec2 arrovec2;
-typedef glm::vec3 arrovec3;
-typedef glm::vec4 arrovec4;
-typedef glm::mat2 arromat2;
-typedef glm::mat3 arromat3;
-typedef glm::mat4 arromat4;
+typedef unsigned int    arrou32;
+typedef glm::vec2       arrovec2;
+typedef glm::vec3       arrovec3;
+typedef glm::vec4       arrovec4;
+typedef glm::mat2       arromat2;
+typedef glm::mat3       arromat3;
+typedef glm::mat4       arromat4;

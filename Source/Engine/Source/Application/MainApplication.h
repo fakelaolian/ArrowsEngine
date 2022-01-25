@@ -5,6 +5,7 @@
 #include <arrows_core.h>
 #include "MainWindow.h"
 #include "ImGui/APPGUI.h"
+#include "ImGui/GUIKIT.h"
 
 class MainApplication {
 public:
@@ -16,5 +17,6 @@ public:
 private:
         arroptr<MainWindow> _window;
         arroptr<APPGUI>    _gui;
+        arroptr<GUIKit>    _guikit;
 
 };

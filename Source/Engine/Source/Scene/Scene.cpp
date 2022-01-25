@@ -3,10 +3,10 @@
 
 Scene::Scene(MainWindow& window) : _window(window)
 {
-        std::vector<mloader::mesh_t> meshs = mloader::load_model("C:/Users/procf/Desktop/untitled.obj");
+        std::vector<mloader::mesh_t> meshs = mloader::load_model("../../../Assets/untitled.obj");
         meshs[0].texture = "../../../Assets/container2.png";
 
-        _objects.emplace_back(meshs[0]);
+        _objects.emplace_back("正方体", meshs[0]);
         _normalize_shader = RHICreateShader(GET_SHADER(normalize.alsl));
 
         ////////////////////////////////////////////////////////////
@@ -21,7 +21,11 @@ Scene::Scene(MainWindow& window) : _window(window)
                 "../../../Assets/skyboxs/a/back.jpg",
         };
 
-        _skybox = make_arroptr<SkyBox>(skyboxsImage.data());
+        _skybox = make_arroptr<SkyBox>("默认天空盒", skyboxsImage.data());
+
+        /* 添加到组件列表 */
+        _component_list.PushComponent(_objects[0]);
+        _component_list.PushComponent(*_skybox);
 }
 
 Scene::~Scene()

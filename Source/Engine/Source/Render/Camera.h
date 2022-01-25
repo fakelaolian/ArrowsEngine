@@ -2,8 +2,9 @@
 #pragma once
 
 #include <arrows_core.h>
+#include "Scene/Component/GameComponent.h"
 
-class Camera {
+class Camera{
 public:
         enum CameraMovement {
                 CAMERA_MOVE_FORWARD,
