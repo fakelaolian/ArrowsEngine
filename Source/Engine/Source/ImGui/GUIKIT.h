@@ -3,6 +3,7 @@
 
 #include "APPGUI.h"
 #include "Scene/Component/SceneComponentList.h"
+#include "Application/MainWindow.h"
 
 struct GUIKitData {
         /* 性能面板 */

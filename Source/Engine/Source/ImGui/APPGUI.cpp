@@ -95,7 +95,7 @@ APPGUI::APPGUI(RHIWindow h)
 
         io.Fonts->AddFontFromFileTTF(
                 "../../../Source/Engine/ThirdParty/fonts/FangZhengHeiTiJianTi/FangZhengHeiTiJianTi-1.ttf",
-                18,
+                16,
                 NULL,
                 io.Fonts->GetGlyphRangesChineseFull()
         );

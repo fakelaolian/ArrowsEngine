@@ -1,7 +1,7 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/24 */
 #include "GUIKIT.h"
 
-#include <imgui/imgui.h>
+#include "Private/ImGui_Constom_Component.h"
 
 void GUIKit::DrawPerformance(GUIKitData *p_data)
 {
@@ -71,9 +71,17 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
 void GUIKit::DrawTransformComponent(GUIKitTransformData *p_data)
 {
         if (ImGui::Begin("变换")) {
-                ImGui::DragFloat3("位置", p_data->position, 0.01f);
-                ImGui::DragFloat3("旋转", p_data->rotate, 0.01f);
-                ImGui::DragFloat3("缩放", p_data->scale, 0.01f);
+                const char* labels[] = {"x", "y", "z"};
+
+                ImGui::Text("位置  ");
+                ImGui::SameLine();
+                ImGuiCC::DragFloatNEx("position", labels, p_data->position, 3, 0.01f);
+                ImGui::Text("旋转  ");
+                ImGui::SameLine();
+                ImGuiCC::DragFloatNEx("rotation", labels, p_data->rotate, 3, 0.01f);
+                ImGui::Text("缩放  ");
+                ImGui::SameLine();
+                ImGuiCC::DragFloatNEx("scale", labels, p_data->scale, 3, 0.01f);
         } ImGui::End();
 }
 
