@@ -11,6 +11,8 @@ public:
                 CAMERA_MOVE_BACK,
                 CAMERA_MOVE_RIGHT,
                 CAMERA_MOVE_LEFT,
+                CAMERA_MOVE_UP,
+                CAMERA_MOVE_DOWN,
         };
 
         Camera(arrovec3 position, float pitch, float yaw, arrovec3 wordUp)
@@ -65,6 +67,6 @@ protected:
         float    _last_mouse_y;
 
         /* 相机属性 */
-        float _move_speed = 2.5f;
+        float _move_speed = 10.0f;
         float _sensitive  = 0.001f;
 };

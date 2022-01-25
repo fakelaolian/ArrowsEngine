@@ -47,6 +47,10 @@ void Scene::Update(float deltaTime, float aspect)
                         _camera.Move(Camera::CAMERA_MOVE_RIGHT, deltaTime);
                 if (RHIGetKey(_window.GetHandle(), RHI_KEY_D) == RHI_PRESS)
                         _camera.Move(Camera::CAMERA_MOVE_LEFT, deltaTime);
+                if (RHIGetKey(_window.GetHandle(), RHI_KEY_SPACE) == RHI_PRESS)
+                        _camera.Move(Camera::CAMERA_MOVE_UP, deltaTime);
+                if (RHIGetKey(_window.GetHandle(), RHI_KEY_LEFT_CONTROL) == RHI_PRESS)
+                        _camera.Move(Camera::CAMERA_MOVE_DOWN, deltaTime);
 
                 _camera.Rotate(_window.GetMouseX(), _window.GetMouseY());
 

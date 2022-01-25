@@ -14,6 +14,7 @@ public:
         inline void Move(CameraMovement movement, float deltaTime, float incremental = 0.0f)
         {
                 float vspeed = (_move_speed + incremental) * deltaTime;
+
                 if (movement == CAMERA_MOVE_FORWARD)
                         _position += _forward * vspeed;
                 if (movement == CAMERA_MOVE_BACK)
@@ -22,6 +23,10 @@ public:
                         _position -= _right * vspeed;
                 if (movement == CAMERA_MOVE_LEFT)
                         _position += _right * vspeed;
+                if (movement == CAMERA_MOVE_UP)
+                        _position.y += vspeed;
+                if (movement == CAMERA_MOVE_DOWN)
+                        _position.y -= vspeed;
 
                 UpdateVectors();
         }

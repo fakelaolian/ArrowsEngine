@@ -72,7 +72,6 @@ void GUIKit::DrawTransformComponent(GUIKitTransformData *p_data)
 {
         if (ImGui::Begin("变换")) {
                 const char* labels[] = {"x", "y", "z"};
-
                 ImGui::Text("位置  ");
                 ImGui::SameLine();
                 ImGuiCC::DragFloatNEx("position", labels, p_data->position, 3, 0.01f);
