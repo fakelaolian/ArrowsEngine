@@ -7,12 +7,14 @@
 /** 场景相机 */
 class SceneCamera : public Camera {
 public:
-        SceneCamera(arrovec3 position, float pitch, float yaw, arrovec3 wordUp) : Camera(position, pitch, yaw, wordUp) {}
+        SceneCamera(arrovec3 position, float pitch, float yaw, arrovec3 wordUp)
+                : Camera(position, pitch, yaw, wordUp) {}
 
         /* 移动相机 */
         inline void Move(CameraMovement movement, float deltaTime, float incremental = 0.0f)
         {
                 float vspeed = (_move_speed + incremental) * deltaTime;
+
                 if (movement == CAMERA_MOVE_FORWARD)
                         _position += _forward * vspeed;
                 if (movement == CAMERA_MOVE_BACK)
@@ -21,9 +23,16 @@ public:
                         _position -= _right * vspeed;
                 if (movement == CAMERA_MOVE_LEFT)
                         _position += _right * vspeed;
+                if (movement == CAMERA_MOVE_UP)
+                        _position.y += vspeed;
+                if (movement == CAMERA_MOVE_DOWN)
+                        _position.y -= vspeed;
 
                 UpdateVectors();
         }
+
+        inline void SetPosition(arrovec3 position)
+        { _position = position; }
 
         /* 旋转相机 */
         inline void Rotate(float x, float y)

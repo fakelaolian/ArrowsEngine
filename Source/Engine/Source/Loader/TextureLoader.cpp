@@ -6,5 +6,8 @@
 unsigned char *_stbi_load(char const *filename, int *x, int *y, int *comp, int req_comp)
 { return stbi_load(filename, x, y, comp, req_comp); }
 
+unsigned char *_stbi_load(char const *filename, int *x, int *y, int *comp)
+{ return stbi_load(filename, x, y, comp, 0); }
+
 void _stbi_image_free(void *p_data)
 { stbi_image_free(p_data); }

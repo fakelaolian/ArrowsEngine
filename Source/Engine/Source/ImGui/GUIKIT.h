@@ -2,17 +2,44 @@
 #pragma once
 
 #include "APPGUI.h"
+#include "Scene/Component/SceneComponentList.h"
+#include "Application/MainWindow.h"
 
 struct GUIKitData {
         /* 性能面板 */
         float           deltaTime;
         long            drawTime;
         /* 视图 */
-        RHIFramebuffer  framebuffer;
+        ArsFramebuffer  framebuffer;
+        /* 组件 */
+        SceneComponentList *componentList;
+};
+
+struct GUIKitObjectData {
+        float*          position;
+        float*          rotate;
+        float*          scale;
+        ArsTexture      texture;
 };
 
 class GUIKit {
 public:
-        static float ASPECT;
-        static void Render(GUIKitData *p_data);
+        GUIKit();
+        void Render(GUIKitData *p_data);
+
+public:
+        float ASPECT;
+
+private: /* 主窗口 */
+        void DrawPerformance(GUIKitData *p_data);
+        void DrawViewport(GUIKitData *p_data);
+        void DrawComponents(GUIKitData *p_data);
+
+private: /* 子窗口（编辑组件） */
+        void DrawDisableComponentWindow(GameObject *p_data);
+
+private:
+        compid_t        _selected_id = -1;
+        ArsTexture      _ui_lock;
+        ArsTexture      _ui_unlock;
 };

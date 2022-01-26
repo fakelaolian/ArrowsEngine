@@ -1,7 +1,7 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/19 */
 #include "ModelLoader.h"
 
-#include "ObjLoader/OBJLoader.h"
+#include "OBJLoader.h"
 
 namespace mloader {
 

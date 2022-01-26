@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
-PROJECT(AnciEngine)
+PROJECT(ArrowsEngine)
 
 SET(CMAKE_CXX_STANDARD 23)
 
@@ -24,9 +24,9 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         Source/ImGui/GUIKIT.cpp
         # --* Scene *-- #
         Source/Scene/Scene.cpp
-        Source/Scene/GameObject.cpp
+        Source/Scene/Component/Private/GameObject.cpp
         Source/Scene/SceneCamera.cpp
-        Source/Scene/SkyBox.cpp
+        Source/Scene/Component/Private/SkyBox.cpp
         # --* Loader *-- #
         Source/Loader/TextureLoader.cpp
         Source/Loader/ModelLoader.cpp
@@ -43,4 +43,4 @@ ADD_EXECUTABLE(${PROJECT_NAME}
 
 )
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} glfw3 RHI)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} glfw3 Ars)
