@@ -6,63 +6,63 @@
 SkyBox::SkyBox(const char *name, const char ** faces) : GameComponent(name, this)
 {
         /* 加载顶点数据 */
-        RHIVertexBufferLayout layouts[] = {
-                {0, 3, RHI_TYPE_FORMAT_FLOAT, 0}
+        ArsVertexBufferLayout layouts[] = {
+                {0, 3, ARS_TYPE_FORMAT_FLOAT, 0}
         };
 
-        RHIVertexBufferMemLayoutInfo memLayoutInfo = {};
+        ArsVertexBufferMemLayoutInfo memLayoutInfo = {};
         memLayoutInfo.vertexCount = ARRAY_SIZE(_SkyBoxArray) / 3;
         memLayoutInfo.stride = sizeof(float) * 3;
         memLayoutInfo.pVertices = _SkyBoxArray;
         memLayoutInfo.bufferLayoutCount = ARRAY_SIZE(layouts);
         memLayoutInfo.pBufferLayout = layouts;
 
-        RHICreateVertexBuffer(&memLayoutInfo, &_vtx_buffer);
+        ArsCreateVertexBuffer(&memLayoutInfo, &_vtx_buffer);
 
         /* 加载立方体贴图 */
-        RHITextureCubeCreateInfo createInfo ={};
-        createInfo.textureFilterMin = RHI_TEXTURE_FILTER_LINEAR;
-        createInfo.textureFilterMag = RHI_TEXTURE_FILTER_LINEAR;
-        createInfo.textureWrapS = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
-        createInfo.textureWrapT = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
-        createInfo.textureWrapR = RHI_TEXTURE_WRAP_CLAMP_TO_EDGE;
+        ArsTextureCubeCreateInfo createInfo ={};
+        createInfo.textureFilterMin = ARS_TEXTURE_FILTER_LINEAR;
+        createInfo.textureFilterMag = ARS_TEXTURE_FILTER_LINEAR;
+        createInfo.textureWrapS = ARS_TEXTURE_WRAP_CLAMP_TO_EDGE;
+        createInfo.textureWrapT = ARS_TEXTURE_WRAP_CLAMP_TO_EDGE;
+        createInfo.textureWrapR = ARS_TEXTURE_WRAP_CLAMP_TO_EDGE;
 
         int w, h, nc;
         for (int i = 0; i < 6; i++) {
-                arrouc *pixels = _stbi_load(faces[i], &w, &h, &nc, 0);
+                arsuc *pixels = _stbi_load(faces[i], &w, &h, &nc, 0);
 
-                createInfo.format[i]   = RHI_IMAGE_FORMAT_RGB;
+                createInfo.format[i]   = ARS_IMAGE_FORMAT_RGB;
                 createInfo.width[i]    = w;
                 createInfo.height[i]   = h;
                 createInfo.pPixels[i]  = pixels;
         }
 
-        RHICreateTextureCubeMap(&createInfo, &_skybox_texture);
+        ArsCreateTextureCubeMap(&createInfo, &_skybox_texture);
 
         for (auto p_data : createInfo.pPixels) {
                 _stbi_image_free(p_data);
         }
 
         /* 加载着色器 */
-        _skybox_shader = RHICreateShader("../../../Source/Engine/Shaders/skybox.alsl");
+        _skybox_shader = ArsCreateShader("../../../Source/Engine/Shaders/skybox.alsl");
 }
 
 SkyBox::~SkyBox()
 {
-        RHIDestroyShader(_skybox_shader);
-        RHIDestroyVertexBuffer(_vtx_buffer);
-        RHIDestroyTexture(_skybox_texture);
+        ArsDestroyShader(_skybox_shader);
+        ArsDestroyVertexBuffer(_vtx_buffer);
+        ArsDestroyTexture(_skybox_texture);
 }
 
-void SkyBox::Draw(RHIShader &currentShader, SceneCamera &camera)
+void SkyBox::Draw(ArsShader &currentShader, SceneCamera &camera)
 {
-        RHIDepthOption(RHI_DEPTH_OPTION_LE);
-        RHIBindShader(_skybox_shader);
+        ArsDepthOption(ARS_DEPTH_OPTION_LE);
+        ArsBindShader(_skybox_shader);
         arromat4 skyboxView = arromat4(arromat3(camera.GetViewMatrix()));
-        RHIUniformMatrix4fv(currentShader, "view", glm::value_ptr(skyboxView));
-        RHIUniformMatrix4fv(currentShader, "proj", glm::value_ptr(camera.GetProjectionMatrix()));
-        RHIBindTexture(RHI_TEXTURE_CUBE_MAP, _skybox_texture);
-        RHIBindVertexBuffer(_vtx_buffer);
-        RHIDrawVtx(0, 36);
-        RHIDepthOption(RHI_DEPTH_OPTION_LT);
+        ArsUniformMatrix4fv(currentShader, "view", glm::value_ptr(skyboxView));
+        ArsUniformMatrix4fv(currentShader, "proj", glm::value_ptr(camera.GetProjectionMatrix()));
+        ArsBindTexture(ARS_TEXTURE_CUBE_MAP, _skybox_texture);
+        ArsBindVertexBuffer(_vtx_buffer);
+        ArsDrawVtx(0, 36);
+        ArsDepthOption(ARS_DEPTH_OPTION_LT);
 }

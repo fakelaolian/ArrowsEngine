@@ -1,7 +1,7 @@
 /* AUTHOR: 2BKBD, DATE: 2022/1/19 */
 #pragma once
 
-#include <RHI.h>
+#include <Ars.h>
 #include <blueprint.h>
 #include <arrows_core.h>
 #include "Loader/ModelLoader.h"
@@ -23,17 +23,21 @@ public:
         GameObject(const char *name, mloader::mesh_t &meshs);
         ~GameObject();
 
-        /* 设置模型位置 */
+        /* 获取模型位置 */
         inline arrovec3& GetPosition ()
         { return _position; }
 
-        /* 设置模型缩放比例 */
+        /* 获取模型缩放比例 */
         inline arrovec3& GetScale()
         { return _scale; }
 
-        /* 设置模型的旋转 */
+        /* 获取材质 */
         inline arrovec3& GetRotation()
         { return _rotation; }
+
+        /* 获取材质 */
+        inline ArsTexture& GetTexture()
+        { return _texture; }
 
         /* 模型矩阵 */
         inline arromat4& GetModelMatrix()
@@ -82,7 +86,7 @@ private:
         arrovec3                _rotation{0.0f};
         arromat4                _model_matrix{1.0f};
 
-        RHIVertexBuffer         _vtxbuf;
-        RHIIndicesBuffer        _idxbuf;
-        RHITexture              _texture;
+        ArsVertexBuffer         _vtxbuf;
+        ArsIndicesBuffer        _idxbuf;
+        ArsTexture              _texture;
 };

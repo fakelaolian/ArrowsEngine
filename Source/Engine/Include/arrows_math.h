@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-typedef unsigned int    arrou32;
+typedef unsigned int    arsu32;
 typedef glm::vec2       arrovec2;
 typedef glm::vec3       arrovec3;
 typedef glm::vec4       arrovec4;

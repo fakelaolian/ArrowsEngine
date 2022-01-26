@@ -7,7 +7,7 @@ Scene::Scene(MainWindow& window) : _window(window)
         meshs[0].texture = "../../../Assets/container2.png";
 
         _objects.emplace_back("正方体", meshs[0]);
-        _normalize_shader = RHICreateShader(GET_SHADER(normalize.alsl));
+        _normalize_shader = ArsCreateShader(GET_SHADER(normalize.alsl));
 
         ////////////////////////////////////////////////////////////
         ////////                   天空盒                    ////////
@@ -35,21 +35,21 @@ Scene::~Scene()
 
 void Scene::Update(float deltaTime, float aspect)
 {
-        if (RHIGetMouseButton(_window.GetHandle(), RHI_MOUSE_BUTTON_2) == RHI_PRESS) {
+        if (ArsGetMouseButton(_window.GetHandle(), ARS_MOUSE_BUTTON_2) == ARS_PRESS) {
                 _window.DisableCursor();
 
                 /* 控制相机移动 */
-                if (RHIGetKey(_window.GetHandle(), RHI_KEY_W) == RHI_PRESS)
+                if (ArsGetKey(_window.GetHandle(), ARS_KEY_W) == ARS_PRESS)
                         _camera.Move(Camera::CAMERA_MOVE_FORWARD, deltaTime);
-                if (RHIGetKey(_window.GetHandle(), RHI_KEY_S) == RHI_PRESS)
+                if (ArsGetKey(_window.GetHandle(), ARS_KEY_S) == ARS_PRESS)
                         _camera.Move(Camera::CAMERA_MOVE_BACK, deltaTime);
-                if (RHIGetKey(_window.GetHandle(), RHI_KEY_A) == RHI_PRESS)
+                if (ArsGetKey(_window.GetHandle(), ARS_KEY_A) == ARS_PRESS)
                         _camera.Move(Camera::CAMERA_MOVE_RIGHT, deltaTime);
-                if (RHIGetKey(_window.GetHandle(), RHI_KEY_D) == RHI_PRESS)
+                if (ArsGetKey(_window.GetHandle(), ARS_KEY_D) == ARS_PRESS)
                         _camera.Move(Camera::CAMERA_MOVE_LEFT, deltaTime);
-                if (RHIGetKey(_window.GetHandle(), RHI_KEY_SPACE) == RHI_PRESS)
+                if (ArsGetKey(_window.GetHandle(), ARS_KEY_SPACE) == ARS_PRESS)
                         _camera.Move(Camera::CAMERA_MOVE_UP, deltaTime);
-                if (RHIGetKey(_window.GetHandle(), RHI_KEY_LEFT_CONTROL) == RHI_PRESS)
+                if (ArsGetKey(_window.GetHandle(), ARS_KEY_LEFT_CONTROL) == ARS_PRESS)
                         _camera.Move(Camera::CAMERA_MOVE_DOWN, deltaTime);
 
                 _camera.Rotate(_window.GetMouseX(), _window.GetMouseY());
@@ -62,15 +62,15 @@ void Scene::Update(float deltaTime, float aspect)
         _camera.Update(aspect);
 
         /* 更新着色器 */
-        RHIBindShader(_normalize_shader);
-        RHIUniformMatrix4fv(_normalize_shader, "proj", glm::value_ptr(_camera.GetProjectionMatrix()));
-        RHIUniformMatrix4fv(_normalize_shader, "view", glm::value_ptr(_camera.GetViewMatrix()));
+        ArsBindShader(_normalize_shader);
+        ArsUniformMatrix4fv(_normalize_shader, "proj", glm::value_ptr(_camera.GetProjectionMatrix()));
+        ArsUniformMatrix4fv(_normalize_shader, "view", glm::value_ptr(_camera.GetViewMatrix()));
 }
 
 void Scene::Render()
 {
         for (auto &object : _objects) {
-                RHIUniformMatrix4fv(_normalize_shader, "model", glm::value_ptr(object.GetModelMatrix()));
+                ArsUniformMatrix4fv(_normalize_shader, "model", glm::value_ptr(object.GetModelMatrix()));
                 object.Draw();
         }
 

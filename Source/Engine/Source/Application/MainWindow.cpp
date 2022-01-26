@@ -3,22 +3,22 @@
 
 MainWindow::MainWindow(const char *title, int w, int h)
 {
-        RHIProcAddressInit(OpenGL);
+        ArsProcAddressInit(OpenGL);
 
         /* 创建窗口 */
-        RHICreateWindow(title, w, h, &_window_handle);
-        RHISetUserPointer(_window_handle, this);
+        ArsCreateWindow(title, w, h, &_window_handle);
+        ArsSetUserPointer(_window_handle, this);
 
         _aspect = (float) w / h;
 
         /* 设置窗口回调函数 */
-        RHISetWindowResizeCallback(_window_handle, [](RHIWindow window, int w, int h) {
-                MainWindow *app = (MainWindow *) RHIGetUserPointer(window);
+        ArsSetWindowResizeCallback(_window_handle, [](ArsWindow window, int w, int h) {
+                MainWindow *app = (MainWindow *) ArsGetUserPointer(window);
                 app->SetDimension(w, h);
         });
 
-        RHISetWindowCursorCallback(_window_handle, [](RHIWindow window, double x, double y){
-                MainWindow *app = (MainWindow *) RHIGetUserPointer(window);
+        ArsSetWindowCursorCallback(_window_handle, [](ArsWindow window, double x, double y){
+                MainWindow *app = (MainWindow *) ArsGetUserPointer(window);
                 app->SetMouseXY((float) x, (float) y);
         });
 
@@ -31,6 +31,6 @@ MainWindow::MainWindow(const char *title, int w, int h)
 
 MainWindow::~MainWindow()
 {
-        RHIDestroyWindow(_window_handle);
-        RHITerminate();
+        ArsDestroyWindow(_window_handle);
+        ArsTerminate();
 }

@@ -2,6 +2,21 @@
 #include "GUIKIT.h"
 
 #include "Private/ImGui_Constom_Component.h"
+#include "Loader/TextureLoader.h"
+
+GUIKit::GUIKit()
+{
+        int w, h, channel;
+        arsuc *pixels = _stbi_load("../../../UI/lock&unlock/lock.png", &w, &h, &channel, 1);
+
+        ArsTexture2DCreateInfo createInfo = {};
+        createInfo.width = w;
+        createInfo.height = h;
+        createInfo.pPixels = pixels;
+        createInfo.format = ARS_IMAGE_FORMAT_SRGB8;
+
+        ArsCreateTexture2D(&createInfo, &_ui_lock);
+}
 
 void GUIKit::DrawPerformance(GUIKitData *p_data)
 {
@@ -15,8 +30,8 @@ void GUIKit::DrawViewport(GUIKitData *p_data)
 {
         ImGui::Begin("场景视图");
         {
-                RHITexture ftex = RHIGetFramebufferTexture(p_data->framebuffer);
-                ImTextureID viewportId = (ImTextureID)(intptr_t)RHIGetTextureId(ftex);
+                ArsTexture ftex = ArsGetFramebufferTexture(p_data->framebuffer);
+                ImTextureID viewportId = (ImTextureID)(intptr_t)ArsGetTextureId(ftex);
                 ImGui::BeginChild("ViewportRender");
                 ImVec2 wsize = ImGui::GetWindowSize();
                 ImGui::Image((ImTextureID)viewportId, wsize, ImVec2(0, 1), ImVec2(1, 0));
@@ -28,7 +43,7 @@ void GUIKit::DrawViewport(GUIKitData *p_data)
 
 void GUIKit::DrawComponents(GUIKitData *p_data)
 {
-        ImGui::Begin("组件列表");
+        ImGui::Begin("对象列表");
         {
                 auto *complist = p_data->componentList;
                 auto &comps    = complist->GetGameComponents();
@@ -56,31 +71,33 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
 
                 if (_selected_id != -1) {
                         auto gameComponent = comps.at(_selected_id);
-                        GameObject *gameObject = gameComponent.GetInstance();
-                        GUIKitTransformData data{
-                                glm::value_ptr(gameObject->GetPosition()),
-                                glm::value_ptr(gameObject->GetRotation()),
-                                glm::value_ptr(gameObject->GetScale()),
-                        };
-                        DrawTransformComponent(&data);
+                        DrawDisableComponentWindow(gameComponent.GetInstance());
                 }
         }
         ImGui::End();
 }
 
-void GUIKit::DrawTransformComponent(GUIKitTransformData *p_data)
+void GUIKit::DrawDisableComponentWindow(GameObject *p_data)
 {
-        if (ImGui::Begin("变换")) {
-                const char* labels[] = {"x", "y", "z"};
-                ImGui::Text("位置  ");
-                ImGui::SameLine();
-                ImGuiCC::DragFloatNEx("position", labels, p_data->position, 3, 0.01f);
-                ImGui::Text("旋转  ");
-                ImGui::SameLine();
-                ImGuiCC::DragFloatNEx("rotation", labels, p_data->rotate, 3, 0.01f);
-                ImGui::Text("缩放  ");
-                ImGui::SameLine();
-                ImGuiCC::DragFloatNEx("scale", labels, p_data->scale, 3, 0.01f);
+        if (ImGui::Begin("组件")) {
+                if (ImGui::CollapsingHeader("变换")) {
+                        float dragOffsetPosX = ImGui::GetCursorPosX() + (float) 40;
+                        ImGuiCC::OffsetText("位置  ");
+                        ImGui::SetCursorPosX(dragOffsetPosX);
+                        ImGuiCC::DragFloatExColor3("position", glm::value_ptr(p_data->GetPosition()), 0.01f);
+                        ImGuiCC::OffsetText("旋转  ");
+                        ImGui::SetCursorPosX(dragOffsetPosX);
+                        ImGuiCC::DragFloatExColor3("rotation", glm::value_ptr(p_data->GetRotation()), 0.01f);
+                        ImGuiCC::OffsetText("缩放  ");
+                        ImGui::SetCursorPosX(dragOffsetPosX);
+                        ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->GetScale()), 0.01f);
+                        ImGui::SameLine();
+                        ImGuiCC::Image(_ui_lock, arrovec2(20,20));
+                }
+
+                if (ImGui::CollapsingHeader("贴图")) {
+                        ImGuiCC::Image(p_data->GetTexture(), arrovec2(80,80));
+                }
         } ImGui::End();
 }
 

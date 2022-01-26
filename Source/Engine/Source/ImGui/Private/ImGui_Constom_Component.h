@@ -28,7 +28,7 @@ namespace ImGuiInternalCC
 namespace ImGuiCC
 {
         using namespace ImGui;
-        bool DragFloatNEx(const std::string tab, const char *labels[], float *v, int components, float v_speed)
+        bool DragFloatExColorN(const std::string tab, const char *labels[], float *v, int components, float v_speed)
         {
                 ImGuiWindow *window = GetCurrentWindow();
                 if (window->SkipItems)
@@ -42,14 +42,23 @@ namespace ImGuiCC
                 for (int i = 0; i < components; i++) {
                         PushID(labels[i]);
                         PushID(i);
-                        TextUnformatted(labels[i], FindRenderedTextEnd(labels[i]));
                         // Particular widget styling
-                        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0,255,0,255));
+                        ImU32 color;
+                        switch (i) {
+                                case 0: color = IM_COL32(255,0,0,255); break;
+                                case 1: color = IM_COL32(0,255,0,255); break;
+                                case 2: color = IM_COL32(0,0,255,255); break;
+                        }
+
+                        ImGui::PushStyleColor(ImGuiCol_Text, color);
+                        TextUnformatted(labels[i], FindRenderedTextEnd(labels[i]));
                         ImGui::PopStyleColor();
                         SameLine();
                         std::string tab0 = "##" + tab + labels[i];
                         PushItemWidth(GetWindowWidth() * 0.2);
+                        ImGui::PushStyleColor(ImGuiCol_Button, color);
                         value_changed |= DragFloat(tab0.c_str(), &v[i], v_speed);
+                        ImGui::PopStyleColor();
                         SameLine(0, g.Style.ItemInnerSpacing.x);
                         PopID();
                         PopID();
@@ -59,6 +68,24 @@ namespace ImGuiCC
                 EndGroup();
 
                 return value_changed;
+        }
+
+        bool DragFloatExColor3(const std::string tab, float *v, float v_speed)
+        {
+                const char *labels[] = {"x", "y", "z"};
+                return DragFloatExColorN(tab, labels, v, 3, v_speed);
+        }
+
+        void OffsetText(const char *v)
+        {
+                float textOffsetPosX = ImGui::GetCursorPosX() + (float) 20;
+                ImGui::SetCursorPosX(textOffsetPosX);
+                ImGui::Text("%s", v);
+        }
+
+        void Image(ArsTexture texture, arrovec2 size)
+        {
+                ImGui::Image((ImTextureID)(intptr_t) ArsGetTextureId(texture), ImVec2(size.x, size.y));
         }
 
 }

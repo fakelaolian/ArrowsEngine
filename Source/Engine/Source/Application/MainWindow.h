@@ -2,7 +2,7 @@
 #pragma once
 
 #include <arrows_core.h>
-#include <RHI.h>
+#include <Ars.h>
 
 class MainWindow {
 public:
@@ -12,9 +12,9 @@ public:
         enum CursorDirection { F, B, R, L };
 
         inline bool ShouldClose()
-        { return RHIWindowShouldClose(_window_handle); }
+        { return ArsWindowShouldClose(_window_handle); }
 
-        inline RHIWindow GetHandle()
+        inline ArsWindow GetHandle()
         { return _window_handle; }
 
         inline float GetAspect()
@@ -45,7 +45,7 @@ public:
                         return;
 
                 _disable_mouse = true;
-                RHISetCursorMode(_window_handle, RHI_CURSOR_DISABLE);
+                ArsSetCursorMode(_window_handle, ARS_CURSOR_DISABLE);
         }
 
         /* 显示鼠标 */
@@ -55,7 +55,7 @@ public:
                         return;
 
                 _disable_mouse = false;
-                RHISetCursorMode(_window_handle, RHI_CURSOR_NORMAL);
+                ArsSetCursorMode(_window_handle, ARS_CURSOR_NORMAL);
         }
 
         /* 判断当前鼠标左右横轴移动方向 */
@@ -91,6 +91,6 @@ private:
         float     _last_mouse_y;
         float     _aspect;
         bool      _disable_mouse = false;
-        RHIWindow _window_handle;
+        ArsWindow _window_handle;
 
 };

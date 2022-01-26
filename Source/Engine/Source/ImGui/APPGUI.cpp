@@ -80,7 +80,7 @@ void ApplyDefaultStyle()
         }
 }
 
-APPGUI::APPGUI(RHIWindow h)
+APPGUI::APPGUI(ArsWindow h)
 {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
@@ -136,9 +136,9 @@ void APPGUI::EndRender()
         ImGuiIO &io = ImGui::GetIO();
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         {
-                RHIWindow backup_current_context = RHIGetCurrentContext_GL();
+                ArsWindow backup_current_context = ArsGetCurrentContext_GL();
                 ImGui::UpdatePlatformWindows();
                 ImGui::RenderPlatformWindowsDefault();
-                RHIMakeContextCurrent_GL(backup_current_context);
+                ArsMakeContextCurrent_GL(backup_current_context);
         }
 }
