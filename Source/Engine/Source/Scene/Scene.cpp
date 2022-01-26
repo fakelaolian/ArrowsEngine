@@ -21,7 +21,7 @@ Scene::Scene(MainWindow& window) : _window(window)
                 "../../../Assets/skyboxs/a/back.jpg",
         };
 
-        _skybox = make_arroptr<SkyBox>("默认天空盒", skyboxsImage.data());
+        _skybox = make_arosptr<SkyBox>("默认天空盒", skyboxsImage.data());
 
         /* 添加到组件列表 */
         _component_list.PutGameComponent(_objects[0]);
@@ -70,7 +70,7 @@ void Scene::Update(float deltaTime, float aspect)
 void Scene::Render()
 {
         for (auto &object : _objects) {
-                ArsUniformMatrix4fv(_normalize_shader, "model", glm::value_ptr(object.GetModelMatrix()));
+                ArsUniformMatrix4fv(_normalize_shader, "model", glm::value_ptr(object.transform3D.GetModelMatrix()));
                 object.Draw();
         }
 

@@ -994,7 +994,7 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
         // Lock other positions
         // - ClipRect.Min.x: Because merging draw commands doesn't compare min boundaries, we make ClipRect.Min.x match left bounds to be consistent regardless of merging.
         // - ClipRect.Max.x: using WorkMaxX instead of MaxX (aka including padding) makes things more consistent when resizing down, tho slightly detrimental to visibility in very-small column.
-        // - ClipRect.Max.x: using MaxX makes it easier for header to receive hover highlight with no discontinuity and display sorting arrow.
+        // - ClipRect.Max.x: using MaxX makes it easier for header to receive hover highlight with no discontinuity and display sorting arosw.
         // - FIXME-TABLE: We want equal width columns to have equal (ClipRect.Max.x - WorkMinX) width, which means ClipRect.max.x cannot stray off host_clip_rect.Max.x else right-most column may appear shorter.
         column->WorkMinX = column->MinX + table->CellPaddingX + table->CellSpacingX1;
         column->WorkMaxX = column->MaxX - table->CellPaddingX - table->CellSpacingX2; // Expected max
@@ -2876,14 +2876,14 @@ void ImGui::TableHeader(const char* label)
     ImRect cell_r = TableGetCellBgRect(table, column_n);
     float label_height = ImMax(label_size.y, table->RowMinHeight - table->CellPaddingY * 2.0f);
 
-    // Calculate ideal size for sort order arrow
-    float w_arrow = 0.0f;
+    // Calculate ideal size for sort order arosw
+    float w_arosw = 0.0f;
     float w_sort_text = 0.0f;
     char sort_order_suf[4] = "";
     const float ARROW_SCALE = 0.65f;
     if ((table->Flags & ImGuiTableFlags_Sortable) && !(column->Flags & ImGuiTableColumnFlags_NoSort))
     {
-        w_arrow = ImFloor(g.FontSize * ARROW_SCALE + g.Style.FramePadding.x);
+        w_arosw = ImFloor(g.FontSize * ARROW_SCALE + g.Style.FramePadding.x);
         if (column->SortOrder > 0)
         {
             ImFormatString(sort_order_suf, IM_ARRAYSIZE(sort_order_suf), "%d", column->SortOrder + 1);
@@ -2892,7 +2892,7 @@ void ImGui::TableHeader(const char* label)
     }
 
     // We feed our unclipped width to the column without writing on CursorMaxPos, so that column is still considering for merging.
-    float max_pos_x = label_pos.x + label_size.x + w_sort_text + w_arrow;
+    float max_pos_x = label_pos.x + label_size.x + w_sort_text + w_arosw;
     column->ContentMaxXHeadersUsed = ImMax(column->ContentMaxXHeadersUsed, column->WorkMaxX);
     column->ContentMaxXHeadersIdeal = ImMax(column->ContentMaxXHeadersIdeal, max_pos_x);
 
@@ -2950,13 +2950,13 @@ void ImGui::TableHeader(const char* label)
                         table->ReorderColumnDir = +1;
     }
 
-    // Sort order arrow
-    const float ellipsis_max = cell_r.Max.x - w_arrow - w_sort_text;
+    // Sort order arosw
+    const float ellipsis_max = cell_r.Max.x - w_arosw - w_sort_text;
     if ((table->Flags & ImGuiTableFlags_Sortable) && !(column->Flags & ImGuiTableColumnFlags_NoSort))
     {
         if (column->SortOrder != -1)
         {
-            float x = ImMax(cell_r.Min.x, cell_r.Max.x - w_arrow - w_sort_text);
+            float x = ImMax(cell_r.Min.x, cell_r.Max.x - w_arosw - w_sort_text);
             float y = label_pos.y;
             if (column->SortOrder > 0)
             {

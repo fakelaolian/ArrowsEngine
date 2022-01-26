@@ -58,7 +58,7 @@ void SkyBox::Draw(ArsShader &currentShader, SceneCamera &camera)
 {
         ArsDepthOption(ARS_DEPTH_OPTION_LE);
         ArsBindShader(_skybox_shader);
-        arromat4 skyboxView = arromat4(arromat3(camera.GetViewMatrix()));
+        arosmat4 skyboxView = arosmat4(arosmat3(camera.GetViewMatrix()));
         ArsUniformMatrix4fv(currentShader, "view", glm::value_ptr(skyboxView));
         ArsUniformMatrix4fv(currentShader, "proj", glm::value_ptr(camera.GetProjectionMatrix()));
         ArsBindTexture(ARS_TEXTURE_CUBE_MAP, _skybox_texture);

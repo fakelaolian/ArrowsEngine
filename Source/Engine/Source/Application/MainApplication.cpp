@@ -9,9 +9,9 @@
 
 MainApplication::MainApplication(const char *title, uint32_t w, uint32_t h)
 {
-        _window = make_arroptr<MainWindow>(title, w, h);
-        _gui    = make_arroptr<APPGUI>(_window->GetHandle());
-        _guikit = make_arroptr<GUIKit>();
+        _window = make_arosptr<MainWindow>(title, w, h);
+        _gui    = make_arosptr<APPGUI>(_window->GetHandle());
+        _guikit = make_arosptr<GUIKit>();
 }
 
 void MainApplication::Run()

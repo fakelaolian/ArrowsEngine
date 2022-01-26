@@ -83,12 +83,12 @@ namespace ImGuiCC
                 ImGui::Text("%s", v);
         }
 
-        inline void Image(ArsTexture texture, arrovec2 size)
+        inline void Image(ArsTexture texture, arosvec2 size)
         {
                 ImGui::Image((ImTextureID)(intptr_t) ArsGetTextureId(texture), ImVec2(size.x, size.y));
         }
 
-        inline bool ImageButton(ArsTexture texture, arrovec2 size)
+        inline bool ImageButton(ArsTexture texture, arosvec2 size)
         {
                 return ImGui::ImageButton(
                         (ImTextureID)(intptr_t) ArsGetTextureId(texture),

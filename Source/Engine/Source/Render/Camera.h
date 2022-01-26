@@ -15,7 +15,7 @@ public:
                 CAMERA_MOVE_DOWN,
         };
 
-        Camera(arrovec3 position, float pitch, float yaw, arrovec3 wordUp)
+        Camera(arosvec3 position, float pitch, float yaw, arosvec3 wordUp)
         {
                 _position  = position;
                 _world_up  = wordUp;
@@ -27,7 +27,7 @@ public:
 
         inline void UpdateVectors()
         {
-                arrovec3 forward;
+                arosvec3 forward;
                 forward.x = cos(_yaw) * cos(_pitch);
                 forward.y = sin(_pitch);
                 forward.z = sin(_yaw) * cos(_pitch);
@@ -45,22 +45,22 @@ public:
         inline void SetSensitive(float sensitive)
         { _sensitive = sensitive; }
 
-        inline arromat4& GetProjectionMatrix()
+        inline arosmat4& GetProjectionMatrix()
         { return _projection_matrix; }
 
-        inline arromat4& GetViewMatrix()
+        inline arosmat4& GetViewMatrix()
         { return _view_matrix; }
 
 protected:
-        arromat4 _view_matrix{1.0f};
-        arromat4 _projection_matrix{1.0f};
+        arosmat4 _view_matrix{1.0f};
+        arosmat4 _projection_matrix{1.0f};
 
         /* 变换要计算的数据 */
-        arrovec3 _position{0.0f, 0.0f, -5.0f};
-        arrovec3 _up;
-        arrovec3 _right;
-        arrovec3 _forward;
-        arrovec3 _world_up;
+        arosvec3 _position{0.0f, 0.0f, -5.0f};
+        arosvec3 _up;
+        arosvec3 _right;
+        arosvec3 _forward;
+        arosvec3 _world_up;
         float    _pitch;
         float    _yaw;
         float    _last_mouse_x;

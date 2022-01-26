@@ -15,8 +15,8 @@ public:
         void Run();
 
 private:
-        arroptr<MainWindow> _window;
-        arroptr<APPGUI>    _gui;
-        arroptr<GUIKit>    _guikit;
+        arosptr<MainWindow> _window;
+        arosptr<APPGUI>    _gui;
+        arosptr<GUIKit>    _guikit;
 
 };

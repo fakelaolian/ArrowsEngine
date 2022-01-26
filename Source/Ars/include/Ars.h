@@ -8,7 +8,6 @@ extern "C" {
 
 typedef unsigned char   arsuc;
 typedef unsigned int    arsu32;
-typedef unsigned long   arsu64;
 typedef unsigned        arsbool;
 
 typedef void *          ArsWindow;

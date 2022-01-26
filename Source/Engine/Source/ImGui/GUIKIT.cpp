@@ -84,17 +84,17 @@ void GUIKit::DrawDisableComponentWindow(GameObject *p_data)
                         float dragOffsetPosX = ImGui::GetCursorPosX() + (float) 40;
                         ImGuiCC::OffsetText("位置");
                         ImGui::SetCursorPosX(dragOffsetPosX);
-                        ImGuiCC::DragFloatExColor3("position", glm::value_ptr(p_data->GetPosition()), 0.01f);
+                        ImGuiCC::DragFloatExColor3("position", glm::value_ptr(p_data->transform3D.position), 0.01f);
                         ImGuiCC::OffsetText("旋转");
                         ImGui::SetCursorPosX(dragOffsetPosX);
-                        ImGuiCC::DragFloatExColor3("rotation", glm::value_ptr(p_data->GetRotation()), 0.01f);
+                        ImGuiCC::DragFloatExColor3("rotation", glm::value_ptr(p_data->transform3D.rotation), 0.01f);
                         ImGuiCC::OffsetText("缩放");
                         ImGui::SetCursorPosX(dragOffsetPosX);
-                        ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->GetScale()), 0.01f);
+                        ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->transform3D.scale), 0.01f);
                 }
 
                 if (ImGui::CollapsingHeader("纹理")) {
-                        if (ImGuiCC::ImageButton(p_data->GetTexture(), arrovec2(80,80)))
+                        if (ImGuiCC::ImageButton(p_data->GetTexture(), arosvec2(80,80)))
                                 ImGui::OpenPopup("arrows_textures_popups");
 
                         if (ImGui::BeginPopup("arrows_textures_popups")) {
