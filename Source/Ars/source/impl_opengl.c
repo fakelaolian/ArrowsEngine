@@ -45,7 +45,7 @@ ARS_BIND_FRAMEBUFFER               ARSBINDFRAMEBUFFER            = NULL;
 ARS_GET_FRAMEBUFFER_TEXTURE        ARSGETFRAMEBUFFERTEXTURE      = NULL;
 ARS_DELETE_FRAMEBUFFER             ARSDELETEFRAMEBUFFER          = NULL;
 
-GLbitfield                              _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
+GLbitfield                             _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
 arsbool                                _gl_depth_test_enable_state       = ARS_FALSE;
 arsu32                                 _activeTexture                    = 0;
 

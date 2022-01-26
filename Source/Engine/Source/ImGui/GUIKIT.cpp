@@ -6,16 +6,16 @@
 
 GUIKit::GUIKit()
 {
-        int w, h, channel;
-        arsuc *pixels = _stbi_load("../../../UI/lock&unlock/lock.png", &w, &h, &channel, 1);
-
-        ArsTexture2DCreateInfo createInfo = {};
-        createInfo.width = w;
-        createInfo.height = h;
-        createInfo.pPixels = pixels;
-        createInfo.format = ARS_IMAGE_FORMAT_SRGB8;
-
-        ArsCreateTexture2D(&createInfo, &_ui_lock);
+//        int w, h, channel;
+//        arsuc *pixels = _stbi_load("../../../UI/lock&unlock/lock.png", &w, &h, &channel);
+//
+//        ArsTexture2DCreateInfo createInfo = {};
+//        createInfo.width = w;
+//        createInfo.height = h;
+//        createInfo.pPixels = pixels;
+//        createInfo.format = ARS_IMAGE_FORMAT_SRGB;
+//
+//        ArsCreateTexture2D(&createInfo, &_ui_lock);
 }
 
 void GUIKit::DrawPerformance(GUIKitData *p_data)
@@ -82,21 +82,25 @@ void GUIKit::DrawDisableComponentWindow(GameObject *p_data)
         if (ImGui::Begin("组件")) {
                 if (ImGui::CollapsingHeader("变换")) {
                         float dragOffsetPosX = ImGui::GetCursorPosX() + (float) 40;
-                        ImGuiCC::OffsetText("位置  ");
+                        ImGuiCC::OffsetText("位置");
                         ImGui::SetCursorPosX(dragOffsetPosX);
                         ImGuiCC::DragFloatExColor3("position", glm::value_ptr(p_data->GetPosition()), 0.01f);
-                        ImGuiCC::OffsetText("旋转  ");
+                        ImGuiCC::OffsetText("旋转");
                         ImGui::SetCursorPosX(dragOffsetPosX);
                         ImGuiCC::DragFloatExColor3("rotation", glm::value_ptr(p_data->GetRotation()), 0.01f);
-                        ImGuiCC::OffsetText("缩放  ");
+                        ImGuiCC::OffsetText("缩放");
                         ImGui::SetCursorPosX(dragOffsetPosX);
                         ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->GetScale()), 0.01f);
-                        ImGui::SameLine();
-                        ImGuiCC::Image(_ui_lock, arrovec2(20,20));
                 }
 
-                if (ImGui::CollapsingHeader("贴图")) {
-                        ImGuiCC::Image(p_data->GetTexture(), arrovec2(80,80));
+                if (ImGui::CollapsingHeader("纹理")) {
+                        if (ImGuiCC::ImageButton(p_data->GetTexture(), arrovec2(80,80)))
+                                ImGui::OpenPopup("arrows_textures_popups");
+
+                        if (ImGui::BeginPopup("arrows_textures_popups")) {
+                                ImGui::Text("Nothing");
+                                ImGui::EndPopup();
+                        }
                 }
         } ImGui::End();
 }

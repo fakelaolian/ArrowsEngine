@@ -15,13 +15,6 @@ struct GUIKitData {
         SceneComponentList *componentList;
 };
 
-struct GUIKitObjectData {
-        float*          position;
-        float*          rotate;
-        float*          scale;
-        ArsTexture      texture;
-};
-
 class GUIKit {
 public:
         GUIKit();
@@ -40,6 +33,8 @@ private: /* 子窗口（编辑组件） */
 
 private:
         compid_t        _selected_id = -1;
+
+        /* UI列表 */
         ArsTexture      _ui_lock;
         ArsTexture      _ui_unlock;
 };
