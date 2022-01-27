@@ -3,10 +3,10 @@
 
 Scene::Scene(MainWindow& window) : _window(window)
 {
-        std::vector<mloader::mesh_t> meshs = mloader::load_model("../../../Assets/untitled.obj");
-        meshs[0].texture = "../../../Assets/container2.png";
+        std::vector<arosloader::mesh_t> mmeshs;
+        std::vector<arosloader::mesh_t> meshs = arosloader::load_model("../../../Assets/nanosuit/nanosuit.obj", mmeshs);
 
-        _objects.emplace_back("正方体", meshs[0]);
+        _objects.emplace_back("纳米先知", meshs);
         _normalize_shader = ArsCreateShader(GET_SHADER(normalize.alsl));
 
         ////////////////////////////////////////////////////////////
@@ -25,7 +25,6 @@ Scene::Scene(MainWindow& window) : _window(window)
 
         /* 添加到组件列表 */
         _component_list.PutGameComponent(_objects[0]);
-//        _component_list.PushComponent(*_skybox);
 }
 
 Scene::~Scene()
@@ -71,7 +70,7 @@ void Scene::Render()
 {
         for (auto &object : _objects) {
                 ArsUniformMatrix4fv(_normalize_shader, "model", glm::value_ptr(object.transform3D.GetModelMatrix()));
-                object.Draw();
+                object.Draw(_normalize_shader);
         }
 
         _skybox->Draw(_normalize_shader, _camera);

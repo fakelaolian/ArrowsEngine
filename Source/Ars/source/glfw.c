@@ -4,21 +4,21 @@
 #include "core.h"
 #include <stdlib.h>
 
-ARS_CREATE_WINDOW                  ARSCREATEWIDNOW                      = NULL;
-ARS_GET_ASPECT                     ARSGETASPECT                         = NULL;
-ARS_WINDOW_SHOULD_CLOSE            ARSWINDOWSHOULDCLOSE                 = NULL;
-ARS_WINDOW_SET_RESIZE_CALLBACK     ARSWINDOWSETRESIZECALLBACK           = NULL;
-ARS_WINDOW_SET_CURSOR_CALLBACK     ARSWINDOWSETCURSORCALLBACK           = NULL;
-ARS_WINDOW_POLL_EVENTS             ARSWINDOWPOLLEVENTS                  = NULL;
-ARS_DELETE_WINDOW                  ARSDELETWINDOW                       = NULL;
-ARS_TERMINATE                      ARSTERMINATE                         = NULL;
-ARS_OPENGL_GET_CURRENT_CONTEXT     ARSOPENGLGETCURRENTCONTEXT           = NULL;
-ARS_OPENGL_MAKE_CONTEXT_CURRENT    ARSOPENGLMAKECONTEXTCURRENT          = NULL;
-ARS_GET_KEY                        ARSGETKEY                            = NULL;
-ARS_GET_MOUSE_BUTTON               ARSGETMOUSEBUTTON                    = NULL;
-ARS_SET_CURSOR_INPUT_MODE          ARSSETCURSORINPUTMODE                = NULL;
-ARS_SET_USER_POINTER               ARSSETUSERPOINTER                    = NULL;
-ARS_GET_USER_POINTER               ARSGETUSERPOINTER                    = NULL;
+RHI_ARS_CREATE_WINDOW                  RHIARSCREATEWIDNOW                      = NULL;
+RHI_ARS_GET_ASPECT                     RHIARSGETASPECT                         = NULL;
+RHI_ARS_WINDOW_SHOULD_CLOSE            RHIARSWINDOWSHOULDCLOSE                 = NULL;
+RHI_ARS_WINDOW_SET_RESIZE_CALLBACK     RHIARSWINDOWSETRESIZECALLBACK           = NULL;
+RHI_ARS_WINDOW_SET_CURSOR_CALLBACK     RHIARSWINDOWSETCURSORCALLBACK           = NULL;
+RHI_ARS_WINDOW_POLL_EVENTS             RHIARSWINDOWPOLLEVENTS                  = NULL;
+RHI_ARS_DELETE_WINDOW                  RHIARSDELETWINDOW                       = NULL;
+RHI_ARS_TERMINATE                      RHIARSTERMINATE                         = NULL;
+RHI_ARS_OPENGL_GET_CURRENT_CONTEXT     RHIARSOPENGLGETCURRENTCONTEXT           = NULL;
+RHI_ARS_OPENGL_MAKE_CONTEXT_CURRENT    RHIARSOPENGLMAKECONTEXTCURRENT          = NULL;
+RHI_ARS_GET_KEY                        RHIARSGETKEY                            = NULL;
+RHI_ARS_GET_MOUSE_BUTTON               RHIARSGETMOUSEBUTTON                    = NULL;
+RHI_ARS_SET_CURSOR_INPUT_MODE          RHIARSSETCURSORINPUTMODE                = NULL;
+RHI_ARS_SET_USER_POINTER               RHIARSSETUSERPOINTER                    = NULL;
+RHI_ARS_GET_USER_POINTER               RHIARSGETUSERPOINTER                    = NULL;
 
 F_ARS_WINDOW_RESIZE_CALLBACK            _window_resize_callback                  = NULL;
 F_ARS_WINDOW_CURSOR_CALLBACK            _window_cursor_callback                  = NULL;
@@ -117,18 +117,18 @@ void _load_glfw_functions()
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        ARSCREATEWIDNOW             = _glfw_create_window;
-        ARSWINDOWSHOULDCLOSE        = _glfw_should_clsoe;
-        ARSWINDOWSETRESIZECALLBACK  = _glfw_set_window_resize_callback;
-        ARSWINDOWPOLLEVENTS         = _glfw_poll_events;
-        ARSDELETWINDOW              = _glfw_destroy_window;
-        ARSTERMINATE                = _glfw_terminate;
-        ARSOPENGLGETCURRENTCONTEXT  = _glfw_get_current_context;
-        ARSOPENGLMAKECONTEXTCURRENT = _glfw_make_context_current;
-        ARSGETKEY                   = _glfw_get_key;
-        ARSSETCURSORINPUTMODE       = _glfw_set_cursor_mode;
-        ARSSETUSERPOINTER           = _glfw_set_user_pointer;
-        ARSGETUSERPOINTER           = _glfw_get_user_pointer;
-        ARSWINDOWSETCURSORCALLBACK  = _glfw_set_window_cursor_callback;
-        ARSGETMOUSEBUTTON           = _glfw_get_mouse_button;
+        RHIARSCREATEWIDNOW             = _glfw_create_window;
+        RHIARSWINDOWSHOULDCLOSE        = _glfw_should_clsoe;
+        RHIARSWINDOWSETRESIZECALLBACK  = _glfw_set_window_resize_callback;
+        RHIARSWINDOWPOLLEVENTS         = _glfw_poll_events;
+        RHIARSDELETWINDOW              = _glfw_destroy_window;
+        RHIARSTERMINATE                = _glfw_terminate;
+        RHIARSOPENGLGETCURRENTCONTEXT  = _glfw_get_current_context;
+        RHIARSOPENGLMAKECONTEXTCURRENT = _glfw_make_context_current;
+        RHIARSGETKEY                   = _glfw_get_key;
+        RHIARSSETCURSORINPUTMODE       = _glfw_set_cursor_mode;
+        RHIARSSETUSERPOINTER           = _glfw_set_user_pointer;
+        RHIARSGETUSERPOINTER           = _glfw_get_user_pointer;
+        RHIARSWINDOWSETCURSORCALLBACK  = _glfw_set_window_cursor_callback;
+        RHIARSGETMOUSEBUTTON           = _glfw_get_mouse_button;
 }
