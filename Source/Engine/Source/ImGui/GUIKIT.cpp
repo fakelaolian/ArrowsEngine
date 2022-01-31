@@ -65,8 +65,22 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
                         if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
                                 _selected_id = _compid;
 
-                        if (is_open)
+                        /* 显示模型网格列表 */
+                        if (is_open) {
+                                auto gameComponent = complist->GetGameComponent(_compid);
+                                GameObject *gameObject = gameComponent.GetInstance();
+
+                                /* 获取网格 */
+                                auto gameMeshs = gameObject->GetMeshs();
+                                for (GameMesh *mesh : gameMeshs) {
+                                        ImGuiTreeNodeFlags leafFlag = ImGuiTreeNodeFlags_Leaf;
+                                        if (ImGui::TreeNodeEx(mesh->GetName().c_str(), leafFlag)) {
+                                                ImGui::TreePop();
+                                        }
+                                }
+
                                 ImGui::TreePop();
+                        }
                 }
 
                 if (_selected_id != -1) {
@@ -93,15 +107,15 @@ void GUIKit::DrawDisableComponentWindow(GameObject *p_data)
                         ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->transform3D.scale), 0.01f);
                 }
 
-//                if (ImGui::CollapsingHeader("纹理")) {
-//                        if (ImGuiCC::ImageButton(p_data->GetTexture(), arosvec2(80,80)))
-//                                ImGui::OpenPopup("arrows_textures_popups");
-//
-//                        if (ImGui::BeginPopup("arrows_textures_popups")) {
-//                                ImGui::Text("Nothing");
-//                                ImGui::EndPopup();
-//                        }
-//                }
+       /*         if (ImGui::CollapsingHeader("纹理")) {
+                        if (ImGuiCC::ImageButton(p_data->GetTexture(), arosvec2(80,80)))
+                                ImGui::OpenPopup("arrows_textures_popups");
+
+                        if (ImGui::BeginPopup("arrows_textures_popups")) {
+                                ImGui::Text("Nothing");
+                                ImGui::EndPopup();
+                        }
+                }*/
         } ImGui::End();
 }
 

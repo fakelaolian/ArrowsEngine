@@ -18,6 +18,9 @@ public:
         ~GameMesh();
         void Draw(arosmat4& mat4, ArsShader shader);
 
+        const std::string& GetName()
+        { return _name; }
+
 private:
         static ArsTexture LoadTextures(std::string& path);
 

@@ -86,12 +86,13 @@ void GameMesh::Draw(arosmat4& mat4, ArsShader shader)
 {
         ArsUniformMatrix4fv(shader, "model", glm::value_ptr(mat4));
 
-        ArsUniform1i(shader, "texture_diffuse", 1);
-        ArsBindTexture(ARS_TEXTURE_2D, _diffuse_texture);
+        int manytex = 0;
         if (_specular_texture != ARS_NULL_HANDLE)
-                ArsBindTexture(ARS_TEXTURE_2D, _specular_texture);
-        else
-                ArsBindTexture(ARS_TEXTURE_2D, _diffuse_texture);
+                manytex = 1;
+
+        ArsUniform1i(shader, "texture_diffuse", manytex);
+        ArsBindTexture(ARS_TEXTURE_2D, _diffuse_texture);
+        if (manytex) ArsBindTexture(ARS_TEXTURE_2D, _specular_texture);
 
         ArsBindVertexBuffer(_vtxbuf);
         ArsDrawIndices(_idxbuf);

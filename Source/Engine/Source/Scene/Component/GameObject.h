@@ -32,6 +32,9 @@ public:
         GameObject(const char *name, std::vector<arosloader::mesh_t> &meshs);
         ~GameObject();
 
+        const std::vector<GameMesh *>& GetMeshs()
+        { return _meshs; }
+
         /* 渲染 */
         void Draw(ArsShader shader);
 
