@@ -21,6 +21,9 @@ public:
         const std::string& GetName()
         { return _name; }
 
+        const std::vector<ArsTexture> &GetTextures()
+        { return _textures;}
+
 private:
         static ArsTexture LoadTextures(std::string& path);
 
@@ -30,5 +33,7 @@ private:
         ArsIndicesBuffer        _idxbuf;
         ArsTexture              _diffuse_texture = ARS_NULL_HANDLE;
         ArsTexture              _specular_texture = ARS_NULL_HANDLE;
+
+        std::vector<ArsTexture> _textures;
 
 };

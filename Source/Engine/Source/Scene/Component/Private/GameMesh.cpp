@@ -36,10 +36,12 @@ GameMesh::GameMesh(arosloader::mesh_t &mesh)
         std::string basepath = "../../../Assets/nanosuit/";
         std::string path = basepath + mesh.material.map_kd;
         _diffuse_texture = LoadTextures(path);
+        _textures.push_back(_diffuse_texture);
 
         if (!mesh.material.map_ks.empty()) {
                 path = basepath + mesh.material.map_ks;
                 _specular_texture = LoadTextures(path);
+                _textures.push_back(_specular_texture);
         }
 }
 

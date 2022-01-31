@@ -107,15 +107,14 @@ void GUIKit::DrawDisableComponentWindow(GameObject *p_data)
                         ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->transform3D.scale), 0.01f);
                 }
 
-       /*         if (ImGui::CollapsingHeader("纹理")) {
-                        if (ImGuiCC::ImageButton(p_data->GetTexture(), arosvec2(80,80)))
-                                ImGui::OpenPopup("arrows_textures_popups");
-
-                        if (ImGui::BeginPopup("arrows_textures_popups")) {
-                                ImGui::Text("Nothing");
-                                ImGui::EndPopup();
+                if (ImGui::CollapsingHeader("纹理")) {
+                        for (GameMesh *mesh : p_data->GetMeshs()) {
+                                for (ArsTexture texture : mesh->GetTextures()) {
+                                        if (ImGuiCC::ImageButton(texture, arosvec2(80, 80)))
+                                                ImGui::OpenPopup("arrows_textures_popups");
+                                }
                         }
-                }*/
+                }
         } ImGui::End();
 }
 
