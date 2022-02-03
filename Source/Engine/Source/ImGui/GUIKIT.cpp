@@ -94,28 +94,37 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
 void GUIKit::DrawDisableComponentWindow(GameObject *p_data)
 {
         if (ImGui::Begin("组件")) {
-                if (ImGui::CollapsingHeader("变换")) {
-                        float dragOffsetPosX = ImGui::GetCursorPosX() + (float) 40;
-                        ImGuiCC::OffsetText("位置");
-                        ImGui::SetCursorPosX(dragOffsetPosX);
-                        ImGuiCC::DragFloatExColor3("position", glm::value_ptr(p_data->transform3D.position), 0.01f);
-                        ImGuiCC::OffsetText("旋转");
-                        ImGui::SetCursorPosX(dragOffsetPosX);
-                        ImGuiCC::DragFloatExColor3("rotation", glm::value_ptr(p_data->transform3D.rotation), 0.01f);
-                        ImGuiCC::OffsetText("缩放");
-                        ImGui::SetCursorPosX(dragOffsetPosX);
-                        ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->transform3D.scale), 0.01f);
-                }
+                DrawTransform(p_data);
+                DrawTextures(p_data);
+        } ImGui::End();
+}
 
-                if (ImGui::CollapsingHeader("纹理")) {
-                        for (GameMesh *mesh : p_data->GetMeshs()) {
-                                for (ArsTexture texture : mesh->GetTextures()) {
-                                        if (ImGuiCC::ImageButton(texture, arosvec2(80, 80)))
-                                                ImGui::OpenPopup("arrows_textures_popups");
-                                }
+void GUIKit::DrawTransform(GameObject *p_data)
+{
+        if (ImGui::CollapsingHeader("变换")) {
+                float dragOffsetPosX = ImGui::GetCursorPosX() + (float) 40;
+                ImGuiCC::OffsetText("位置");
+                ImGui::SetCursorPosX(dragOffsetPosX);
+                ImGuiCC::DragFloatExColor3("position", glm::value_ptr(p_data->transform3D.position), 0.01f);
+                ImGuiCC::OffsetText("旋转");
+                ImGui::SetCursorPosX(dragOffsetPosX);
+                ImGuiCC::DragFloatExColor3("rotation", glm::value_ptr(p_data->transform3D.rotation), 0.01f);
+                ImGuiCC::OffsetText("缩放");
+                ImGui::SetCursorPosX(dragOffsetPosX);
+                ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->transform3D.scale), 0.01f);
+        }
+}
+
+void GUIKit::DrawTextures(GameObject *p_data)
+{
+        if (ImGui::CollapsingHeader("纹理")) {
+                for (GameMesh *mesh : p_data->GetMeshs()) {
+                        for (ArsTexture texture : mesh->GetTextures()) {
+                                if (ImGuiCC::ImageButton(texture, arosvec2(80, 80)))
+                                        ImGui::OpenPopup("arrows_textures_popups");
                         }
                 }
-        } ImGui::End();
+        }
 }
 
 void GUIKit::Render(GUIKitData *p_data)
