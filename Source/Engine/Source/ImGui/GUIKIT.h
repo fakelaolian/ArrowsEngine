@@ -32,6 +32,7 @@ private: /* 子窗口（编辑组件） */
         void DrawDisableComponentWindow(GameObject *p_data);
              void DrawTransform        (GameObject *p_data);
              void DrawTextures         (GameObject *p_data);
+                  void DrawTextureComponent(ArsTexture& texture);
 
 private:
         compid_t        _selected_id = -1;

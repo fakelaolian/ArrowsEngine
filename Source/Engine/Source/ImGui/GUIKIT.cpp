@@ -48,7 +48,7 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
                 auto *complist = p_data->componentList;
                 auto &comps    = complist->GetGameComponents();
 
-                ImGuiTreeNodeFlags __ImGuiTreeNodeBaseFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
+                ImGuiTreeNodeFlags __ImGuiTreeNodeBaseFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Leaf;
 
                 /* 场景中的游戏对象组件列表 */
                 for (auto iter = comps.begin(); iter != comps.end(); ++iter) {
@@ -65,20 +65,8 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
                         if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
                                 _selected_id = _compid;
 
-                        /* 显示模型网格列表 */
+                        /* 判断树节点是否被展开 */
                         if (is_open) {
-                                auto gameComponent = complist->GetGameComponent(_compid);
-                                GameObject *gameObject = gameComponent.GetInstance();
-
-                                /* 获取网格 */
-                                auto gameMeshs = gameObject->GetMeshs();
-                                for (GameMesh *mesh : gameMeshs) {
-                                        ImGuiTreeNodeFlags leafFlag = ImGuiTreeNodeFlags_Leaf;
-                                        if (ImGui::TreeNodeEx(mesh->GetName().c_str(), leafFlag)) {
-                                                ImGui::TreePop();
-                                        }
-                                }
-
                                 ImGui::TreePop();
                         }
                 }
@@ -119,10 +107,20 @@ void GUIKit::DrawTextures(GameObject *p_data)
 {
         if (ImGui::CollapsingHeader("纹理")) {
                 for (GameMesh *mesh : p_data->GetMeshs()) {
-                        for (ArsTexture texture : mesh->GetTextures()) {
-                                if (ImGuiCC::ImageButton(texture, arosvec2(80, 80)))
-                                        ImGui::OpenPopup("arrows_textures_popups");
-                        }
+                        ImGui::Text("网格名称: %s", mesh->GetName().c_str());
+                        for (ArsTexture texture : mesh->GetTextures())
+                                DrawTextureComponent(texture);
+                }
+        }
+}
+
+void GUIKit::DrawTextureComponent(ArsTexture &texture)
+{
+        if (ImGuiCC::ImageButton(texture, arosvec2(80, 80))) {
+                ImGui::OpenPopup("arrows_textures_popups");
+                if (ImGui::BeginPopup("arrows_textures_popups")) {
+                        ImGui::Text("aaa");
+                        ImGui::EndPopup();
                 }
         }
 }
