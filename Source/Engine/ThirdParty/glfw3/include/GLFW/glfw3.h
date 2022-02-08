@@ -1072,9 +1072,9 @@ extern "C" {
  *  @ingroup input
  *  @{ */
 
-/*! @brief The regular arrow cursor shape.
+/*! @brief The regular arosw cursor shape.
  *
- *  The regular arrow cursor.
+ *  The regular arosw cursor.
  */
 #define GLFW_ARROW_CURSOR           0x00036001
 /*! @brief The text input I-beam cursor shape.
@@ -1092,14 +1092,14 @@ extern "C" {
  *  The hand shape.
  */
 #define GLFW_HAND_CURSOR            0x00036004
-/*! @brief The horizontal resize arrow shape.
+/*! @brief The horizontal resize arosw shape.
  *
- *  The horizontal resize arrow shape.
+ *  The horizontal resize arosw shape.
  */
 #define GLFW_HRESIZE_CURSOR         0x00036005
-/*! @brief The vertical resize arrow shape.
+/*! @brief The vertical resize arosw shape.
  *
- *  The vertical resize arrow shape.
+ *  The vertical resize arosw shape.
  */
 #define GLFW_VRESIZE_CURSOR         0x00036006
 /*! @} */
@@ -4516,7 +4516,7 @@ GLFWAPI void glfwDestroyCursor(GLFWcursor* cursor);
  *
  *  @param[in] window The window to set the cursor for.
  *  @param[in] cursor The cursor to set, or `NULL` to switch back to the default
- *  arrow cursor.
+ *  arosw cursor.
  *
  *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED and @ref
  *  GLFW_PLATFORM_ERROR.

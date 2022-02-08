@@ -8,7 +8,6 @@ extern "C" {
 
 typedef unsigned char   arsuc;
 typedef unsigned int    arsu32;
-typedef unsigned long   arsu64;
 typedef unsigned        arsbool;
 
 typedef void *          ArsWindow;
@@ -17,13 +16,15 @@ typedef void *          ArsIndicesBuffer;
 typedef void *          ArsTexture;
 typedef void *          ArsShader;
 typedef void *          ArsFramebuffer;
-typedef arsu32         ArsID;
+typedef arsu32          ArsID;
 
 #define ARS_TRUE        1U
 #define ARS_FALSE       0U
 
-#ifndef ARS_API
-#  define ARS_API extern
+#define ARS_NULL_HANDLE NULL
+
+#ifndef ARSAPI
+#  define ARSAPI extern
 #endif
 
 typedef enum ArsKeyCodeBits {
@@ -220,7 +221,8 @@ typedef enum ArsTextureWrapModeBits {
 
 typedef enum ArsTextureFilterModeBits {
         ARS_TEXTURE_FILTER_NEAREST,
-        ARS_TEXTURE_FILTER_LINEAR
+        ARS_TEXTURE_FILTER_LINEAR,
+        ARS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR,
 } ArsTextureFilterModeBits;
 
 typedef struct ArsTexture2DCreateInfo {
@@ -288,12 +290,12 @@ typedef struct ArsFramebufferCreateInfo {
 /**
  * Ars函数指针，命名规范：
  *      1. typedef <Result> <ARS_*>();
- *      2. 定义导出函数: ARS_API <ARS_*> <变量名去掉函数指针命名的下划线>
+ *      2. 定义导出函数: ARSAPI <ARS_*> <变量名去掉函数指针命名的下划线>
  *      3. 定义宏，使用函数
  *
  * 示例：
- *      typedef void (*ARS_TEST)();
- *      ARS_API ARS_TEST ARSTEST;
+ *      typedef void (*RHI_ARS_TEST)();
+ *      ARSAPI RHI_ARS_TEST ARSTEST;
  *      #define ArsTest ARSTEST
  *
  *  列表：
@@ -315,137 +317,140 @@ typedef struct ArsFramebufferCreateInfo {
  *      void            ArsBindTexture             (ArsTexture)
  *      void            ArsDestroyTexture          (ArsTexture)
  */
-typedef float (*ARS_GET_TIME)(void);
-ARS_API ARS_GET_TIME ARSGETTIME;
-#define ArsGetTime ARSGETTIME
-typedef void (*ARS_VIEWPORT)(arsu32 x, arsu32 y, arsu32 w, arsu32 h);
-ARS_API ARS_VIEWPORT ARSVIEWPORT;
-#define ArsViewport ARSVIEWPORT
-typedef void (*ARS_SWAP_BUFFERS)(ArsWindow h);
-ARS_API ARS_SWAP_BUFFERS ARSSWAPBUFFERS;
-#define ArsSwapBuffers ARSSWAPBUFFERS
-typedef void (*ARS_GEN_VTXBUFFER)(ArsVertexBufferMemLayoutInfo *, ArsVertexBuffer *);
-ARS_API ARS_GEN_VTXBUFFER ARSCREATEVTXBUFFER;
-#define ArsCreateVertexBuffer ARSCREATEVTXBUFFER
-typedef void (*ARS_GEN_IDXBUFFER)(arsu32 *indices, arsu32 count, ArsIndicesBuffer *);
-ARS_API ARS_GEN_IDXBUFFER ARSCREATEIDXBUFFER;
-#define ArsCreateIndicesBuffer ARSCREATEIDXBUFFER
-typedef void (*ARS_DESTROY_VTX_BUFFER)(ArsVertexBuffer);
-ARS_API ARS_DESTROY_VTX_BUFFER ARSDESTROYVTXBUFFER;
-#define ArsDestroyVertexBuffer ARSDESTROYVTXBUFFER
-typedef void (*ARS_DESTROY_IDX_BUFFER)(ArsIndicesBuffer);
-ARS_API ARS_DESTROY_IDX_BUFFER ARSDESTROYIDXBUFFER;
-#define ArsDestroyIndicesBuffer ARSDESTROYIDXBUFFER
-typedef void (*ARS_BIND_VTX)(ArsVertexBuffer);
-ARS_API ARS_BIND_VTX ARSBINDVTX;
-#define ArsBindVertexBuffer ARSBINDVTX
-typedef void (*ARS_DRAW_VTX)(arsu32 index, arsu32 offset);
-ARS_API ARS_DRAW_VTX ARSDRAWVTX;
-#define ArsDrawVtx ARSDRAWVTX
-typedef void (*ARS_DRAW_IDX)(ArsIndicesBuffer);
-ARS_API ARS_DRAW_IDX ARSDRAWIDX;
-#define ArsDrawIndices ARSDRAWIDX
-typedef void (*ARS_POLYGON_MODE)(ArsPolygonModeBits);
-ARS_API ARS_POLYGON_MODE ARSPOLYGONMODE;
-#define ArsPolygonMode ARSPOLYGONMODE
-typedef ArsShader (*ARS_CREATE_SHADER)(const char *alsl);
-ARS_API ARS_CREATE_SHADER ARSCREATESHADER;
-#define ArsCreateShader ARSCREATESHADER
-typedef void (*ARS_BIND_SHADER)(ArsShader);
-ARS_API ARS_BIND_SHADER ARSBINDSHADER;
-#define ArsBindShader ARSBINDSHADER
-typedef void (*ARS_UNIFORM_FLOAT1)(ArsShader, const char *name, float x);
-ARS_API ARS_UNIFORM_FLOAT1 ARSUNIFORMFLOAT1;
-#define ArsUniform1f ARSUNIFORMFLOAT1
-typedef void (*ARS_UNIFORM_FLOAT2)(ArsShader, const char *name, float x, float y);
-ARS_API ARS_UNIFORM_FLOAT2 ARSUNIFORMFLOAT2;
-#define ArsUniform2f ARSUNIFORMFLOAT2
-typedef void (*ARS_UNIFORM_INT)(ArsShader, const char *name, int value);
-ARS_API ARS_UNIFORM_INT ARSUNIFORMINT;
-#define ArsUniform1i ARSUNIFORMINT
-typedef void (*ARS_UNIFORM_FLOAT3)(ArsShader, const char *name, float x, float y, float z);
-ARS_API ARS_UNIFORM_FLOAT3 ARSUNIFORMFLOAT3;
-#define ArsUniform3f ARSUNIFORMFLOAT3
-typedef void (*ARS_UNIFORM_FLOAT3V)(ArsShader, const char *name, float *);
-ARS_API ARS_UNIFORM_FLOAT3V ARSUNIFORMFLOAT3V;
-#define ArsUniform3fv ARSUNIFORMFLOAT3V
-typedef void (*ARS_UNIFORM_FLOAT4)(ArsShader, const char *name, float x, float y, float z, float w);
-ARS_API ARS_UNIFORM_FLOAT4 ARSUNIFORMFLOAT4;
-#define ArsUniform4f ARSUNIFORMFLOAT4
-typedef void (*ARS_UNIFORM_MATRIX2FV)(ArsShader, const char *name, float *matrix);
-ARS_API ARS_UNIFORM_MATRIX2FV ARSUNIFORMMATRIX2FV;
-#define ArsUniformMatrix2fv ARSUNIFORMMATRIX2FV
-typedef void (*ARS_UNIFORM_MATRIX3FV)(ArsShader, const char *name, float *matrix);
-ARS_API ARS_UNIFORM_MATRIX3FV ARSUNIFORMMATRIX3FV;
-#define ArsUniformMatrix3fv ARSUNIFORMMATRIX3FV
-typedef void (*ARS_UNIFORM_MATRIX4FV)(ArsShader shader, const char *name, float *matrix);
-ARS_API ARS_UNIFORM_MATRIX4FV ARSUNIFORMMATRIX4FV;
-#define ArsUniformMatrix4fv ARSUNIFORMMATRIX4FV
-typedef void (*ARS_DELETE_SHADER)(ArsShader);
-ARS_API ARS_DELETE_SHADER ARSDESTROYSHADER;
-#define ArsDestroyShader ARSDESTROYSHADER
-typedef void (*ARS_CLEAR_COLOR_BUFFER)(float r, float g, float b, float a);
-ARS_API ARS_CLEAR_COLOR_BUFFER ARSCLEARCOLORBUFFER;
-#define ArsClearColorBuffer ARSCLEARCOLORBUFFER
-typedef void (*ARS_GEN_TEXTURE2D)(ArsTexture2DCreateInfo *, ArsTexture *);
-ARS_API ARS_GEN_TEXTURE2D ARSCREATETEXTURE2D;
-#define ArsCreateTexture2D ARSCREATETEXTURE2D
-typedef void (*ARS_DELETE_TEXTURE)(ArsTexture);
-ARS_API ARS_DELETE_TEXTURE ARSDESTROYTEXTURE;
-#define ArsDestroyTexture ARSDESTROYTEXTURE
-typedef void (*ARS_ENABLE)(ArsEnableBits, arsbool);
-ARS_API ARS_ENABLE ARSENABLE;
-#define ArsEnable ARSENABLE
-typedef ArsID (*ARS_GET_TEXTURE_ID)(ArsTexture);
-ARS_API ARS_GET_TEXTURE_ID ARSGETTEXTUREID;
-#define ArsGetTextureId ARSGETTEXTUREID
-typedef void (*ARS_BIND_TEXTURE)(ArsTextureFormatBits, ArsTexture);
-ARS_API ARS_BIND_TEXTURE ARSBINDTEXTURE;
-#define ArsBindTexture ARSBINDTEXTURE
-typedef void (*ARS_CREATE_TEXTURE_CUBE_MAP)(ArsTextureCubeCreateInfo *, ArsTexture *);
-ARS_API ARS_CREATE_TEXTURE_CUBE_MAP ARSCREATETEXTURECUBEMAP;
-#define ArsCreateTextureCubeMap ARSCREATETEXTURECUBEMAP
-typedef void (*ARS_DEPTH_OPTION)(ArsDepthOptionBits);
-ARS_API ARS_DEPTH_OPTION ARSDEPTHOPTION;
-#define ArsDepthOption ARSDEPTHOPTION
-typedef arsbool (*ARS_CREATE_FRAMEBUFFER)(ArsFramebufferCreateInfo *createInfo, ArsFramebuffer *buffer);
-ARS_API ARS_CREATE_FRAMEBUFFER ARSCREATEFRAMEBUFFER;
-#define ArsCreateFramebuffer ARSCREATEFRAMEBUFFER
-typedef void (*ARS_RECREATE_FRAMEBUFFER)(ArsFramebufferCreateInfo *createInfo, ArsFramebuffer *buffer);
-ARS_API ARS_RECREATE_FRAMEBUFFER ARSRECREATEFRAMEBUFFER;
-#define ArsRecreateFramebuffer ARSRECREATEFRAMEBUFFER
-typedef void (*ARS_BIND_FRAMEBUFFER)(ArsFramebuffer);
-ARS_API ARS_BIND_FRAMEBUFFER ARSBINDFRAMEBUFFER;
-#define ArsBindFramebuffer ARSBINDFRAMEBUFFER
-typedef ArsTexture (*ARS_GET_FRAMEBUFFER_TEXTURE)(ArsFramebuffer);
-ARS_API ARS_GET_FRAMEBUFFER_TEXTURE ARSGETFRAMEBUFFERTEXTURE;
-#define ArsGetFramebufferTexture ARSGETFRAMEBUFFERTEXTURE
-typedef void (*ARS_DELETE_FRAMEBUFFER)(ArsFramebuffer);
-ARS_API ARS_DELETE_FRAMEBUFFER ARSDELETEFRAMEBUFFER;
-#define ArsDeleteFramebuffer ARSDELETEFRAMEBUFFER
+typedef float (*RHI_ARS_GET_TIME)(void);
+ARSAPI RHI_ARS_GET_TIME RHIARSGETTIME;
+#define ArsGetTime RHIARSGETTIME
+typedef void (*RHI_ARS_VIEWPORT)(arsu32 x, arsu32 y, arsu32 w, arsu32 h);
+ARSAPI RHI_ARS_VIEWPORT RHIARSVIEWPORT;
+#define ArsViewport RHIARSVIEWPORT
+typedef void (*RHI_ARS_SWAP_BUFFERS)(ArsWindow h);
+ARSAPI RHI_ARS_SWAP_BUFFERS RHIARSSWAPBUFFERS;
+#define ArsSwapBuffers RHIARSSWAPBUFFERS
+typedef void (*RHI_ARS_GEN_VTXBUFFER)(ArsVertexBufferMemLayoutInfo *, ArsVertexBuffer *);
+ARSAPI RHI_ARS_GEN_VTXBUFFER RHIARSCREATEVTXBUFFER;
+#define ArsCreateVertexBuffer RHIARSCREATEVTXBUFFER
+typedef void (*RHI_ARS_GEN_IDXBUFFER)(arsu32 *indices, arsu32 count, ArsIndicesBuffer *);
+ARSAPI RHI_ARS_GEN_IDXBUFFER RHIARSCREATEIDXBUFFER;
+#define ArsCreateIndicesBuffer RHIARSCREATEIDXBUFFER
+typedef void (*RHI_ARS_DESTROY_VTX_BUFFER)(ArsVertexBuffer);
+ARSAPI RHI_ARS_DESTROY_VTX_BUFFER RHIARSDESTROYVTXBUFFER;
+#define ArsDestroyVertexBuffer RHIARSDESTROYVTXBUFFER
+typedef void (*RHI_ARS_DESTROY_IDX_BUFFER)(ArsIndicesBuffer);
+ARSAPI RHI_ARS_DESTROY_IDX_BUFFER RHIARSDESTROYIDXBUFFER;
+#define ArsDestroyIndicesBuffer RHIARSDESTROYIDXBUFFER
+typedef void (*RHI_ARS_BIND_VTX)(ArsVertexBuffer);
+ARSAPI RHI_ARS_BIND_VTX RHIARSBINDVTX;
+#define ArsBindVertexBuffer RHIARSBINDVTX
+typedef void (*RHI_ARS_DRAW_VTX)(arsu32 index, arsu32 offset);
+ARSAPI RHI_ARS_DRAW_VTX RHIARSDRAWVTX;
+#define ArsDrawVtx RHIARSDRAWVTX
+typedef void (*RHI_ARS_DRAW_IDX)(ArsIndicesBuffer);
+ARSAPI RHI_ARS_DRAW_IDX RHIARSDRAWIDX;
+#define ArsDrawIndices RHIARSDRAWIDX
+typedef void (*RHI_ARS_POLYGON_MODE)(ArsPolygonModeBits);
+ARSAPI RHI_ARS_POLYGON_MODE RHIARSPOLYGONMODE;
+#define ArsPolygonMode RHIARSPOLYGONMODE
+typedef ArsShader (*RHI_ARS_CREATE_SHADER)(const char *alsl);
+ARSAPI RHI_ARS_CREATE_SHADER RHIARSCREATESHADER;
+#define ArsCreateShader RHIARSCREATESHADER
+typedef void (*RHI_ARS_BIND_SHADER)(ArsShader);
+ARSAPI RHI_ARS_BIND_SHADER RHIARSBINDSHADER;
+#define ArsBindShader RHIARSBINDSHADER
+typedef void (*RHI_ARS_UNIFORM_FLOAT1)(ArsShader, const char *name, float x);
+ARSAPI RHI_ARS_UNIFORM_FLOAT1 RHIARSUNIFORMFLOAT1;
+#define ArsUniform1f RHIARSUNIFORMFLOAT1
+typedef void (*RHI_ARS_UNIFORM_FLOAT2)(ArsShader, const char *name, float x, float y);
+ARSAPI RHI_ARS_UNIFORM_FLOAT2 RHIARSUNIFORMFLOAT2;
+#define ArsUniform2f RHIARSUNIFORMFLOAT2
+typedef void (*RHI_ARS_UNIFORM_INT)(ArsShader, const char *name, int value);
+ARSAPI RHI_ARS_UNIFORM_INT RHIARSUNIFORMINT;
+#define ArsUniform1i RHIARSUNIFORMINT
+typedef void (*RHI_ARS_UNIFORM_FLOAT3)(ArsShader, const char *name, float x, float y, float z);
+ARSAPI RHI_ARS_UNIFORM_FLOAT3 RHIARSUNIFORMFLOAT3;
+#define ArsUniform3f RHIARSUNIFORMFLOAT3
+typedef void (*RHI_ARS_UNIFORM_FLOAT3V)(ArsShader, const char *name, float *);
+ARSAPI RHI_ARS_UNIFORM_FLOAT3V RHIARSUNIFORMFLOAT3V;
+#define ArsUniform3fv RHIARSUNIFORMFLOAT3V
+typedef void (*RHI_ARS_UNIFORM_FLOAT4)(ArsShader, const char *name, float x, float y, float z, float w);
+ARSAPI RHI_ARS_UNIFORM_FLOAT4 RHIARSUNIFORMFLOAT4;
+#define ArsUniform4f RHIARSUNIFORMFLOAT4
+typedef void (*RHI_ARS_UNIFORM_MATRIX2FV)(ArsShader, const char *name, float *matrix);
+ARSAPI RHI_ARS_UNIFORM_MATRIX2FV RHIARSUNIFORMMATRIX2FV;
+#define ArsUniformMatrix2fv RHIARSUNIFORMMATRIX2FV
+typedef void (*RHI_ARS_UNIFORM_MATRIX3FV)(ArsShader, const char *name, float *matrix);
+ARSAPI RHI_ARS_UNIFORM_MATRIX3FV RHIARSUNIFORMMATRIX3FV;
+#define ArsUniformMatrix3fv RHIARSUNIFORMMATRIX3FV
+typedef void (*RHI_ARS_UNIFORM_MATRIX4FV)(ArsShader shader, const char *name, float *matrix);
+ARSAPI RHI_ARS_UNIFORM_MATRIX4FV RHIARSUNIFORMMATRIX4FV;
+#define ArsUniformMatrix4fv RHIARSUNIFORMMATRIX4FV
+typedef void (*RHI_ARS_DELETE_SHADER)(ArsShader);
+ARSAPI RHI_ARS_DELETE_SHADER RHIARSDESTROYSHADER;
+#define ArsDestroyShader RHIARSDESTROYSHADER
+typedef void (*RHI_ARS_CLEAR_COLOR_BUFFER)(float r, float g, float b, float a);
+ARSAPI RHI_ARS_CLEAR_COLOR_BUFFER RHIARSCLEARCOLORBUFFER;
+#define ArsClearColorBuffer RHIARSCLEARCOLORBUFFER
+typedef void (*RHI_ARS_GEN_TEXTURE2D)(ArsTexture2DCreateInfo *, ArsTexture *);
+ARSAPI RHI_ARS_GEN_TEXTURE2D RHIARSCREATETEXTURE2D;
+#define ArsCreateTexture2D RHIARSCREATETEXTURE2D
+typedef void (*RHI_ARS_DELETE_TEXTURE)(ArsTexture);
+ARSAPI RHI_ARS_DELETE_TEXTURE RHIARSDESTROYTEXTURE;
+#define ArsDestroyTexture RHIARSDESTROYTEXTURE
+typedef void (*RHI_ARS_ENABLE)(ArsEnableBits, arsbool);
+ARSAPI RHI_ARS_ENABLE RHIARSENABLE;
+#define ArsEnable RHIARSENABLE
+typedef ArsID (*RHI_ARS_GET_TEXTURE_ID)(ArsTexture);
+ARSAPI RHI_ARS_GET_TEXTURE_ID RHIARSGETTEXTUREID;
+#define ArsGetTextureId RHIARSGETTEXTUREID
+typedef void (*RHI_ARS_BIND_TEXTURE)(ArsTextureFormatBits, ArsTexture);
+ARSAPI RHI_ARS_BIND_TEXTURE RHIARSBINDTEXTURE;
+#define ArsBindTexture RHIARSBINDTEXTURE
+typedef void (*RHI_ARS_RESET_ACTIVE_TEXTURE)();
+ARSAPI RHI_ARS_RESET_ACTIVE_TEXTURE RHIARSRESETACTIVETEXTURE;
+#define ArsResetActiveTexture RHIARSRESETACTIVETEXTURE
+typedef void (*RHI_ARS_CREATE_TEXTURE_CUBE_MAP)(ArsTextureCubeCreateInfo *, ArsTexture *);
+ARSAPI RHI_ARS_CREATE_TEXTURE_CUBE_MAP RHIARSCREATETEXTURECUBEMAP;
+#define ArsCreateTextureCubeMap RHIARSCREATETEXTURECUBEMAP
+typedef void (*RHI_ARS_DEPTH_OPTION)(ArsDepthOptionBits);
+ARSAPI RHI_ARS_DEPTH_OPTION RHIARSDEPTHOPTION;
+#define ArsDepthOption RHIARSDEPTHOPTION
+typedef arsbool (*RHI_ARS_CREATE_FRAMEBUFFER)(ArsFramebufferCreateInfo *createInfo, ArsFramebuffer *buffer);
+ARSAPI RHI_ARS_CREATE_FRAMEBUFFER RHIARSCREATEFRAMEBUFFER;
+#define ArsCreateFramebuffer RHIARSCREATEFRAMEBUFFER
+typedef void (*RHI_ARS_RECREATE_FRAMEBUFFER)(ArsFramebufferCreateInfo *createInfo, ArsFramebuffer *buffer);
+ARSAPI RHI_ARS_RECREATE_FRAMEBUFFER RHIARSRECREATEFRAMEBUFFER;
+#define ArsRecreateFramebuffer RHIARSRECREATEFRAMEBUFFER
+typedef void (*RHI_ARS_BIND_FRAMEBUFFER)(ArsFramebuffer);
+ARSAPI RHI_ARS_BIND_FRAMEBUFFER RHIARSBINDFRAMEBUFFER;
+#define ArsBindFramebuffer RHIARSBINDFRAMEBUFFER
+typedef ArsTexture (*RHI_ARS_GET_FRAMEBUFFER_TEXTURE)(ArsFramebuffer);
+ARSAPI RHI_ARS_GET_FRAMEBUFFER_TEXTURE RHIARSGETFRAMEBUFFERTEXTURE;
+#define ArsGetFramebufferTexture RHIARSGETFRAMEBUFFERTEXTURE
+typedef void (*RHI_ARS_DELETE_FRAMEBUFFER)(ArsFramebuffer);
+ARSAPI RHI_ARS_DELETE_FRAMEBUFFER RHIARSDELETEFRAMEBUFFER;
+#define ArsDeleteFramebuffer RHIARSDELETEFRAMEBUFFER
 
 ////////////////////////////////////////////////////////////////////////////////////
 //////                              设备输入                                   //////
 ////////////////////////////////////////////////////////////////////////////////////
-typedef ArsKeyModeBits (*ARS_GET_KEY)(ArsWindow, ArsKeyCodeBits);
-ARS_API ARS_GET_KEY ARSGETKEY;
-#define ArsGetKey ARSGETKEY
-typedef ArsKeyModeBits (*ARS_GET_MOUSE_BUTTON)(ArsWindow, ArsMouseButtonBits);
-ARS_API ARS_GET_MOUSE_BUTTON ARSGETMOUSEBUTTON;
-#define ArsGetMouseButton ARSGETMOUSEBUTTON
-typedef void (*ARS_SET_CURSOR_INPUT_MODE)(ArsWindow, ArsInputCursorModeBits);
-ARS_API ARS_SET_CURSOR_INPUT_MODE ARSSETCURSORINPUTMODE;
-#define ArsSetCursorMode ARSSETCURSORINPUTMODE
+typedef ArsKeyModeBits (*RHI_ARS_GET_KEY)(ArsWindow, ArsKeyCodeBits);
+ARSAPI RHI_ARS_GET_KEY RHIARSGETKEY;
+#define ArsGetKey RHIARSGETKEY
+typedef ArsKeyModeBits (*RHI_ARS_GET_MOUSE_BUTTON)(ArsWindow, ArsMouseButtonBits);
+ARSAPI RHI_ARS_GET_MOUSE_BUTTON RHIARSGETMOUSEBUTTON;
+#define ArsGetMouseButton RHIARSGETMOUSEBUTTON
+typedef void (*RHI_ARS_SET_CURSOR_INPUT_MODE)(ArsWindow, ArsInputCursorModeBits);
+ARSAPI RHI_ARS_SET_CURSOR_INPUT_MODE RHIARSSETCURSORINPUTMODE;
+#define ArsSetCursorMode RHIARSSETCURSORINPUTMODE
 
 ////////////////////////////////////////////////////////////////////////////////////
 //////                    暴露给ImGui或者其他库使用                             //////
 ////////////////////////////////////////////////////////////////////////////////////
-typedef ArsWindow (*ARS_OPENGL_GET_CURRENT_CONTEXT)();
-ARS_API ARS_OPENGL_GET_CURRENT_CONTEXT ARSOPENGLGETCURRENTCONTEXT;
-#define ArsGetCurrentContext_GL ARSOPENGLGETCURRENTCONTEXT
-typedef void (*ARS_OPENGL_MAKE_CONTEXT_CURRENT)(ArsWindow);
-ARS_API ARS_OPENGL_MAKE_CONTEXT_CURRENT ARSOPENGLMAKECONTEXTCURRENT;
-#define ArsMakeContextCurrent_GL ARSOPENGLMAKECONTEXTCURRENT
+typedef ArsWindow (*RHI_ARS_OPENGL_GET_CURRENT_CONTEXT)();
+ARSAPI RHI_ARS_OPENGL_GET_CURRENT_CONTEXT RHIARSOPENGLGETCURRENTCONTEXT;
+#define ArsGetCurrentContext_GL RHIARSOPENGLGETCURRENTCONTEXT
+typedef void (*RHI_ARS_OPENGL_MAKE_CONTEXT_CURRENT)(ArsWindow);
+ARSAPI RHI_ARS_OPENGL_MAKE_CONTEXT_CURRENT RHIARSOPENGLMAKECONTEXTCURRENT;
+#define ArsMakeContextCurrent_GL RHIARSOPENGLMAKECONTEXTCURRENT
 
 ////////////////////////////////////////////////////////////////////////////////////
 //////                            和窗口有关的函数                             //////
@@ -453,41 +458,41 @@ ARS_API ARS_OPENGL_MAKE_CONTEXT_CURRENT ARSOPENGLMAKECONTEXTCURRENT;
 typedef void (*F_ARS_WINDOW_RESIZE_CALLBACK)(ArsWindow, int, int);
 typedef void (*F_ARS_WINDOW_CURSOR_CALLBACK)(ArsWindow, double, double);
 
-typedef void (*ARS_CREATE_WINDOW)(const char *title, int width, int height, ArsWindow *);
-ARS_API ARS_CREATE_WINDOW ARSCREATEWIDNOW;
-#define ArsCreateWindow ARSCREATEWIDNOW
-typedef void (*ARS_WINDOW_POLL_EVENTS)();
-ARS_API ARS_WINDOW_POLL_EVENTS ARSWINDOWPOLLEVENTS;
-#define ArsPollEvents ARSWINDOWPOLLEVENTS
-typedef void (*ARS_SET_USER_POINTER)(ArsWindow, void *);
-ARS_API ARS_SET_USER_POINTER ARSSETUSERPOINTER;
-#define ArsSetUserPointer ARSSETUSERPOINTER
-typedef void * (*ARS_GET_USER_POINTER)(ArsWindow);
-ARS_API ARS_GET_USER_POINTER ARSGETUSERPOINTER;
-#define ArsGetUserPointer ARSGETUSERPOINTER
-typedef arsbool (*ARS_WINDOW_SHOULD_CLOSE)(ArsWindow);
-ARS_API ARS_WINDOW_SHOULD_CLOSE ARSWINDOWSHOULDCLOSE;
-#define ArsWindowShouldClose ARSWINDOWSHOULDCLOSE
-typedef void (*ARS_WINDOW_SET_RESIZE_CALLBACK)(ArsWindow, F_ARS_WINDOW_RESIZE_CALLBACK);
-ARS_API ARS_WINDOW_SET_RESIZE_CALLBACK ARSWINDOWSETRESIZECALLBACK;
-#define ArsSetWindowResizeCallback ARSWINDOWSETRESIZECALLBACK
-typedef void (*ARS_WINDOW_SET_CURSOR_CALLBACK)(ArsWindow, F_ARS_WINDOW_CURSOR_CALLBACK);
-ARS_API ARS_WINDOW_SET_CURSOR_CALLBACK ARSWINDOWSETCURSORCALLBACK;
-#define ArsSetWindowCursorCallback ARSWINDOWSETCURSORCALLBACK
-typedef void (*ARS_DELETE_WINDOW)(ArsWindow);
-ARS_API ARS_DELETE_WINDOW ARSDELETWINDOW;
-#define ArsDestroyWindow ARSDELETWINDOW
-typedef void (*ARS_TERMINATE)();
-ARS_API ARS_TERMINATE ARSTERMINATE;
-#define ArsTerminate ARSTERMINATE
-typedef float (*ARS_GET_ASPECT)();
-ARS_API ARS_GET_ASPECT ARSGETASPECT;
-#define ArsGetAspect ARSGETASPECT
+typedef void (*RHI_ARS_CREATE_WINDOW)(const char *title, int width, int height, ArsWindow *);
+ARSAPI RHI_ARS_CREATE_WINDOW RHIARSCREATEWIDNOW;
+#define ArsCreateWindow RHIARSCREATEWIDNOW
+typedef void (*RHI_ARS_WINDOW_POLL_EVENTS)();
+ARSAPI RHI_ARS_WINDOW_POLL_EVENTS RHIARSWINDOWPOLLEVENTS;
+#define ArsPollEvents RHIARSWINDOWPOLLEVENTS
+typedef void (*RHI_ARS_SET_USER_POINTER)(ArsWindow, void *);
+ARSAPI RHI_ARS_SET_USER_POINTER RHIARSSETUSERPOINTER;
+#define ArsSetUserPointer RHIARSSETUSERPOINTER
+typedef void * (*RHI_ARS_GET_USER_POINTER)(ArsWindow);
+ARSAPI RHI_ARS_GET_USER_POINTER RHIARSGETUSERPOINTER;
+#define ArsGetUserPointer RHIARSGETUSERPOINTER
+typedef arsbool (*RHI_ARS_WINDOW_SHOULD_CLOSE)(ArsWindow);
+ARSAPI RHI_ARS_WINDOW_SHOULD_CLOSE RHIARSWINDOWSHOULDCLOSE;
+#define ArsWindowShouldClose RHIARSWINDOWSHOULDCLOSE
+typedef void (*RHI_ARS_WINDOW_SET_RESIZE_CALLBACK)(ArsWindow, F_ARS_WINDOW_RESIZE_CALLBACK);
+ARSAPI RHI_ARS_WINDOW_SET_RESIZE_CALLBACK RHIARSWINDOWSETRESIZECALLBACK;
+#define ArsSetWindowResizeCallback RHIARSWINDOWSETRESIZECALLBACK
+typedef void (*RHI_ARS_WINDOW_SET_CURSOR_CALLBACK)(ArsWindow, F_ARS_WINDOW_CURSOR_CALLBACK);
+ARSAPI RHI_ARS_WINDOW_SET_CURSOR_CALLBACK RHIARSWINDOWSETCURSORCALLBACK;
+#define ArsSetWindowCursorCallback RHIARSWINDOWSETCURSORCALLBACK
+typedef void (*RHI_ARS_DELETE_WINDOW)(ArsWindow);
+ARSAPI RHI_ARS_DELETE_WINDOW RHIARSDELETWINDOW;
+#define ArsDestroyWindow RHIARSDELETWINDOW
+typedef void (*RHI_ARS_TERMINATE)();
+ARSAPI RHI_ARS_TERMINATE RHIARSTERMINATE;
+#define ArsTerminate RHIARSTERMINATE
+typedef float (*RHI_ARS_GET_ASPECT)();
+ARSAPI RHI_ARS_GET_ASPECT RHIARSGETASPECT;
+#define ArsGetAspect RHIARSGETASPECT
 
 /**
  * 加载对应的API函数
  */
-ARS_API int ArsProcAddressInit(ArsGraphAPIBits);
+ARSAPI int ArsProcAddressInit(ArsGraphAPIBits);
 
 #ifdef __cplusplus
 }

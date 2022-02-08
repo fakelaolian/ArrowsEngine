@@ -24,8 +24,10 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         Source/ImGui/GUIKIT.cpp
         # --* Scene *-- #
         Source/Scene/Scene.cpp
-        Source/Scene/Component/Private/GameObject.cpp
         Source/Scene/SceneCamera.cpp
+        # --* Component *-- #
+        Source/Scene/Component/Private/GameObject.cpp
+        Source/Scene/Component/Private/GameMesh.cpp
         Source/Scene/Component/Private/SkyBox.cpp
         # --* Loader *-- #
         Source/Loader/TextureLoader.cpp

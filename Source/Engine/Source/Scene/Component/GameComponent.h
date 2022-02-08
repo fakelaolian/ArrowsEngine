@@ -3,7 +3,7 @@
 
 #include <arrows_core.h>
 
-typedef arsu32  compid_t;
+typedef arosu32  compid_t;
 static  compid_t ITER_ID = 0;
 
 #include <unordered_map>

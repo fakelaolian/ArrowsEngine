@@ -19,6 +19,9 @@ public:
         inline std::unordered_map<compid_t, GameComponent<GameObject>&>& GetGameComponents()
         { return _components; }
 
+        inline GameComponent<GameObject> &GetGameComponent(compid_t _comp_id)
+        { return _components.at(_comp_id); }
+
 private:
         std::unordered_map<compid_t, GameComponent<GameObject>&> _components;
 };

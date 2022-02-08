@@ -8,44 +8,45 @@
 #include "glfw.h"
 #include "verror.h"
 
-ARS_GET_TIME                       ARSGETTIME                    = NULL;
-ARS_VIEWPORT                       ARSVIEWPORT                   = NULL;
-ARS_SWAP_BUFFERS                   ARSSWAPBUFFERS                = NULL;
-ARS_GEN_IDXBUFFER                  ARSCREATEIDXBUFFER            = NULL;
-ARS_GEN_VTXBUFFER                  ARSCREATEVTXBUFFER            = NULL;
-ARS_DESTROY_VTX_BUFFER             ARSDESTROYVTXBUFFER           = NULL;
-ARS_DESTROY_IDX_BUFFER             ARSDESTROYIDXBUFFER           = NULL;
-ARS_BIND_VTX                       ARSBINDVTX                    = NULL;
-ARS_DRAW_VTX                       ARSDRAWVTX                    = NULL;
-ARS_DRAW_IDX                       ARSDRAWIDX                    = NULL;
-ARS_POLYGON_MODE                   ARSPOLYGONMODE                = NULL;
-ARS_CREATE_SHADER                  ARSCREATESHADER               = NULL;
-ARS_BIND_SHADER                    ARSBINDSHADER                 = NULL;
-ARS_UNIFORM_FLOAT1                 ARSUNIFORMFLOAT1              = NULL;
-ARS_UNIFORM_FLOAT2                 ARSUNIFORMFLOAT2              = NULL;
-ARS_UNIFORM_INT                    ARSUNIFORMINT                 = NULL;
-ARS_UNIFORM_FLOAT3                 ARSUNIFORMFLOAT3              = NULL;
-ARS_UNIFORM_FLOAT3V                ARSUNIFORMFLOAT3V             = NULL;
-ARS_UNIFORM_FLOAT4                 ARSUNIFORMFLOAT4              = NULL;
-ARS_UNIFORM_MATRIX2FV              ARSUNIFORMMATRIX2FV           = NULL;
-ARS_UNIFORM_MATRIX3FV              ARSUNIFORMMATRIX3FV           = NULL;
-ARS_UNIFORM_MATRIX4FV              ARSUNIFORMMATRIX4FV           = NULL;
-ARS_DELETE_SHADER                  ARSDESTROYSHADER              = NULL;
-ARS_CLEAR_COLOR_BUFFER             ARSCLEARCOLORBUFFER           = NULL;
-ARS_GEN_TEXTURE2D                  ARSCREATETEXTURE2D            = NULL;
-ARS_DELETE_TEXTURE                 ARSDESTROYTEXTURE             = NULL;
-ARS_ENABLE                         ARSENABLE                     = NULL;
-ARS_GET_TEXTURE_ID                 ARSGETTEXTUREID               = NULL;
-ARS_BIND_TEXTURE                   ARSBINDTEXTURE                = NULL;
-ARS_CREATE_TEXTURE_CUBE_MAP        ARSCREATETEXTURECUBEMAP       = NULL;
-ARS_DEPTH_OPTION                   ARSDEPTHOPTION                = NULL;
-ARS_CREATE_FRAMEBUFFER             ARSCREATEFRAMEBUFFER          = NULL;
-ARS_RECREATE_FRAMEBUFFER           ARSRECREATEFRAMEBUFFER        = NULL;
-ARS_BIND_FRAMEBUFFER               ARSBINDFRAMEBUFFER            = NULL;
-ARS_GET_FRAMEBUFFER_TEXTURE        ARSGETFRAMEBUFFERTEXTURE      = NULL;
-ARS_DELETE_FRAMEBUFFER             ARSDELETEFRAMEBUFFER          = NULL;
+RHI_ARS_GET_TIME                       RHIARSGETTIME                    = NULL;
+RHI_ARS_VIEWPORT                       RHIARSVIEWPORT                   = NULL;
+RHI_ARS_SWAP_BUFFERS                   RHIARSSWAPBUFFERS                = NULL;
+RHI_ARS_GEN_IDXBUFFER                  RHIARSCREATEIDXBUFFER            = NULL;
+RHI_ARS_GEN_VTXBUFFER                  RHIARSCREATEVTXBUFFER            = NULL;
+RHI_ARS_DESTROY_VTX_BUFFER             RHIARSDESTROYVTXBUFFER           = NULL;
+RHI_ARS_DESTROY_IDX_BUFFER             RHIARSDESTROYIDXBUFFER           = NULL;
+RHI_ARS_BIND_VTX                       RHIARSBINDVTX                    = NULL;
+RHI_ARS_DRAW_VTX                       RHIARSDRAWVTX                    = NULL;
+RHI_ARS_DRAW_IDX                       RHIARSDRAWIDX                    = NULL;
+RHI_ARS_POLYGON_MODE                   RHIARSPOLYGONMODE                = NULL;
+RHI_ARS_CREATE_SHADER                  RHIARSCREATESHADER               = NULL;
+RHI_ARS_BIND_SHADER                    RHIARSBINDSHADER                 = NULL;
+RHI_ARS_UNIFORM_FLOAT1                 RHIARSUNIFORMFLOAT1              = NULL;
+RHI_ARS_UNIFORM_FLOAT2                 RHIARSUNIFORMFLOAT2              = NULL;
+RHI_ARS_UNIFORM_INT                    RHIARSUNIFORMINT                 = NULL;
+RHI_ARS_UNIFORM_FLOAT3                 RHIARSUNIFORMFLOAT3              = NULL;
+RHI_ARS_UNIFORM_FLOAT3V                RHIARSUNIFORMFLOAT3V             = NULL;
+RHI_ARS_UNIFORM_FLOAT4                 RHIARSUNIFORMFLOAT4              = NULL;
+RHI_ARS_UNIFORM_MATRIX2FV              RHIARSUNIFORMMATRIX2FV           = NULL;
+RHI_ARS_UNIFORM_MATRIX3FV              RHIARSUNIFORMMATRIX3FV           = NULL;
+RHI_ARS_UNIFORM_MATRIX4FV              RHIARSUNIFORMMATRIX4FV           = NULL;
+RHI_ARS_DELETE_SHADER                  RHIARSDESTROYSHADER              = NULL;
+RHI_ARS_CLEAR_COLOR_BUFFER             RHIARSCLEARCOLORBUFFER           = NULL;
+RHI_ARS_GEN_TEXTURE2D                  RHIARSCREATETEXTURE2D            = NULL;
+RHI_ARS_DELETE_TEXTURE                 RHIARSDESTROYTEXTURE             = NULL;
+RHI_ARS_ENABLE                         RHIARSENABLE                     = NULL;
+RHI_ARS_GET_TEXTURE_ID                 RHIARSGETTEXTUREID               = NULL;
+RHI_ARS_BIND_TEXTURE                   RHIARSBINDTEXTURE                = NULL;
+RHI_ARS_RESET_ACTIVE_TEXTURE           RHIARSRESETACTIVETEXTURE         = NULL;
+RHI_ARS_CREATE_TEXTURE_CUBE_MAP        RHIARSCREATETEXTURECUBEMAP       = NULL;
+RHI_ARS_DEPTH_OPTION                   RHIARSDEPTHOPTION                = NULL;
+RHI_ARS_CREATE_FRAMEBUFFER             RHIARSCREATEFRAMEBUFFER          = NULL;
+RHI_ARS_RECREATE_FRAMEBUFFER           RHIARSRECREATEFRAMEBUFFER        = NULL;
+RHI_ARS_BIND_FRAMEBUFFER               RHIARSBINDFRAMEBUFFER            = NULL;
+RHI_ARS_GET_FRAMEBUFFER_TEXTURE        RHIARSGETFRAMEBUFFERTEXTURE      = NULL;
+RHI_ARS_DELETE_FRAMEBUFFER             RHIARSDELETEFRAMEBUFFER          = NULL;
 
-GLbitfield                              _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
+GLbitfield                             _gl_clear_bits                    = GL_COLOR_BUFFER_BIT;
 arsbool                                _gl_depth_test_enable_state       = ARS_FALSE;
 arsu32                                 _activeTexture                    = 0;
 
@@ -345,6 +346,7 @@ GLint _opengl_get_texture_filter_value(ArsTextureFilterModeBits mode)
         switch (mode) {
                 case ARS_TEXTURE_FILTER_NEAREST: return GL_NEAREST;
                 case ARS_TEXTURE_FILTER_LINEAR:  return GL_LINEAR;
+                case ARS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR: return GL_LINEAR_MIPMAP_LINEAR;
         }
 
         verror("不支持的纹理过滤方式。");
@@ -473,10 +475,15 @@ void _opengl_bind_texture(ArsTextureFormatBits bit, ArsTexture texture)
         glActiveTexture(GL_TEXTURE0 + _activeTexture);
         if (bit == ARS_TEXTURE_2D)
                 glBindTexture(GL_TEXTURE_2D, CONV_TEX(texture)->textureId);
-        if (bit == ARS_TEXTURE_CUBE_MAP)
+        else if (bit == ARS_TEXTURE_CUBE_MAP)
                 glBindTexture(GL_TEXTURE_CUBE_MAP, CONV_TEX(texture)->textureId);
 
         _activeTexture++;
+}
+
+void _opengl_reset_active_texture()
+{
+        glActiveTexture(GL_TEXTURE0);
 }
 
 arsbool _opengl_create_framebuffer(ArsFramebufferCreateInfo *createFramebuffer, ArsFramebuffer *buffer)
@@ -563,41 +570,42 @@ ArsTexture _opengl_get_framebuffer_texture(ArsFramebuffer framebuffer)
 void OpenGLArsImpl()
 {
         _load_glfw_functions();
-        ARSGETTIME                          = _glfw_get_time;
-        ARSVIEWPORT                         = _opengl_viewport;
-        ARSSWAPBUFFERS                      = _opengl_swap_buffers;
-        ARSCREATEVTXBUFFER                  = _opengl_create_vtx_buffer;
-        ARSCREATEIDXBUFFER                  = _opengl_create_idx_buffer;
-        ARSDESTROYVTXBUFFER                 = _opengl_delete_vtx_buffer;
-        ARSDESTROYIDXBUFFER                 = _opengl_delete_idx_buffer;
-        ARSBINDVTX                          = _opengl_bind_vtx_buffer;
-        ARSDRAWVTX                          = _opengl_draw_vtx;
-        ARSDRAWIDX                          = _opengl_draw_idx;
-        ARSPOLYGONMODE                      = _opengl_polygon_mode;
-        ARSCREATESHADER                     = _opengl_create_shader;
-        ARSBINDSHADER                       = _opengl_bind_shader;
-        ARSUNIFORMINT                       = _opengl_uniform1i;
-        ARSUNIFORMFLOAT1                    = _opengl_uniform1f;
-        ARSUNIFORMFLOAT2                    = _opengl_uniform2f;
-        ARSUNIFORMFLOAT3                    = _opengl_uniform3f;
-        ARSUNIFORMFLOAT3V                   = _opengl_uniform3fv;
-        ARSUNIFORMFLOAT4                    = _opengl_uniform4f;
-        ARSUNIFORMMATRIX2FV                 = _opengl_uniform_matrix2fv;
-        ARSUNIFORMMATRIX3FV                 = _opengl_uniform_matrix3fv;
-        ARSUNIFORMMATRIX4FV                 = _opengl_uniform_matrix4fv;
-        ARSDESTROYSHADER                    = _opengl_delete_shader;
-        ARSCLEARCOLORBUFFER                 = _opengl_clear_color;
-        ARSCREATETEXTURE2D                  = _opengl_create_texture2d;
-        ARSCREATETEXTURECUBEMAP             = _opengl_create_texture_cube_map;
-        ARSDESTROYTEXTURE                   = _opengl_delete_texture;
-        ARSGETTEXTUREID                     = _opengl_get_texture_id;
-        ARSBINDTEXTURE                      = _opengl_bind_texture;
-        ARSENABLE                           = _opengl_enbale;
-        ARSDEPTHOPTION                      = _opengl_depth_option;
-        ARSCREATEFRAMEBUFFER                = _opengl_create_framebuffer;
-        ARSRECREATEFRAMEBUFFER              = _opengl_recreate_framebuffer;
-        ARSBINDFRAMEBUFFER                  = _opengl_bind_framebuffer;
-        ARSGETFRAMEBUFFERTEXTURE            = _opengl_get_framebuffer_texture;
-        ARSDELETEFRAMEBUFFER                = _opengl_delete_framebuffer;
+        RHIARSGETTIME                          = _glfw_get_time;
+        RHIARSVIEWPORT                         = _opengl_viewport;
+        RHIARSSWAPBUFFERS                      = _opengl_swap_buffers;
+        RHIARSCREATEVTXBUFFER                  = _opengl_create_vtx_buffer;
+        RHIARSCREATEIDXBUFFER                  = _opengl_create_idx_buffer;
+        RHIARSDESTROYVTXBUFFER                 = _opengl_delete_vtx_buffer;
+        RHIARSDESTROYIDXBUFFER                 = _opengl_delete_idx_buffer;
+        RHIARSBINDVTX                          = _opengl_bind_vtx_buffer;
+        RHIARSDRAWVTX                          = _opengl_draw_vtx;
+        RHIARSDRAWIDX                          = _opengl_draw_idx;
+        RHIARSPOLYGONMODE                      = _opengl_polygon_mode;
+        RHIARSCREATESHADER                     = _opengl_create_shader;
+        RHIARSBINDSHADER                       = _opengl_bind_shader;
+        RHIARSUNIFORMINT                       = _opengl_uniform1i;
+        RHIARSUNIFORMFLOAT1                    = _opengl_uniform1f;
+        RHIARSUNIFORMFLOAT2                    = _opengl_uniform2f;
+        RHIARSUNIFORMFLOAT3                    = _opengl_uniform3f;
+        RHIARSUNIFORMFLOAT3V                   = _opengl_uniform3fv;
+        RHIARSUNIFORMFLOAT4                    = _opengl_uniform4f;
+        RHIARSUNIFORMMATRIX2FV                 = _opengl_uniform_matrix2fv;
+        RHIARSUNIFORMMATRIX3FV                 = _opengl_uniform_matrix3fv;
+        RHIARSUNIFORMMATRIX4FV                 = _opengl_uniform_matrix4fv;
+        RHIARSDESTROYSHADER                    = _opengl_delete_shader;
+        RHIARSCLEARCOLORBUFFER                 = _opengl_clear_color;
+        RHIARSCREATETEXTURE2D                  = _opengl_create_texture2d;
+        RHIARSCREATETEXTURECUBEMAP             = _opengl_create_texture_cube_map;
+        RHIARSDESTROYTEXTURE                   = _opengl_delete_texture;
+        RHIARSGETTEXTUREID                     = _opengl_get_texture_id;
+        RHIARSBINDTEXTURE                      = _opengl_bind_texture;
+        RHIARSRESETACTIVETEXTURE               = _opengl_reset_active_texture;
+        RHIARSENABLE                           = _opengl_enbale;
+        RHIARSDEPTHOPTION                      = _opengl_depth_option;
+        RHIARSCREATEFRAMEBUFFER                = _opengl_create_framebuffer;
+        RHIARSRECREATEFRAMEBUFFER              = _opengl_recreate_framebuffer;
+        RHIARSBINDFRAMEBUFFER                  = _opengl_bind_framebuffer;
+        RHIARSGETFRAMEBUFFERTEXTURE            = _opengl_get_framebuffer_texture;
+        RHIARSDELETEFRAMEBUFFER                = _opengl_delete_framebuffer;
 }
 

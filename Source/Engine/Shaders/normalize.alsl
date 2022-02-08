@@ -25,9 +25,11 @@
 
     layout (location = 0) in vec2 inUv;
     layout (location = 1) in vec3 inNormal;
-    uniform sampler2D inTexture;
+
+    uniform sampler2D texture_diffuse;
 
     void main() {
-        FragColor = texture(inTexture, inUv);
+        vec2 uv = vec2(inUv.x, -inUv.y);
+        FragColor = texture(texture_diffuse, uv);
     }
 #end

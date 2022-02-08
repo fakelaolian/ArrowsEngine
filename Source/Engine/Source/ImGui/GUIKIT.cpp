@@ -6,16 +6,16 @@
 
 GUIKit::GUIKit()
 {
-        int w, h, channel;
-        arsuc *pixels = _stbi_load("../../../UI/lock&unlock/lock.png", &w, &h, &channel, 1);
-
-        ArsTexture2DCreateInfo createInfo = {};
-        createInfo.width = w;
-        createInfo.height = h;
-        createInfo.pPixels = pixels;
-        createInfo.format = ARS_IMAGE_FORMAT_SRGB8;
-
-        ArsCreateTexture2D(&createInfo, &_ui_lock);
+//        int w, h, channel;
+//        arsuc *pixels = _stbi_load("../../../UI/lock&unlock/lock.png", &w, &h, &channel);
+//
+//        ArsTexture2DCreateInfo createInfo = {};
+//        createInfo.width = w;
+//        createInfo.height = h;
+//        createInfo.pPixels = pixels;
+//        createInfo.format = ARS_IMAGE_FORMAT_SRGB;
+//
+//        ArsCreateTexture2D(&createInfo, &_ui_lock);
 }
 
 void GUIKit::DrawPerformance(GUIKitData *p_data)
@@ -48,7 +48,7 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
                 auto *complist = p_data->componentList;
                 auto &comps    = complist->GetGameComponents();
 
-                ImGuiTreeNodeFlags __ImGuiTreeNodeBaseFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
+                ImGuiTreeNodeFlags __ImGuiTreeNodeBaseFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Leaf;
 
                 /* 场景中的游戏对象组件列表 */
                 for (auto iter = comps.begin(); iter != comps.end(); ++iter) {
@@ -65,8 +65,10 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
                         if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
                                 _selected_id = _compid;
 
-                        if (is_open)
+                        /* 判断树节点是否被展开 */
+                        if (is_open) {
                                 ImGui::TreePop();
+                        }
                 }
 
                 if (_selected_id != -1) {
@@ -80,25 +82,47 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
 void GUIKit::DrawDisableComponentWindow(GameObject *p_data)
 {
         if (ImGui::Begin("组件")) {
-                if (ImGui::CollapsingHeader("变换")) {
-                        float dragOffsetPosX = ImGui::GetCursorPosX() + (float) 40;
-                        ImGuiCC::OffsetText("位置  ");
-                        ImGui::SetCursorPosX(dragOffsetPosX);
-                        ImGuiCC::DragFloatExColor3("position", glm::value_ptr(p_data->GetPosition()), 0.01f);
-                        ImGuiCC::OffsetText("旋转  ");
-                        ImGui::SetCursorPosX(dragOffsetPosX);
-                        ImGuiCC::DragFloatExColor3("rotation", glm::value_ptr(p_data->GetRotation()), 0.01f);
-                        ImGuiCC::OffsetText("缩放  ");
-                        ImGui::SetCursorPosX(dragOffsetPosX);
-                        ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->GetScale()), 0.01f);
-                        ImGui::SameLine();
-                        ImGuiCC::Image(_ui_lock, arrovec2(20,20));
-                }
-
-                if (ImGui::CollapsingHeader("贴图")) {
-                        ImGuiCC::Image(p_data->GetTexture(), arrovec2(80,80));
-                }
+                DrawTransform(p_data);
+                DrawTextures(p_data);
         } ImGui::End();
+}
+
+void GUIKit::DrawTransform(GameObject *p_data)
+{
+        if (ImGui::CollapsingHeader("变换")) {
+                float dragOffsetPosX = ImGui::GetCursorPosX() + (float) 40;
+                ImGuiCC::OffsetText("位置");
+                ImGui::SetCursorPosX(dragOffsetPosX);
+                ImGuiCC::DragFloatExColor3("position", glm::value_ptr(p_data->transform3D.position), 0.01f);
+                ImGuiCC::OffsetText("旋转");
+                ImGui::SetCursorPosX(dragOffsetPosX);
+                ImGuiCC::DragFloatExColor3("rotation", glm::value_ptr(p_data->transform3D.rotation), 0.01f);
+                ImGuiCC::OffsetText("缩放");
+                ImGui::SetCursorPosX(dragOffsetPosX);
+                ImGuiCC::DragFloatExColor3("scale", glm::value_ptr(p_data->transform3D.scale), 0.01f);
+        }
+}
+
+void GUIKit::DrawTextures(GameObject *p_data)
+{
+        if (ImGui::CollapsingHeader("纹理")) {
+                for (GameMesh *mesh : p_data->GetMeshs()) {
+                        ImGui::Text("网格名称: %s", mesh->GetName().c_str());
+                        for (ArsTexture texture : mesh->GetTextures())
+                                DrawTextureComponent(texture);
+                }
+        }
+}
+
+void GUIKit::DrawTextureComponent(ArsTexture &texture)
+{
+        if (ImGuiCC::ImageButton(texture, arosvec2(80, 80))) {
+                ImGui::OpenPopup("arrows_textures_popups");
+                if (ImGui::BeginPopup("arrows_textures_popups")) {
+                        ImGui::Text("aaa");
+                        ImGui::EndPopup();
+                }
+        }
 }
 
 void GUIKit::Render(GUIKitData *p_data)

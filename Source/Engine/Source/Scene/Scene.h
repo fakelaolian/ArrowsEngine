@@ -24,7 +24,7 @@ private:
         MainWindow&             _window;
         std::vector<GameObject> _objects;
         ArsShader               _normalize_shader;
-        arroptr<SkyBox>         _skybox;
+        arosptr<SkyBox>         _skybox;
         SceneCamera             _camera{
                 {0.0f, 0.0f, -8.0f},
                 0.0f, 0.0f,

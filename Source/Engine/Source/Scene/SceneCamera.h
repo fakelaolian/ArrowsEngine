@@ -7,7 +7,7 @@
 /** 场景相机 */
 class SceneCamera : public Camera {
 public:
-        SceneCamera(arrovec3 position, float pitch, float yaw, arrovec3 wordUp)
+        SceneCamera(arosvec3 position, float pitch, float yaw, arosvec3 wordUp)
                 : Camera(position, pitch, yaw, wordUp) {}
 
         /* 移动相机 */
@@ -31,7 +31,7 @@ public:
                 UpdateVectors();
         }
 
-        inline void SetPosition(arrovec3 position)
+        inline void SetPosition(arosvec3 position)
         { _position = position; }
 
         /* 旋转相机 */

@@ -142,7 +142,7 @@ bool ImGui_ImplOSX_Init()
 
     // Load cursors. Some of them are undocumented.
     g_MouseCursorHidden = false;
-    g_MouseCursors[ImGuiMouseCursor_Arrow] = [NSCursor arrowCursor];
+    g_MouseCursors[ImGuiMouseCursor_Arrow] = [NSCursor aroswCursor];
     g_MouseCursors[ImGuiMouseCursor_TextInput] = [NSCursor IBeamCursor];
     g_MouseCursors[ImGuiMouseCursor_ResizeAll] = [NSCursor closedHandCursor];
     g_MouseCursors[ImGuiMouseCursor_Hand] = [NSCursor pointingHandCursor];

@@ -8,7 +8,7 @@ namespace ImGuiInternalCC
 {
         using namespace ImGui;
 
-        static void PushMultiItemsWidthsAndLabels(const char *labels[], int components, float w_full)
+        static inline void PushMultiItemsWidthsAndLabels(const char *labels[], int components, float w_full)
         {
                 ImGuiWindow *window = GetCurrentWindow();
                 const ImGuiStyle &style = GImGui->Style;
@@ -28,7 +28,7 @@ namespace ImGuiInternalCC
 namespace ImGuiCC
 {
         using namespace ImGui;
-        bool DragFloatExColorN(const std::string tab, const char *labels[], float *v, int components, float v_speed)
+        inline bool DragFloatExColorN(const std::string tab, const char *labels[], float *v, int components, float v_speed)
         {
                 ImGuiWindow *window = GetCurrentWindow();
                 if (window->SkipItems)
@@ -70,22 +70,30 @@ namespace ImGuiCC
                 return value_changed;
         }
 
-        bool DragFloatExColor3(const std::string tab, float *v, float v_speed)
+        inline bool DragFloatExColor3(const std::string tab, float *v, float v_speed)
         {
                 const char *labels[] = {"x", "y", "z"};
                 return DragFloatExColorN(tab, labels, v, 3, v_speed);
         }
 
-        void OffsetText(const char *v)
+        inline void OffsetText(const char *v)
         {
                 float textOffsetPosX = ImGui::GetCursorPosX() + (float) 20;
                 ImGui::SetCursorPosX(textOffsetPosX);
                 ImGui::Text("%s", v);
         }
 
-        void Image(ArsTexture texture, arrovec2 size)
+        inline void Image(ArsTexture texture, arosvec2 size)
         {
                 ImGui::Image((ImTextureID)(intptr_t) ArsGetTextureId(texture), ImVec2(size.x, size.y));
+        }
+
+        inline bool ImageButton(ArsTexture texture, arosvec2 size)
+        {
+                return ImGui::ImageButton(
+                        (ImTextureID)(intptr_t) ArsGetTextureId(texture),
+                        ImVec2(size.x, size.y)
+                );
         }
 
 }
