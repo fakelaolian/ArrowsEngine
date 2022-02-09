@@ -3,9 +3,17 @@
 
 #include "Private/ImGui_Constom_Component.h"
 #include "Loader/TextureLoader.h"
+#include "../ImGui/Private/ImGui_Node_Editor.h"
 
 GUIKit::GUIKit()
 {
+        ImNodes::CreateContext();
+        ImNodes::GetIO().LinkDetachWithModifierClick.Modifier = &ImGui::GetIO().KeyAlt;
+
+        bp::InitAllNodesO();
+        bp::PushBlueprint("add");
+        bp::PushBlueprint("add");
+        bp::PushBlueprint("add");
 //        int w, h, channel;
 //        arsuc *pixels = _stbi_load("../../../UI/lock&unlock/lock.png", &w, &h, &channel);
 //
@@ -23,7 +31,8 @@ void GUIKit::DrawPerformance(GUIKitData *p_data)
         if (ImGui::Begin("性能面板")) {
                 ImGui::Text("delta time: %f", p_data->deltaTime);
                 ImGui::Text("draw time: %ldms", p_data->drawTime);
-        } ImGui::End();
+        }
+        ImGui::End();
 }
 
 void GUIKit::DrawViewport(GUIKitData *p_data)
@@ -31,10 +40,10 @@ void GUIKit::DrawViewport(GUIKitData *p_data)
         ImGui::Begin("场景视图");
         {
                 ArsTexture ftex = ArsGetFramebufferTexture(p_data->framebuffer);
-                ImTextureID viewportId = (ImTextureID)(intptr_t)ArsGetTextureId(ftex);
+                ImTextureID viewportId = (ImTextureID) (intptr_t) ArsGetTextureId(ftex);
                 ImGui::BeginChild("ViewportRender");
                 ImVec2 wsize = ImGui::GetWindowSize();
-                ImGui::Image((ImTextureID)viewportId, wsize, ImVec2(0, 1), ImVec2(1, 0));
+                ImGui::Image((ImTextureID) viewportId, wsize, ImVec2(0, 1), ImVec2(1, 0));
                 ImGui::EndChild();
                 GUIKit::ASPECT = wsize.x / wsize.y;
         }
@@ -46,13 +55,14 @@ void GUIKit::DrawComponents(GUIKitData *p_data)
         ImGui::Begin("对象列表");
         {
                 auto *complist = p_data->componentList;
-                auto &comps    = complist->GetGameComponents();
+                auto &comps = complist->GetGameComponents();
 
-                ImGuiTreeNodeFlags __ImGuiTreeNodeBaseFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Leaf;
+                ImGuiTreeNodeFlags __ImGuiTreeNodeBaseFlags =
+                        ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Leaf;
 
                 /* 场景中的游戏对象组件列表 */
                 for (auto iter = comps.begin(); iter != comps.end(); ++iter) {
-                        auto    comp   = iter->second;
+                        auto comp = iter->second;
                         compid_t _compid = comp.GetId();
 
                         ImGuiTreeNodeFlags _ImGuiTreeNodeFlags = __ImGuiTreeNodeBaseFlags;
@@ -84,7 +94,8 @@ void GUIKit::DrawDisableComponentWindow(GameObject *p_data)
         if (ImGui::Begin("组件")) {
                 DrawTransform(p_data);
                 DrawTextures(p_data);
-        } ImGui::End();
+        }
+        ImGui::End();
 }
 
 void GUIKit::DrawTransform(GameObject *p_data)
@@ -106,9 +117,9 @@ void GUIKit::DrawTransform(GameObject *p_data)
 void GUIKit::DrawTextures(GameObject *p_data)
 {
         if (ImGui::CollapsingHeader("纹理")) {
-                for (GameMesh *mesh : p_data->GetMeshs()) {
+                for (GameMesh *mesh: p_data->GetMeshs()) {
                         ImGui::Text("网格名称: %s", mesh->GetName().c_str());
-                        for (ArsTexture texture : mesh->GetTextures())
+                        for (ArsTexture texture: mesh->GetTextures())
                                 DrawTextureComponent(texture);
                 }
         }
@@ -133,4 +144,10 @@ void GUIKit::Render(GUIKitData *p_data)
         DrawPerformance(p_data);
         DrawViewport(p_data);
         DrawComponents(p_data);
+
+        bp::BeginEditor();
+        bp::DrawBlueprints();
+        bp::EndEditor();
+
+
 }
