@@ -13,7 +13,6 @@ GUIKit::GUIKit()
         bp::InitAllNodesO();
         bp::PushBlueprint("add");
         bp::PushBlueprint("add");
-        bp::PushBlueprint("add");
 //        int w, h, channel;
 //        arsuc *pixels = _stbi_load("../../../UI/lock&unlock/lock.png", &w, &h, &channel);
 //
