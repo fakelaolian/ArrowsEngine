@@ -16,7 +16,7 @@ MainApplication::MainApplication(const char *title, uint32_t w, uint32_t h)
 
 void MainApplication::Run()
 {
-        Scene defaultScene{*_window};
+        Scene scene{*_window};
 
         float _delta_time, _current_time, _last_time = 0.0f;
         clock_t _draw_time;
@@ -27,6 +27,9 @@ void MainApplication::Run()
         createInfo.height = _window->GetHeight();
 
         ArsCreateFramebuffer(&createInfo, &framebuffer);
+
+        SceneEventData sceneEventData;
+        SceneEventData *pEventData = &sceneEventData;
 
         /* 游戏主循环 */
         ArsEnable(ARS_DEPTH_TEST, ARS_TRUE);
@@ -40,9 +43,10 @@ void MainApplication::Run()
                 _last_time    = _current_time;
 
                 _draw_time = clock();
-                defaultScene.Update(_delta_time, _guikit->ASPECT);
-                defaultScene.Render();
+                scene.Update(pEventData);
+                scene.Render();
                 _draw_time = clock() - _draw_time;
+                pEventData->DetailTime = _delta_time;
 
                 ArsBindFramebuffer(ARS_FRAMEBUFFER0);
                 ArsClearColorBuffer(0.2f, 0.2f, 0.2f, 0.2f);
@@ -51,7 +55,9 @@ void MainApplication::Run()
                         guiKitData.deltaTime    = _delta_time;
                         guiKitData.drawTime     = _draw_time;
                         guiKitData.framebuffer  = framebuffer;
-                        guiKitData.componentList= &defaultScene.GetComponentList();
+                        guiKitData.componentList= &scene.GetComponentList();
+                        guiKitData.p_scene_event= pEventData;
+                        guiKitData.window       = _window.get();
                         _guikit->Render(&guiKitData);
                 } _gui->EndRender();
 

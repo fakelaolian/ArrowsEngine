@@ -6,17 +6,17 @@
 extern "C" {
 #endif
 
-typedef unsigned char   arsuc;
-typedef unsigned int    arsu32;
-typedef unsigned        arsbool;
+typedef unsigned char arsuc;
+typedef unsigned int arsu32;
+typedef unsigned arsbool;
 
-typedef void *          ArsWindow;
-typedef void *          ArsVertexBuffer;
-typedef void *          ArsIndicesBuffer;
-typedef void *          ArsTexture;
-typedef void *          ArsShader;
-typedef void *          ArsFramebuffer;
-typedef arsu32          ArsID;
+typedef void *ArsWindow;
+typedef void *ArsVertexBuffer;
+typedef void *ArsIndicesBuffer;
+typedef void *ArsTexture;
+typedef void *ArsShader;
+typedef void *ArsFramebuffer;
+typedef arsu32 ArsID;
 
 #define ARS_TRUE        1U
 #define ARS_FALSE       0U
@@ -28,261 +28,261 @@ typedef arsu32          ArsID;
 #endif
 
 typedef enum ArsKeyCodeBits {
-        /* Printable keys */
-        ARS_KEY_SPACE              = 32,
-        ARS_KEY_APOSTROPHE         = 39,  /* ' */
-        ARS_KEY_COMMA              = 44,  /* , */
-        ARS_KEY_MINUS              = 45,  /* - */
-        ARS_KEY_PERIOD             = 46,  /* . */
-        ARS_KEY_SLASH              = 47,  /* / */
-        ARS_KEY_0                  = 48,
-        ARS_KEY_1                  = 49,
-        ARS_KEY_2                  = 50,
-        ARS_KEY_3                  = 51,
-        ARS_KEY_4                  = 52,
-        ARS_KEY_5                  = 53,
-        ARS_KEY_6                  = 54,
-        ARS_KEY_7                  = 55,
-        ARS_KEY_8                  = 56,
-        ARS_KEY_9                  = 57,
-        ARS_KEY_SEMICOLON          = 59,  /* ; */
-        ARS_KEY_EQUAL              = 61,  /* = */
-        ARS_KEY_A                  = 65,
-        ARS_KEY_B                  = 66,
-        ARS_KEY_C                  = 67,
-        ARS_KEY_D                  = 68,
-        ARS_KEY_E                  = 69,
-        ARS_KEY_F                  = 70,
-        ARS_KEY_G                  = 71,
-        ARS_KEY_H                  = 72,
-        ARS_KEY_I                  = 73,
-        ARS_KEY_J                  = 74,
-        ARS_KEY_K                  = 75,
-        ARS_KEY_L                  = 76,
-        ARS_KEY_M                  = 77,
-        ARS_KEY_N                  = 78,
-        ARS_KEY_O                  = 79,
-        ARS_KEY_P                  = 80,
-        ARS_KEY_Q                  = 81,
-        ARS_KEY_R                  = 82,
-        ARS_KEY_S                  = 83,
-        ARS_KEY_T                  = 84,
-        ARS_KEY_U                  = 85,
-        ARS_KEY_V                  = 86,
-        ARS_KEY_W                  = 87,
-        ARS_KEY_X                  = 88,
-        ARS_KEY_Y                  = 89,
-        ARS_KEY_Z                  = 90,
-        ARS_KEY_LEFT_BRACKET       = 91,  /* [ */
-        ARS_KEY_BACKSLASH          = 92,  /* \ */
-        ARS_KEY_RIGHT_BRACKET      = 93,  /* ] */
-        ARS_KEY_GRAVE_ACCENT       = 96,  /* ` */
-        ARS_KEY_WORLD_1            = 161, /* non-US #1 */
-        ARS_KEY_WORLD_2            = 162, /* non-US #2 */
+    /* Printable keys */
+    ARS_KEY_SPACE = 32,
+    ARS_KEY_APOSTROPHE = 39,  /* ' */
+    ARS_KEY_COMMA = 44,  /* , */
+    ARS_KEY_MINUS = 45,  /* - */
+    ARS_KEY_PERIOD = 46,  /* . */
+    ARS_KEY_SLASH = 47,  /* / */
+    ARS_KEY_0 = 48,
+    ARS_KEY_1 = 49,
+    ARS_KEY_2 = 50,
+    ARS_KEY_3 = 51,
+    ARS_KEY_4 = 52,
+    ARS_KEY_5 = 53,
+    ARS_KEY_6 = 54,
+    ARS_KEY_7 = 55,
+    ARS_KEY_8 = 56,
+    ARS_KEY_9 = 57,
+    ARS_KEY_SEMICOLON = 59,  /* ; */
+    ARS_KEY_EQUAL = 61,  /* = */
+    ARS_KEY_A = 65,
+    ARS_KEY_B = 66,
+    ARS_KEY_C = 67,
+    ARS_KEY_D = 68,
+    ARS_KEY_E = 69,
+    ARS_KEY_F = 70,
+    ARS_KEY_G = 71,
+    ARS_KEY_H = 72,
+    ARS_KEY_I = 73,
+    ARS_KEY_J = 74,
+    ARS_KEY_K = 75,
+    ARS_KEY_L = 76,
+    ARS_KEY_M = 77,
+    ARS_KEY_N = 78,
+    ARS_KEY_O = 79,
+    ARS_KEY_P = 80,
+    ARS_KEY_Q = 81,
+    ARS_KEY_R = 82,
+    ARS_KEY_S = 83,
+    ARS_KEY_T = 84,
+    ARS_KEY_U = 85,
+    ARS_KEY_V = 86,
+    ARS_KEY_W = 87,
+    ARS_KEY_X = 88,
+    ARS_KEY_Y = 89,
+    ARS_KEY_Z = 90,
+    ARS_KEY_LEFT_BRACKET = 91,  /* [ */
+    ARS_KEY_BACKSLASH = 92,  /* \ */
+    ARS_KEY_RIGHT_BRACKET = 93,  /* ] */
+    ARS_KEY_GRAVE_ACCENT = 96,  /* ` */
+    ARS_KEY_WORLD_1 = 161, /* non-US #1 */
+    ARS_KEY_WORLD_2 = 162, /* non-US #2 */
 
-        /* Function keys */
-        ARS_KEY_ESCAPE             = 256,
-        ARS_KEY_ENTER              = 257,
-        ARS_KEY_TAB                = 258,
-        ARS_KEY_BACKSPACE          = 259,
-        ARS_KEY_INSERT             = 260,
-        ARS_KEY_DELETE             = 261,
-        ARS_KEY_RIGHT              = 262,
-        ARS_KEY_LEFT               = 263,
-        ARS_KEY_DOWN               = 264,
-        ARS_KEY_UP                 = 265,
-        ARS_KEY_PAGE_UP            = 266,
-        ARS_KEY_PAGE_DOWN          = 267,
-        ARS_KEY_HOME               = 268,
-        ARS_KEY_END                = 269,
-        ARS_KEY_CAPS_LOCK          = 280,
-        ARS_KEY_SCROLL_LOCK        = 281,
-        ARS_KEY_NUM_LOCK           = 282,
-        ARS_KEY_PRINT_SCREEN       = 283,
-        ARS_KEY_PAUSE              = 284,
-        ARS_KEY_F1                 = 290,
-        ARS_KEY_F2                 = 291,
-        ARS_KEY_F3                 = 292,
-        ARS_KEY_F4                 = 293,
-        ARS_KEY_F5                 = 294,
-        ARS_KEY_F6                 = 295,
-        ARS_KEY_F7                 = 296,
-        ARS_KEY_F8                 = 297,
-        ARS_KEY_F9                 = 298,
-        ARS_KEY_F10                = 299,
-        ARS_KEY_F11                = 300,
-        ARS_KEY_F12                = 301,
-        ARS_KEY_F13                = 302,
-        ARS_KEY_F14                = 303,
-        ARS_KEY_F15                = 304,
-        ARS_KEY_F16                = 305,
-        ARS_KEY_F17                = 306,
-        ARS_KEY_F18                = 307,
-        ARS_KEY_F19                = 308,
-        ARS_KEY_F20                = 309,
-        ARS_KEY_F21                = 310,
-        ARS_KEY_F22                = 311,
-        ARS_KEY_F23                = 312,
-        ARS_KEY_F24                = 313,
-        ARS_KEY_F25                = 314,
-        ARS_KEY_KP_0               = 320,
-        ARS_KEY_KP_1               = 321,
-        ARS_KEY_KP_2               = 322,
-        ARS_KEY_KP_3               = 323,
-        ARS_KEY_KP_4               = 324,
-        ARS_KEY_KP_5               = 325,
-        ARS_KEY_KP_6               = 326,
-        ARS_KEY_KP_7               = 327,
-        ARS_KEY_KP_8               = 328,
-        ARS_KEY_KP_9               = 329,
-        ARS_KEY_KP_DECIMAL         = 330,
-        ARS_KEY_KP_DIVIDE          = 331,
-        ARS_KEY_KP_MULTIPLY        = 332,
-        ARS_KEY_KP_SUBTRACT        = 333,
-        ARS_KEY_KP_ADD             = 334,
-        ARS_KEY_KP_ENTER           = 335,
-        ARS_KEY_KP_EQUAL           = 336,
-        ARS_KEY_LEFT_SHIFT         = 340,
-        ARS_KEY_LEFT_CONTROL       = 341,
-        ARS_KEY_LEFT_ALT           = 342,
-        ARS_KEY_LEFT_SUPER         = 343,
-        ARS_KEY_RIGHT_SHIFT        = 344,
-        ARS_KEY_RIGHT_CONTROL      = 345,
-        ARS_KEY_RIGHT_ALT          = 346,
-        ARS_KEY_RIGHT_SUPER        = 347,
-        ARS_KEY_MENU               = 348,
+    /* Function keys */
+    ARS_KEY_ESCAPE = 256,
+    ARS_KEY_ENTER = 257,
+    ARS_KEY_TAB = 258,
+    ARS_KEY_BACKSPACE = 259,
+    ARS_KEY_INSERT = 260,
+    ARS_KEY_DELETE = 261,
+    ARS_KEY_RIGHT = 262,
+    ARS_KEY_LEFT = 263,
+    ARS_KEY_DOWN = 264,
+    ARS_KEY_UP = 265,
+    ARS_KEY_PAGE_UP = 266,
+    ARS_KEY_PAGE_DOWN = 267,
+    ARS_KEY_HOME = 268,
+    ARS_KEY_END = 269,
+    ARS_KEY_CAPS_LOCK = 280,
+    ARS_KEY_SCROLL_LOCK = 281,
+    ARS_KEY_NUM_LOCK = 282,
+    ARS_KEY_PRINT_SCREEN = 283,
+    ARS_KEY_PAUSE = 284,
+    ARS_KEY_F1 = 290,
+    ARS_KEY_F2 = 291,
+    ARS_KEY_F3 = 292,
+    ARS_KEY_F4 = 293,
+    ARS_KEY_F5 = 294,
+    ARS_KEY_F6 = 295,
+    ARS_KEY_F7 = 296,
+    ARS_KEY_F8 = 297,
+    ARS_KEY_F9 = 298,
+    ARS_KEY_F10 = 299,
+    ARS_KEY_F11 = 300,
+    ARS_KEY_F12 = 301,
+    ARS_KEY_F13 = 302,
+    ARS_KEY_F14 = 303,
+    ARS_KEY_F15 = 304,
+    ARS_KEY_F16 = 305,
+    ARS_KEY_F17 = 306,
+    ARS_KEY_F18 = 307,
+    ARS_KEY_F19 = 308,
+    ARS_KEY_F20 = 309,
+    ARS_KEY_F21 = 310,
+    ARS_KEY_F22 = 311,
+    ARS_KEY_F23 = 312,
+    ARS_KEY_F24 = 313,
+    ARS_KEY_F25 = 314,
+    ARS_KEY_KP_0 = 320,
+    ARS_KEY_KP_1 = 321,
+    ARS_KEY_KP_2 = 322,
+    ARS_KEY_KP_3 = 323,
+    ARS_KEY_KP_4 = 324,
+    ARS_KEY_KP_5 = 325,
+    ARS_KEY_KP_6 = 326,
+    ARS_KEY_KP_7 = 327,
+    ARS_KEY_KP_8 = 328,
+    ARS_KEY_KP_9 = 329,
+    ARS_KEY_KP_DECIMAL = 330,
+    ARS_KEY_KP_DIVIDE = 331,
+    ARS_KEY_KP_MULTIPLY = 332,
+    ARS_KEY_KP_SUBTRACT = 333,
+    ARS_KEY_KP_ADD = 334,
+    ARS_KEY_KP_ENTER = 335,
+    ARS_KEY_KP_EQUAL = 336,
+    ARS_KEY_LEFT_SHIFT = 340,
+    ARS_KEY_LEFT_CONTROL = 341,
+    ARS_KEY_LEFT_ALT = 342,
+    ARS_KEY_LEFT_SUPER = 343,
+    ARS_KEY_RIGHT_SHIFT = 344,
+    ARS_KEY_RIGHT_CONTROL = 345,
+    ARS_KEY_RIGHT_ALT = 346,
+    ARS_KEY_RIGHT_SUPER = 347,
+    ARS_KEY_MENU = 348,
 } ArsKeyCodeBits;
 
 typedef enum ArsMouseButtonBits {
-        ARS_MOUSE_BUTTON_1 = 0,
-        ARS_MOUSE_BUTTON_2 = 1,
-        ARS_MOUSE_BUTTON_3 = 2,
-        ARS_MOUSE_BUTTON_4 = 3,
-        ARS_MOUSE_BUTTON_5 = 4,
-        ARS_MOUSE_BUTTON_6 = 5,
-        ARS_MOUSE_BUTTON_7 = 6,
-        ARS_MOUSE_BUTTON_8 = 7,
+    ARS_MOUSE_BUTTON_1 = 0,
+    ARS_MOUSE_BUTTON_2 = 1,
+    ARS_MOUSE_BUTTON_3 = 2,
+    ARS_MOUSE_BUTTON_4 = 3,
+    ARS_MOUSE_BUTTON_5 = 4,
+    ARS_MOUSE_BUTTON_6 = 5,
+    ARS_MOUSE_BUTTON_7 = 6,
+    ARS_MOUSE_BUTTON_8 = 7,
 } ArsMouseButtonBits;
 
 typedef enum ArsKeyModeBits {
-        ARS_RELEASE                = 0,
-        ARS_PRESS                  = 1,
+    ARS_RELEASE = 0,
+    ARS_PRESS = 1,
 } ArsKeyModeBits;
 
 /* 图形API选择枚举 */
 typedef enum ArsGraphAPIBits {
-        Vulkan,
-        OpenGL,
-        DX12
+    Vulkan,
+    OpenGL,
+    DX12
 } ArsGraphAPIBits;
 
 typedef enum ArsPolygonModeBits {
-        ARS_POLYGON_MODE_FILL,
-        ARS_POLYGON_MODE_POINT,
-        ARS_POLYGON_MODE_LINE,
+    ARS_POLYGON_MODE_FILL,
+    ARS_POLYGON_MODE_POINT,
+    ARS_POLYGON_MODE_LINE,
 } ArsPolygonModeBits;
 
 typedef enum ArsFormat {
-        ARS_IMAGE_FORMAT_RGB,
-        ARS_IMAGE_FORMAT_RGBA,
-        ARS_IMAGE_FORMAT_RED,
-        ARS_IMAGE_FORMAT_ALPHA,
-        ARS_IMAGE_FORMAT_SRGB,
-        ARS_IMAGE_FORMAT_SRGB8,
-        ARS_TYPE_FORMAT_FLOAT,
+    ARS_IMAGE_FORMAT_RGB,
+    ARS_IMAGE_FORMAT_RGBA,
+    ARS_IMAGE_FORMAT_RED,
+    ARS_IMAGE_FORMAT_ALPHA,
+    ARS_IMAGE_FORMAT_SRGB,
+    ARS_IMAGE_FORMAT_SRGB8,
+    ARS_TYPE_FORMAT_FLOAT,
 } ArsFormat;
 
 typedef enum ArsEnableBits {
-        ARS_DEPTH_TEST
+    ARS_DEPTH_TEST
 } ArsEnableBits;
 
 typedef struct ArsVertexBufferLayout {
-        arsu32 location;
-        arsu32 size;
-        ArsFormat format;
-        arsu32 offset;
+    arsu32 location;
+    arsu32 size;
+    ArsFormat format;
+    arsu32 offset;
 } ArsVertexBufferLayout;
 
 typedef struct ArsVertexBufferMemLayoutInfo {
-        arsu32 vertexCount;
-        ArsVertexBufferLayout *pBufferLayout;
-        arsu32 bufferLayoutCount;
-        arsu32 stride;
-        const void *pVertices;
+    arsu32 vertexCount;
+    ArsVertexBufferLayout *pBufferLayout;
+    arsu32 bufferLayoutCount;
+    arsu32 stride;
+    const void *pVertices;
 } ArsVertexBufferMemLayoutInfo;
 
 typedef enum ArsTextureWrapModeBits {
-        ARS_TEXTURE_WRAP_NONE,
-        ARS_TEXTURE_WRAP_REPEAT,
-        ARS_TEXTURE_WRAP_MIRRORED_REPEAT,
-        ARS_TEXTURE_WRAP_CLAMP_TO_EDGE,
-        ARS_TEXTURE_WRAP_CLAMP_TO_BORDER
+    ARS_TEXTURE_WRAP_NONE,
+    ARS_TEXTURE_WRAP_REPEAT,
+    ARS_TEXTURE_WRAP_MIRRORED_REPEAT,
+    ARS_TEXTURE_WRAP_CLAMP_TO_EDGE,
+    ARS_TEXTURE_WRAP_CLAMP_TO_BORDER
 } ArsTextureWrapModeBits;
 
 typedef enum ArsTextureFilterModeBits {
-        ARS_TEXTURE_FILTER_NEAREST,
-        ARS_TEXTURE_FILTER_LINEAR,
-        ARS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR,
+    ARS_TEXTURE_FILTER_NEAREST,
+    ARS_TEXTURE_FILTER_LINEAR,
+    ARS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR,
 } ArsTextureFilterModeBits;
 
 typedef struct ArsTexture2DCreateInfo {
-        arsu32 width;
-        arsu32 height;
-        ArsFormat format;
-        ArsTextureWrapModeBits textureWrapS;
-        ArsTextureWrapModeBits textureWrapT;
-        ArsTextureFilterModeBits textureFilterMin;
-        ArsTextureFilterModeBits textureFilterMag;
-        arsuc *pPixels;
+    arsu32 width;
+    arsu32 height;
+    ArsFormat format;
+    ArsTextureWrapModeBits textureWrapS;
+    ArsTextureWrapModeBits textureWrapT;
+    ArsTextureFilterModeBits textureFilterMin;
+    ArsTextureFilterModeBits textureFilterMag;
+    arsuc *pPixels;
 } ArsTexture2DCreateInfo;
 
 typedef struct ArsTextureCubeCreateInfo {
-        arsu32 width[6];
-        arsu32 height[6];
-        arsuc *pPixels[6];
-        ArsFormat format[6];
-        ArsTextureWrapModeBits textureWrapS;
-        ArsTextureWrapModeBits textureWrapT;
-        ArsTextureWrapModeBits textureWrapR;
-        ArsTextureFilterModeBits textureFilterMin;
-        ArsTextureFilterModeBits textureFilterMag;
+    arsu32 width[6];
+    arsu32 height[6];
+    arsuc *pPixels[6];
+    ArsFormat format[6];
+    ArsTextureWrapModeBits textureWrapS;
+    ArsTextureWrapModeBits textureWrapT;
+    ArsTextureWrapModeBits textureWrapR;
+    ArsTextureFilterModeBits textureFilterMin;
+    ArsTextureFilterModeBits textureFilterMag;
 } ArsTextureCubeCreateInfo;
 
 typedef struct ArsDimension2i {
-        int x;
-        int y;
+    int x;
+    int y;
 } ArsDimension2i;
 
 typedef struct ArsDimension2f {
-        float x;
-        float y;
+    float x;
+    float y;
 } ArsDimension2f;
 
-typedef enum ArsInputCursorModeBits{
-        ARS_CURSOR_NORMAL,
-        ARS_CURSOR_HIDDEN,
-        ARS_CURSOR_DISABLE
+typedef enum ArsInputCursorModeBits {
+    ARS_CURSOR_NORMAL,
+    ARS_CURSOR_HIDDEN,
+    ARS_CURSOR_DISABLE
 } ArsInputCursorModeBits;
 
 typedef enum ArsTextureFormatBits {
-        ARS_TEXTURE_2D,
-        ARS_TEXTURE_CUBE_MAP,
+    ARS_TEXTURE_2D,
+    ARS_TEXTURE_CUBE_MAP,
 } ArsTextureFormatBits;
 
 typedef enum ArsDepthOptionBits {
-        ARS_DEPTH_OPTION_ALWAYS,
-        ARS_DEPTH_OPTION_NEVER,
-        ARS_DEPTH_OPTION_EQ,
-        ARS_DEPTH_OPTION_NE,
-        ARS_DEPTH_OPTION_LT,
-        ARS_DEPTH_OPTION_LE,
-        ARS_DEPTH_OPTION_GT,
-        ARS_DEPTH_OPTION_GE,
+    ARS_DEPTH_OPTION_ALWAYS,
+    ARS_DEPTH_OPTION_NEVER,
+    ARS_DEPTH_OPTION_EQ,
+    ARS_DEPTH_OPTION_NE,
+    ARS_DEPTH_OPTION_LT,
+    ARS_DEPTH_OPTION_LE,
+    ARS_DEPTH_OPTION_GT,
+    ARS_DEPTH_OPTION_GE,
 } ArsDepthOptionBits;
 
 typedef struct ArsFramebufferCreateInfo {
-        arsu32 width;
-        arsu32 height;
+    arsu32 width;
+    arsu32 height;
 } ArsFramebufferCreateInfo;
 
 #define ARS_FRAMEBUFFER0 NULL
@@ -467,7 +467,7 @@ ARSAPI RHI_ARS_WINDOW_POLL_EVENTS RHIARSWINDOWPOLLEVENTS;
 typedef void (*RHI_ARS_SET_USER_POINTER)(ArsWindow, void *);
 ARSAPI RHI_ARS_SET_USER_POINTER RHIARSSETUSERPOINTER;
 #define ArsSetUserPointer RHIARSSETUSERPOINTER
-typedef void * (*RHI_ARS_GET_USER_POINTER)(ArsWindow);
+typedef void *(*RHI_ARS_GET_USER_POINTER)(ArsWindow);
 ARSAPI RHI_ARS_GET_USER_POINTER RHIARSGETUSERPOINTER;
 #define ArsGetUserPointer RHIARSGETUSERPOINTER
 typedef arsbool (*RHI_ARS_WINDOW_SHOULD_CLOSE)(ArsWindow);

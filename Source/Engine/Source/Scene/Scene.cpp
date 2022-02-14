@@ -32,24 +32,24 @@ Scene::~Scene()
 
 }
 
-void Scene::Update(float deltaTime, float aspect)
+void Scene::Update(SceneEventData* p_data)
 {
-        if (ArsGetMouseButton(_window.GetHandle(), ARS_MOUSE_BUTTON_2) == ARS_PRESS) {
+        if (p_data->MouseButton2Press) {
                 _window.DisableCursor();
 
                 /* 控制相机移动 */
-                if (ArsGetKey(_window.GetHandle(), ARS_KEY_W) == ARS_PRESS)
-                        _camera.Move(Camera::CAMERA_MOVE_FORWARD, deltaTime);
-                if (ArsGetKey(_window.GetHandle(), ARS_KEY_S) == ARS_PRESS)
-                        _camera.Move(Camera::CAMERA_MOVE_BACK, deltaTime);
-                if (ArsGetKey(_window.GetHandle(), ARS_KEY_A) == ARS_PRESS)
-                        _camera.Move(Camera::CAMERA_MOVE_RIGHT, deltaTime);
-                if (ArsGetKey(_window.GetHandle(), ARS_KEY_D) == ARS_PRESS)
-                        _camera.Move(Camera::CAMERA_MOVE_LEFT, deltaTime);
-                if (ArsGetKey(_window.GetHandle(), ARS_KEY_SPACE) == ARS_PRESS)
-                        _camera.Move(Camera::CAMERA_MOVE_UP, deltaTime);
-                if (ArsGetKey(_window.GetHandle(), ARS_KEY_LEFT_CONTROL) == ARS_PRESS)
-                        _camera.Move(Camera::CAMERA_MOVE_DOWN, deltaTime);
+                if (p_data->MoveKey_W)
+                        _camera.Move(Camera::CAMERA_MOVE_FORWARD, p_data->DetailTime);
+                if (p_data->MoveKey_S)
+                        _camera.Move(Camera::CAMERA_MOVE_BACK, p_data->DetailTime);
+                if (p_data->MoveKey_A)
+                        _camera.Move(Camera::CAMERA_MOVE_RIGHT, p_data->DetailTime);
+                if (p_data->MoveKey_D)
+                        _camera.Move(Camera::CAMERA_MOVE_LEFT, p_data->DetailTime);
+                if (p_data->MoveKey_SPACE)
+                        _camera.Move(Camera::CAMERA_MOVE_UP, p_data->DetailTime);
+                if (p_data->MoveKey_LEFT_CTRL)
+                        _camera.Move(Camera::CAMERA_MOVE_DOWN, p_data->DetailTime);
 
                 _camera.Rotate(_window.GetMouseX(), _window.GetMouseY());
 
@@ -58,7 +58,7 @@ void Scene::Update(float deltaTime, float aspect)
                 _camera.ResetFirstMouseBit();
         }
 
-        _camera.Update(aspect);
+        _camera.Update(p_data->Aspect);
 
         /* 更新着色器 */
         ArsBindShader(_normalize_shader);

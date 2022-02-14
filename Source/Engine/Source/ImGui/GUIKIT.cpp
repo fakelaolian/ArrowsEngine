@@ -36,17 +36,32 @@ void GUIKit::DrawPerformance(GUIKitData *p_data)
 
 void GUIKit::DrawViewport(GUIKitData *p_data)
 {
-    ImGui::Begin("场景视图");
+    ImGui::Begin("场景视图", NULL, ImGuiWindowFlags_NoTitleBar);
     {
         ArsTexture ftex = ArsGetFramebufferTexture(p_data->framebuffer);
         ImTextureID viewportId = (ImTextureID) (intptr_t) ArsGetTextureId(ftex);
         ImGui::BeginChild("ViewportRender");
-        ImVec2 wsize = ImGui::GetWindowSize();
-        ImGui::Image((ImTextureID) viewportId, wsize, ImVec2(0, 1), ImVec2(1, 0));
-        ImGui::EndChild();
-        GUIKit::ASPECT = wsize.x / wsize.y;
+        {
+            if (ImGui::IsWindowHovered() || p_data->p_scene_event->MouseButton2Press) {
+                ArsWindow h = p_data->window->GetHandle();
+                p_data->p_scene_event->MouseButton2Press = ArsGetMouseButton(h, ARS_MOUSE_BUTTON_2) == ARS_PRESS;
+                p_data->p_scene_event->MoveKey_W = ArsGetKey(h, ARS_KEY_W) == ARS_PRESS;
+                p_data->p_scene_event->MoveKey_S = ArsGetKey(h, ARS_KEY_S) == ARS_PRESS;
+                p_data->p_scene_event->MoveKey_A = ArsGetKey(h, ARS_KEY_A) == ARS_PRESS;
+                p_data->p_scene_event->MoveKey_D = ArsGetKey(h, ARS_KEY_D) == ARS_PRESS;
+                p_data->p_scene_event->MoveKey_SPACE= ArsGetKey(h, ARS_KEY_SPACE) == ARS_PRESS;
+                p_data->p_scene_event->MoveKey_LEFT_CTRL = ArsGetKey(h, ARS_KEY_LEFT_CONTROL) == ARS_PRESS;
+            } else{
+                p_data->p_scene_event->ResetKeys();
+            }
+
+            ImVec2 wsize = ImGui::GetWindowSize();
+            ImGui::Image((ImTextureID) viewportId, wsize, ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::EndChild();
+            p_data->p_scene_event->Aspect = wsize.x / wsize.y;
+        }
+        ImGui::End();
     }
-    ImGui::End();
 }
 
 void GUIKit::DrawComponents(GUIKitData *p_data)
