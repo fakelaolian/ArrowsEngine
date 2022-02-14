@@ -42,7 +42,8 @@ ADD_EXECUTABLE(${PROJECT_NAME}
         ThirdParty/imgui/imgui_widgets.cpp
         ThirdParty/imgui/backends/imgui_impl_opengl3.cpp
         ThirdParty/imgui/backends/imgui_impl_glfw.cpp
-
-)
+        # --* ThirdParty/ImGui/blueprint *-- #
+        ThirdParty/imgui/blueprint/imnodes.cpp
+        )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} glfw3 Ars)

@@ -4,6 +4,7 @@
 #include "APPGUI.h"
 #include "Scene/Component/SceneComponentList.h"
 #include "Application/MainWindow.h"
+#include "Scene/SceneData.h"
 
 struct GUIKitData {
         /* 性能面板 */
@@ -13,15 +14,15 @@ struct GUIKitData {
         ArsFramebuffer  framebuffer;
         /* 组件 */
         SceneComponentList *componentList;
+        MainWindow*     window;
+        /* 场景事件 */
+        SceneEventData* p_scene_event;
 };
 
 class GUIKit {
 public:
         GUIKit();
         void Render(GUIKitData *p_data);
-
-public:
-        float ASPECT;
 
 private: /* 主窗口 */
         void DrawPerformance(GUIKitData *p_data);

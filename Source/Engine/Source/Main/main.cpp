@@ -7,7 +7,7 @@ int main()
         system("chcp 65001");
 #endif
 
-        MainApplication app{"ARROWS", 1000, 800};
+        MainApplication app{"ARROWS", 1680, 1280};
         app.Run();
 
         return 0;

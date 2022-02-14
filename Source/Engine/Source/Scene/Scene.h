@@ -5,6 +5,7 @@
 #include "Scene/Component/GameObject.h"
 #include "Application/MainWindow.h"
 #include "Component/SceneComponentList.h"
+#include "SceneData.h"
 
 // std
 #include <vector>
@@ -17,7 +18,7 @@ public:
         inline SceneComponentList &GetComponentList()
         { return _component_list; }
 
-        void Update(float deltaTime, float aspect);
+        void Update(SceneEventData* p_data);
         void Render();
 
 private:
