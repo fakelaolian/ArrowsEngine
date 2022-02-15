@@ -9,10 +9,11 @@ GUIKit::GUIKit()
 {
     ImNodes::CreateContext();
     ImNodes::GetIO().LinkDetachWithModifierClick.Modifier = &ImGui::GetIO().KeyAlt;
-
     bp::InitAllNodesO();
     bp::PushBlueprint("add");
     bp::PushBlueprint("add");
+    bp::PushBlueprint("image");
+
 //        int w, h, channel;
 //        arsuc *pixels = _stbi_load("../../../UI/lock&unlock/lock.png", &w, &h, &channel);
 //

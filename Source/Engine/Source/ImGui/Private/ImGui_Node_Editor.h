@@ -12,6 +12,7 @@ namespace bp {
         NONE,
         NUMBER,
         FLOAT,
+        FLOAT3,
         TEXT,
     };
 
@@ -23,17 +24,18 @@ namespace bp {
     struct _ImNode;
 
     struct _ImPin {
-        int                             Id;
-        std::string                     Name;
-        _ImPinKind                      Kind;
-        _ImPinType                      Type;
-        std::string                     CompId;
-        int                             Iv;
-        float                           Fv;
-        char                            Text[512];
-        _ImNode *                       Node;
-        std::map<int, const _ImPin *>   Links;
-        bool                            HasValue;
+        int Id;
+        std::string Name;
+        _ImPinKind Kind;
+        _ImPinType Type;
+        std::string CompId;
+        int Iv;
+        float Fv;
+        float F3v[3];
+        char Text[512];
+        _ImNode *Node;
+        std::map<int, const _ImPin *> Links;
+        bool HasValue;
     };
 
     /**
@@ -59,11 +61,11 @@ namespace bp {
      * 上下文管理
      */
     struct _ImNodesContextIO {
-        int                                         CurrentLinkId = 0;      /* 自增长ID */
-        std::unordered_map<int, _ImNode>            InCanvasBlueprints;     /* 所有在画布的蓝图 */
-        std::unordered_map<int, _ImPin *>           InBlueprintPin;         /* 所有在画布的引脚 */
-        std::vector<Link>                           Links;                  /* 链接数据 */
-        std::unordered_map<std::string, _ImNode>    Blueprints;             /* 蓝图组件列表 */
+        int CurrentLinkId = 0;                                  /* 自增长ID */
+        std::unordered_map<int, _ImNode> InCanvasBlueprints;    /* 所有在画布的蓝图 */
+        std::unordered_map<int, _ImPin *> InBlueprintPin;       /* 所有在画布的引脚 */
+        std::vector<Link> Links;                                /* 链接数据 */
+        std::unordered_map<std::string, _ImNode> Blueprints;    /* 蓝图组件列表 */
 
         /* 检查Input引脚是否被链接 */
         const _ImPin *CheckInputLinkTo(int inputId)
@@ -90,7 +92,16 @@ namespace bp {
         };
         _ImNode node{0, "add", pins};
 
+        std::vector<_ImPin> imagePins = {
+            {0, "基础色",  _ImPinKind::Input,  _ImPinType::FLOAT3},
+            {0, "次表面", _ImPinKind::Input, _ImPinType::FLOAT},
+            {0, "金属感", _ImPinKind::Input, _ImPinType::FLOAT},
+            {0, "高光染色", _ImPinKind::Input, _ImPinType::FLOAT},
+        };
+        _ImNode image{0, "image", imagePins};
+
         g_ContextIO.Blueprints.insert({"add", node});
+        g_ContextIO.Blueprints.insert({"image", image});
     }
 
     /**
@@ -156,6 +167,9 @@ namespace bp {
                                 break;
                             case FLOAT:
                                 ImGui::DragFloat(pin.CompId.c_str(), &pin.Fv);
+                                break;
+                            case FLOAT3:
+                                ImGui::DragFloat3(pin.CompId.c_str(), pin.F3v, 0.01f);
                                 break;
                             case TEXT:
                                 ImGui::InputText(pin.CompId.c_str(), pin.Text,
